@@ -122,9 +122,10 @@ public class RegisterActivity extends AppCompatActivity {
                                 if (task.isSuccessful()){
                                     DataHolder.dataBaseUser=user;
                                     DataHolder.authUser=mAuth.getCurrentUser();
-                                    sendToMainActivity();
                                     Toast.makeText(RegisterActivity.this, ""+R.string.account_created_successfully, Toast.LENGTH_SHORT).show();
                                     loadingBar.dismiss();
+                                    saveDataInSharedPerefrence();
+                                    sendToMainActivity();
                                 }else {
 //if we have any error
                                     String message = task.getException().getLocalizedMessage();
@@ -232,7 +233,6 @@ public class RegisterActivity extends AppCompatActivity {
             gPersonId = account.getId();
             gPersonPhoto = account.getPhotoUrl();
             Toast.makeText(RegisterActivity.this,gPersonName + gPersonEmail+gPersonId ,Toast.LENGTH_SHORT).show();
-            sendToMainActivity();
         }
 
     }
@@ -258,9 +258,10 @@ public class RegisterActivity extends AppCompatActivity {
                 if (task.isSuccessful()){
                     DataHolder.dataBaseUser=user;
                     DataHolder.authUser=mAuth.getCurrentUser();
-                    sendToMainActivity();
                     Toast.makeText(RegisterActivity.this, ""+R.string.account_created_successfully, Toast.LENGTH_SHORT).show();
                     loadingBar.dismiss();
+                    saveDataInSharedPerefrence();
+                    sendToMainActivity();
                 }else {
 //if we have any error
                     String message = task.getException().getLocalizedMessage();

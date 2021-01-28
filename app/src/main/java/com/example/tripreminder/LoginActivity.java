@@ -75,7 +75,6 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 AllowUserToLogen();
-                //saveDataInSharedPerefrence();
             }
         });
 
@@ -115,10 +114,13 @@ public class LoginActivity extends AppCompatActivity {
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 //final User databaseUser=(User) dataSnapshot.getValue(User.class);
                                 databaseUser=(User) dataSnapshot.getValue(User.class);
+                                Email=databaseUser.getEmail();
+                                Name=databaseUser.getName();
                                 DataHolder.dataBaseUser=databaseUser;
                                 DataHolder.authUser=mAuth.getCurrentUser();
                                 Toast.makeText(LoginActivity.this,""+ R.string.logged_is_successful, Toast.LENGTH_SHORT).show();
                                 loadingBar.dismiss();
+                                saveDataInSharedPerefrence();
                                 sendToMainActivity();
 
                             }

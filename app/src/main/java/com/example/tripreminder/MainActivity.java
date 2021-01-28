@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -28,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.i("log","OnCreate");
         logUot=findViewById(R.id.logout_btn);
         mAuth=FirebaseAuth.getInstance();
         //rootRef= FirebaseDatabase.getInstance().getReference();
@@ -47,7 +45,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onStart() {
+        super.onStart();
 
+        if(currentUser==null){
+            sendToLoginActivity();
+        }
+
+        else{
+            UsersDao.getUser(mAuth.getUid(), new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    User databaseUser=dataSnapshot.getValue(User.class);
+                    DataHolder.dataBaseUser=databaseUser;
+                    DataHolder.authUser=mAuth.getCurrentUser();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+        }
+    }
 
     private void sendToLoginActivity() {
         Intent intent= new Intent(MainActivity.this, LoginActivity.class);
