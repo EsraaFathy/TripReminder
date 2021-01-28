@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">TripReminder</string>
+    <string name="create">Register</string>
+    <string name="hasAccount">Already has an account</string>
+    <string name="account_created_successfully">Account Created Successfully...</string>
+    <string name="logged_is_successful">Logged in Successfully...</string>
+    <string name="error">Error: </string>
+    <string name="Login">Login</string>
+    <string name="New">New User? Register Now</string>
+    <string name="Log_out">Log Out</string>
+</resources>
