@@ -54,6 +54,8 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        // TODO: this to move to test my code
+        startActivity(new Intent(LoginActivity.this,BaseHomeActivity.class));
         mAuth = FirebaseAuth.getInstance();
         InitiatizeFields();
         GoogleSignInOptions gso = new GoogleSignInOptions
