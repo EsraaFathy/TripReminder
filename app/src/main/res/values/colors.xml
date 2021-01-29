@@ -15,4 +15,11 @@
     <color name="colorAccent">#66b2b2</color>
     <color name="lightGreen">#b2d8d8</color>
 
+    <color name="dark_green">#004C4C</color>
+    <color name="dark_green2">#006666</color>
+    <color name="dark_green3">#008080</color>
+    <color name="light_green">#66B2B2</color>
+    <color name="mint_green">#B2D8D8</color>
+    <color name="hint_color">#6C6767</color>
+
 </resources>
