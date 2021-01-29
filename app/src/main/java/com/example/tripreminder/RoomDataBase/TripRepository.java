@@ -19,7 +19,6 @@ public class TripRepository {
 
     public void insert(TripTable tripTable){
         new InsertAsyncTask(tripDAO).execute(tripTable);
-
     }
 
 

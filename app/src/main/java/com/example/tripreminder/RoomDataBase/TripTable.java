@@ -72,4 +72,8 @@ public class TripTable {
     public String getNotes() {
         return notes;
     }
+
+    public int getId() {
+        return id;
+    }
 }
