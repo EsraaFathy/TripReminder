@@ -64,6 +64,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+    def fragment_version = "1.2.5"
+    implementation "androidx.fragment:fragment:1.2.5"
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
 }
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'

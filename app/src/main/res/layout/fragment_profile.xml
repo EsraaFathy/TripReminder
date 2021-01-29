@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    xmlns:tools="http://schemas.android.com/tools"-->
+<!--    android:id="@+id/constraintLayout"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:orientation="vertical"-->
+<!--    tools:context=".ProfileFragment">-->
+
+<!--    <de.hdodenhof.circleimageview.CircleImageView-->
+<!--        android:layout_height="150dp"-->
+<!--        android:layout_width="150dp"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:civ_border_width="2dp"-->
+<!--        android:layout_marginTop="40dp"-->
+<!--        android:layout_gravity="center"-->
+<!--        android:src="@drawable/amin"-->
+<!--        android:id="@+id/profile_img"/>-->
+
+<!--</androidx.constraintlayout.widget.ConstraintLayout>-->
+<androidx.core.widget.NestedScrollView android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:background="#B2D8D8">
+
+        <ImageView
+            android:id="@+id/back"
+            android:background="#004c4c"
+            android:layout_height="0dp"
+            android:layout_width="match_parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintHeight_percent=".5"
+            android:src="@drawable/map1"
+            android:scaleType="centerCrop"
+            />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_height="150dp"
+            android:layout_width="150dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/topGuide"
+            app:civ_border_width="2dp"
+            android:layout_gravity="center"
+            android:src="@drawable/amin"
+            android:id="@+id/profile_img"
+            app:layout_constraintHorizontal_bias=".1"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:id="@+id/topGuide"
+            app:layout_constraintGuide_percent=".38"/>
+
+
+        <androidx.constraintlayout.widget.Guideline
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:id="@+id/bottomGuide"
+            app:layout_constraintGuide_percent=".59"/>
+
+
+        <LinearLayout
+            android:layout_marginTop="20dp"
+            android:id="@+id/firstRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="6"
+            app:layout_constraintTop_toBottomOf="@id/bottomGuide"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="parent"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:src="@drawable/id_card"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="10dp"/>
+            <TextView
+                android:id="@+id/name"
+                tools:text="amin test test test"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="5"
+                android:textSize="20dp"
+                android:layout_marginEnd="10dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/seconRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="6"
+            app:layout_constraintTop_toBottomOf="@id/firstRow"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="parent"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            >
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:src="@drawable/email"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="10dp"
+                />
+            <TextView
+                android:id="@+id/email"
+                tools:text="amin test test test"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="5"
+                android:textSize="20dp"
+                android:layout_marginEnd="10dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/thirdRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="6"
+            app:layout_constraintTop_toBottomOf="@id/seconRow"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="parent"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp">
+            <ImageView
+
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:src="@drawable/icloud"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="10dp"/>
+            <TextView
+                android:id="@+id/sync"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="5"
+                tools:text="amin test test test"
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:layout_marginEnd="10dp"/>
+        </LinearLayout>
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:id="@+id/logout_tve"
+            app:layout_constraintTop_toBottomOf="@+id/thirdRow"
+            android:textSize="20dp"
+            android:padding="12dp"
+            android:hint="logout"
+            android:layout_marginEnd="20dp"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>
