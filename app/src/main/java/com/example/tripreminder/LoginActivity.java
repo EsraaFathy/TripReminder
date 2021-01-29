@@ -116,6 +116,7 @@ public class LoginActivity extends AppCompatActivity {
                                 databaseUser=(User) dataSnapshot.getValue(User.class);
                                 Email=databaseUser.getEmail();
                                 Name=databaseUser.getName();
+                                Log.i("log","after snapShot: "+Name+Email);
                                 DataHolder.dataBaseUser=databaseUser;
                                 DataHolder.authUser=mAuth.getCurrentUser();
                                 Toast.makeText(LoginActivity.this,""+ R.string.logged_is_successful, Toast.LENGTH_SHORT).show();
@@ -246,6 +247,7 @@ public class LoginActivity extends AppCompatActivity {
                 Email=databaseUser.getEmail();
                 Name=databaseUser.getName();
                 //databaseUser=(User) dataSnapshot.getValue(User.class);
+                Log.i("log","after snapShot: "+Name+Email);
                 DataHolder.dataBaseUser=databaseUser;
                 DataHolder.authUser=mAuth.getCurrentUser();
                 Toast.makeText(LoginActivity.this,""+databaseUser.toString(), Toast.LENGTH_SHORT).show();

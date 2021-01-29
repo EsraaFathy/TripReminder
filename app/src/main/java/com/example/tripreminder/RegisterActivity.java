@@ -77,7 +77,6 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 CreateNewAccount();
-                saveDataInSharedPerefrence();
             }
         });
         google.setOnClickListener(new View.OnClickListener() {
