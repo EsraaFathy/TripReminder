@@ -15,7 +15,7 @@ public interface TripDAO {
     @Insert
     void Insert(TripTable tripTable);
 
-    @Update
+@Update
     void Update(TripTable tripTable);
 
     @Delete
