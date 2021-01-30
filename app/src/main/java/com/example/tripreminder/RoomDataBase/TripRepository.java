@@ -21,17 +21,17 @@ public class TripRepository {
         new InsertAsyncTask(tripDAO).execute(tripTable);
     }
 
-//al;jfaewjfoajolfjaoj
+//KHDSKJD
     public void update(TripTable tripTable){
         new UpDateAsyncTask(tripDAO).execute(tripTable);
 
     }
 
-    public LiveData<List<TripTable>> getAllRecord(TripTable tripTable){
+    public LiveData<List<TripTable>> getAllRecord(){
         return getAllData;
     }
 
-    public void Delete(TripTable tripTable){
+    public void delete(TripTable tripTable){
         new DeleteAsyncTask(tripDAO).execute(tripTable);
     }
 

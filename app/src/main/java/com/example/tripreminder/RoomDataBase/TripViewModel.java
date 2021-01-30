@@ -18,8 +18,8 @@ public class TripViewModel extends AndroidViewModel {
         tripRepository=new TripRepository(application);
         listLiveData=tripRepository.getAllRecord();
     }
+///lsjdljKJ
 
-//mmmm
     public void insert(TripTable tripTable){
         tripRepository.insert(tripTable);
     }

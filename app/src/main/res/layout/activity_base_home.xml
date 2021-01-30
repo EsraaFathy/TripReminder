@@ -10,6 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/black"
         tools:context=".BaseHomeActivity">
 
         <androidx.appcompat.widget.Toolbar
@@ -35,7 +36,7 @@
 
         <fragment
             android:id="@+id/fragmentBasic"
-            class="com.example.tripreminder.HomeFragment"
+            class="com.example.tripreminder.Fragments.HomeFragment"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@id/guideline1"
