@@ -42,7 +42,7 @@ public class BaseHomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // TODO: Adda the intent to go to add note activity
-                startActivity(new Intent());
+                startActivity(new Intent(BaseHomeActivity.this,AddTripActivity.class));
             }
         });
 
