@@ -75,7 +75,7 @@
             app:srcCompat="@drawable/ic_start" />
 
         <TextView
-            android:id="@+id/button"
+            android:id="@+id/startButton"
             android:layout_width="268dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="15dp"
