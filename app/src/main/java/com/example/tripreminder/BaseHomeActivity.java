@@ -4,14 +4,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.room.util.DBUtil;
-
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
-
 import com.example.tripreminder.Fragments.HistoryFragment;
 import com.example.tripreminder.Fragments.HomeFragment;
 import com.example.tripreminder.Fragments.ProfileFragment;
@@ -26,15 +22,11 @@ public class BaseHomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activityBaseHomeBinding = DataBindingUtil.setContentView(this, R.layout.activity_base_home);
-        baseFragment = new HomeFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentBasic, baseFragment).commit();
 
-        activityBaseHomeBinding.addTrip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO: Adda the intent to go to add note activity
-                startActivity(new Intent());
-            }
+//////kbwsfihsifhishdcikahik
+        activityBaseHomeBinding.addTrip.setOnClickListener(v -> {
+            // TODO: Adda the intent to go to add note activity
+            startActivity(new Intent());
         });
 
         activityBaseHomeBinding.bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
@@ -42,6 +34,7 @@ public class BaseHomeActivity extends AppCompatActivity {
 
 
     private final BottomNavigationView.OnNavigationItemSelectedListener navListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @SuppressLint("NonConstantResourceId")
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
