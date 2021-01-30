@@ -37,6 +37,7 @@
     <string name="repeating">Repeating</string>
     <string name="trip_type">Trip Type</string>
     <string name="save_add_btn">Add Trip</string>
+    <string name="sync">Sync</string>
 
     <string-array name="repeating_options">
         <item>No Repeated</item>
