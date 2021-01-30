@@ -12,7 +12,6 @@ import android.view.View;
 
 import com.example.tripreminder.Fragments.HistoryFragment;
 import com.example.tripreminder.Fragments.HomeFragment;
-import com.example.tripreminder.Fragments.ProfileFragment;
 import com.example.tripreminder.database.DataHolder;
 import com.example.tripreminder.database.UsersDao;
 import com.example.tripreminder.databinding.ActivityBaseHomeBinding;

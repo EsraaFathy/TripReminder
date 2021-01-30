@@ -154,7 +154,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void sendToMainActivity() {
-        Intent intent= new Intent(RegisterActivity.this, MainActivity.class);
+        Intent intent= new Intent(RegisterActivity.this, BaseHomeActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK| Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
