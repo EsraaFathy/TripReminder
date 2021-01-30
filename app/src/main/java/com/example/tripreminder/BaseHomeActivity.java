@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -37,6 +38,8 @@ public class BaseHomeActivity extends AppCompatActivity {
         mAuth=FirebaseAuth.getInstance();
         currentUser=mAuth.getCurrentUser();
         getSupportFragmentManager().beginTransaction().replace(R.id.fragmentBasic, baseFragment).commit();
+
+//        ViewModelProvider
 
         activityBaseHomeBinding.addTrip.setOnClickListener(new View.OnClickListener() {
             @Override

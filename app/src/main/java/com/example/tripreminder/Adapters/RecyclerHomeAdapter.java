@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tripreminder.R;
+import com.example.tripreminder.RoomDataBase.TripTable;
 import com.example.tripreminder.model.Trip;
 
 import java.util.List;
@@ -18,9 +19,9 @@ import java.util.List;
 public class RecyclerHomeAdapter extends RecyclerView.Adapter<RecyclerHomeAdapter.ViewHolder> {
 
     private Context context;
-    List<Trip> trips;
+    List<TripTable> trips;
 
-    public RecyclerHomeAdapter(Context context, List<Trip> trips) {
+    public RecyclerHomeAdapter(Context context, List<TripTable> trips) {
         this.context = context;
         this.trips = trips;
     }
