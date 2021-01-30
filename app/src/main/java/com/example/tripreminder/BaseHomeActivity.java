@@ -4,8 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.room.util.DBUtil;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,10 +11,18 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.example.tripreminder.Fragments.HistoryFragment;
-import com.example.tripreminder.Fragments.HomeFragment;
 import com.example.tripreminder.Fragments.ProfileFragment;
+import com.example.tripreminder.database.DataHolder;
+import com.example.tripreminder.database.UsersDao;
 import com.example.tripreminder.databinding.ActivityBaseHomeBinding;
+import com.example.tripreminder.model.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+
 public class BaseHomeActivity extends AppCompatActivity {
     ActivityBaseHomeBinding activityBaseHomeBinding;
     Fragment baseFragment;
