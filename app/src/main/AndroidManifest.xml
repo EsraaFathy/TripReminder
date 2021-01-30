@@ -10,13 +10,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TripReminder">
         <activity android:name=".AddTripActivity"></activity>
-        <activity android:name=".BaseHomeActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".BaseHomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".MainActivity">
         </activity>
         <activity android:name=".LoginActivity" />
         <activity android:name=".RegisterActivity" />
