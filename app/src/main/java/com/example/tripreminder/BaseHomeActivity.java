@@ -17,7 +17,6 @@ import com.example.tripreminder.Fragments.HomeFragment;
 import com.example.tripreminder.Fragments.ProfileFragment;
 import com.example.tripreminder.databinding.ActivityBaseHomeBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 public class BaseHomeActivity extends AppCompatActivity {
     ActivityBaseHomeBinding activityBaseHomeBinding;
     Fragment baseFragment;
