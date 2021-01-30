@@ -285,13 +285,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-    public void loadDataInSharedPerefrence(){
 
-        SharedPreferences set=getSharedPreferences("Phone",MODE_PRIVATE);
-        String Name=set.getString("Name","null");
-        String Email=set.getString("Email","null");
-
-    }
 
     public static void googleLogOut(){
         //googleSignInClient.signOut();

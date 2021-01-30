@@ -21,6 +21,7 @@ public class TripTable {
     private String to;
     private String notes;
 
+
     public TripTable(String title, String time, String date, boolean status, String repetition, boolean ways, String from, String to, String notes) {
         this.title = title;
         this.time = time;
