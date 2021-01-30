@@ -27,11 +27,11 @@ public class TripRepository {
 
     }
 
-    public LiveData<List<TripTable>> getAllRecord(){
+    public LiveData<List<TripTable>> getAllRecord(TripTable tripTable){
         return getAllData;
     }
 
-    public void delete(TripTable tripTable){
+    public void Delete(TripTable tripTable){
         new DeleteAsyncTask(tripDAO).execute(tripTable);
     }
 
