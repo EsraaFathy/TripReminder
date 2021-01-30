@@ -27,3 +27,4 @@ public interface TripDAO {
     @Query("SELECT * FROM trips")
     LiveData<List<TripTable>> getAllRecords();
 }
+//J
