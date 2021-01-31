@@ -1,8 +1,12 @@
 package com.example.tripreminder.database;
 
+import com.example.tripreminder.RoomDataBase.TripTable;
 import com.example.tripreminder.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class UsersDao {
 
@@ -12,9 +16,8 @@ public class UsersDao {
                 .addOnCompleteListener(onCompleteListener);
     }
 
-    public static void addUserTrips(User user, String currentUserId, OnCompleteListener<Void> onCompleteListener){
-        DataBase.getUsers().child(currentUserId).child(DataBase.USER_Trip_REF)
-                .setValue(user)
+    public static void addUserTrips(List<TripTable> trips, String currentUserId, OnCompleteListener<Void> onCompleteListener){
+        DataBase.getUsers().child(currentUserId).child(DataBase.USER_Trip_REF).setValue(Arrays.asList(trips))
                 .addOnCompleteListener(onCompleteListener);
     }
 

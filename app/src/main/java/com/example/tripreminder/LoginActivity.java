@@ -5,10 +5,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -123,7 +125,7 @@ public class LoginActivity extends AppCompatActivity {
                                 DataHolder.authUser=mAuth.getCurrentUser();
                                 Toast.makeText(LoginActivity.this,""+ R.string.logged_is_successful, Toast.LENGTH_SHORT).show();
                                 loadingBar.dismiss();
-                                saveDataInSharedPerefrence();
+                                saveDataInSharedPerefrence(getApplicationContext());
                                 sendToMainActivity();
 
                             }
@@ -254,7 +256,7 @@ public class LoginActivity extends AppCompatActivity {
                 DataHolder.authUser=mAuth.getCurrentUser();
                 Toast.makeText(LoginActivity.this,""+databaseUser.toString(), Toast.LENGTH_SHORT).show();
                 loadingBar.dismiss();
-                saveDataInSharedPerefrence();
+                saveDataInSharedPerefrence(getApplicationContext());
                 sendToMainActivity();
 
             }
@@ -269,10 +271,10 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    public void saveDataInSharedPerefrence(){
+    public void saveDataInSharedPerefrence(Context context){
 
-        SharedPreferences set=getSharedPreferences("PersonalInfo",MODE_PRIVATE);
-        SharedPreferences.Editor editor=set.edit();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor=preferences.edit();
         Log.i("log",Name+Email);
         editor.putString("Name",Name);
         editor.putString("Email",Email);

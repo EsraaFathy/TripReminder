@@ -68,6 +68,9 @@ dependencies {
     annotationProcessor "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
 
+    def lifecycle_version2 = "2.1.0"
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+
 
     implementation platform('com.google.firebase:firebase-bom:26.3.0')
     implementation 'com.google.firebase:firebase-analytics'

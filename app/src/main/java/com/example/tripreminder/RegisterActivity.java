@@ -5,10 +5,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -123,7 +125,7 @@ public class RegisterActivity extends AppCompatActivity {
                                     DataHolder.authUser=mAuth.getCurrentUser();
                                     Toast.makeText(RegisterActivity.this, ""+R.string.account_created_successfully, Toast.LENGTH_SHORT).show();
                                     loadingBar.dismiss();
-                                    saveDataInSharedPerefrence();
+                                    saveDataInSharedPerefrence(getApplicationContext());
                                     sendToMainActivity();
                                 }else {
 //if we have any error
@@ -209,7 +211,7 @@ public class RegisterActivity extends AppCompatActivity {
                         FirebaseUser user = mAuth.getCurrentUser();
                         updateUI(user);
                         GoogleAccuntIntoFirebase();
-                        saveDataInSharedPerefrence();
+                        saveDataInSharedPerefrence(getApplicationContext());
                     } else {
                         Toast.makeText(RegisterActivity.this, "Failed", Toast.LENGTH_SHORT).show();
                         updateUI(null);
@@ -259,7 +261,7 @@ public class RegisterActivity extends AppCompatActivity {
                     DataHolder.authUser=mAuth.getCurrentUser();
                     Toast.makeText(RegisterActivity.this, ""+R.string.account_created_successfully, Toast.LENGTH_SHORT).show();
                     loadingBar.dismiss();
-                    saveDataInSharedPerefrence();
+                    saveDataInSharedPerefrence(getApplicationContext());
                     sendToMainActivity();
                 }else {
 //if we have any error
@@ -275,10 +277,10 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-    public void saveDataInSharedPerefrence(){
+    public void saveDataInSharedPerefrence(Context context){
 
-        SharedPreferences set=getSharedPreferences("PersonalInfo",MODE_PRIVATE);
-        SharedPreferences.Editor editor=set.edit();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor=preferences.edit();
         editor.putString("Name",user.getName());
         editor.putString("Email",user.getEmail());
         editor.commit();

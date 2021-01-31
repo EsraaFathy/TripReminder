@@ -33,7 +33,7 @@ public class TripViewModel extends AndroidViewModel {
         tripRepository.deleteAllRecords();
     }
 
-    private LiveData<List<TripTable>>  getAllTrips(){
+    public LiveData<List<TripTable>>  getAllTrips(){
         return listLiveData;
     }
 
