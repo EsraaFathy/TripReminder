@@ -45,14 +45,14 @@ public class BaseHomeActivity extends AppCompatActivity {
 
 
 
-        activityBaseHomeBinding.addTrip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO: Adda the intent to go to add note activity
-                startActivity(new Intent(BaseHomeActivity.this,AddTripActivity.class));
-
-            }
-        });
+//        activityBaseHomeBinding.addTrip.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                // TODO: Adda the intent to go to add note activity
+//                startActivity(new Intent(BaseHomeActivity.this,AddTripActivity.class));
+//
+//            }
+//        });
 
         activityBaseHomeBinding.bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
     }

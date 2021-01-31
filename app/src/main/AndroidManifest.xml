@@ -13,12 +13,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TripReminder">
+        <activity android:name=".SimpleMenu"
+            android:theme="@style/Theme.AppCompat.Dialog"/>
         <activity
             android:name=".MenuItemsForOneElement"
-            android:label="@string/title_activity_menu_items_for_one_element"
-            android:theme="@style/Theme.AppCompat.Dialog">
-
-        </activity>
+            android:theme="@style/Theme.AppCompat.Dialog"></activity>
         <activity android:name=".NotesControl" />
         <activity android:name=".AddTripActivity" />
         <activity android:name=".BaseHomeActivity">

@@ -20,6 +20,7 @@ import com.example.tripreminder.NotesControl;
 import com.example.tripreminder.R;
 import com.example.tripreminder.RoomDataBase.TripTable;
 import com.example.tripreminder.RoomDataBase.TripViewModel;
+import com.example.tripreminder.SimpleMenu;
 import com.example.tripreminder.model.Trip;
 
 import java.io.Serializable;
@@ -100,7 +101,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void menueItemOptions() {
-        Intent intent=new Intent(getActivity(), MenuItemsForOneElement.class);
+        Intent intent=new Intent(getActivity(), SimpleMenu.class);
         Bundle bundle=new Bundle();
         //bundle.putInt(tripTable);
        // intent.putExtra(NOTE_INTENT, tripTable.getId());
