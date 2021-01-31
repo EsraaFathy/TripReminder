@@ -43,6 +43,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
+            android:layout_marginTop="10dp"
             android:contentDescription="@string/mune"
             app:layout_constraintBottom_toBottomOf="@+id/timeTextViewTripItem"
             app:layout_constraintEnd_toEndOf="parent"
@@ -72,11 +73,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/TripNameTripItem"
             app:layout_constraintVertical_bias="0.26"
+            app:layout_constraintEnd_toStartOf="@+id/startButton"
             app:srcCompat="@drawable/ic_start" />
 
         <TextView
             android:id="@+id/startButton"
-            android:layout_width="268dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="15dp"
             android:layout_marginVertical="15dp"

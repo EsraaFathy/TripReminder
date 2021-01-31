@@ -13,6 +13,8 @@ import android.view.View;
 
 import com.example.tripreminder.Fragments.HistoryFragment;
 import com.example.tripreminder.Fragments.HomeFragment;
+import com.example.tripreminder.RoomDataBase.TripTable;
+import com.example.tripreminder.RoomDataBase.TripViewModel;
 import com.example.tripreminder.database.DataHolder;
 import com.example.tripreminder.database.UsersDao;
 import com.example.tripreminder.databinding.ActivityBaseHomeBinding;
@@ -25,27 +27,30 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 public class BaseHomeActivity extends AppCompatActivity {
-    ActivityBaseHomeBinding activityBaseHomeBinding;
-    Fragment baseFragment;
+    private ActivityBaseHomeBinding activityBaseHomeBinding;
+    private Fragment baseFragment;
     private FirebaseUser currentUser;
     private FirebaseAuth mAuth;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        activityBaseHomeBinding = DataBindingUtil.setContentView(this, R.layout.activity_base_home);
-        baseFragment = new HomeFragment();
+        //setContentView(R.layout.activity_base_home);
+            activityBaseHomeBinding = DataBindingUtil.setContentView(this, R.layout.activity_base_home);
+
         mAuth=FirebaseAuth.getInstance();
         currentUser=mAuth.getCurrentUser();
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentBasic, baseFragment).commit();
 
-//        ViewModelProvider
+
+
 
         activityBaseHomeBinding.addTrip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // TODO: Adda the intent to go to add note activity
                 startActivity(new Intent(BaseHomeActivity.this,AddTripActivity.class));
+
             }
         });
 

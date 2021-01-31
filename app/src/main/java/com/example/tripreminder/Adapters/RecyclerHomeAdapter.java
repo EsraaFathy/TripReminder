@@ -19,11 +19,18 @@ import java.util.List;
 public class RecyclerHomeAdapter extends RecyclerView.Adapter<RecyclerHomeAdapter.ViewHolder> {
 
     private Context context;
-    List<TripTable> trips;
+    private List<TripTable> trips;
+    private OcCLickListenerAble ocCLickListenerAble;
+    public static final String MENU="MENU";
+    public static final String NOTES="NOTES";
+    public static final String START="START";
 
-    public RecyclerHomeAdapter(Context context, List<TripTable> trips) {
-        this.context = context;
+    public void setTrips(List<TripTable> trips) {
         this.trips = trips;
+    }
+
+    public RecyclerHomeAdapter(Context context) {
+        this.context = context;
     }
 
     @NonNull
@@ -80,6 +87,36 @@ public class RecyclerHomeAdapter extends RecyclerView.Adapter<RecyclerHomeAdapte
             notes = itemView.findViewById(R.id.notesTripItem);
             menu = itemView.findViewById(R.id.menueIconTripItem);
             startButton = itemView.findViewById(R.id.startButton);
+
+            menu.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ocCLickListenerAble.onItemClick(MENU,trips.get(getAdapterPosition()));
+                }
+            });
+
+            notes.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ocCLickListenerAble.onItemClick(NOTES,trips.get(getAdapterPosition()));
+                }
+            });
+            startButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ocCLickListenerAble.onItemClick(START,trips.get(getAdapterPosition()));
+
+                }
+            });
+
+
         }
+    }
+    public void OnItemClickListener(OcCLickListenerAble ocCLickListenerAble)
+    {
+        this.ocCLickListenerAble=ocCLickListenerAble;
+    }
+    public interface OcCLickListenerAble{
+        void onItemClick(String type,TripTable tripTable);
     }
 }
