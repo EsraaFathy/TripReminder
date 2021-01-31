@@ -2,7 +2,10 @@ package com.example.tripreminder;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
 import androidx.fragment.app.DialogFragment;
+
+import androidx.lifecycle.ViewModelProvider;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -25,6 +28,8 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
+import com.example.tripreminder.RoomDataBase.TripTable;
+import com.example.tripreminder.RoomDataBase.TripViewModel;
 
 public class AddTripActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
 
@@ -43,6 +48,8 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
 
     private Button add_trip_btn;
 
+    private TripViewModel tripViewModel;
+
     private static final String API_KEY = "AIzaSyA7dH75J8SZ0-GkeHqHANbflPhdpbfU5yI";
     private static final int START_REQUEST = 100;
     private static final int END_REQUEST = 101;
@@ -51,7 +58,6 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_trip);
-
         initViews();
 
         Places.initialize(this, API_KEY);
@@ -97,6 +103,11 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
 
         repeating_spinner = findViewById(R.id.repeating_spinner);
         trip_type = findViewById(R.id.trip_type);
+
+        // TODO: this used to insert data in to room database
+        tripViewModel= new ViewModelProvider(AddTripActivity.this, ViewModelProvider.AndroidViewModelFactory.getInstance(AddTripActivity.this.getApplication())).get(TripViewModel.class);
+        tripViewModel.insert(new TripTable( "Added two", "01:33", "31/1/2021", false, "1", false, "zag", "italy", ""));
+
     }
 
     @Override // data from the place api

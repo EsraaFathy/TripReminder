@@ -18,7 +18,6 @@ public class TripViewModel extends AndroidViewModel {
         tripRepository=new TripRepository(application);
         listLiveData=tripRepository.getAllRecord();
     }
-///lsjdljKJ
 
     public void insert(TripTable tripTable){
         tripRepository.insert(tripTable);
@@ -33,7 +32,7 @@ public class TripViewModel extends AndroidViewModel {
         tripRepository.deleteAllRecords();
     }
 
-    private LiveData<List<TripTable>>  getAllTrips(){
+    public LiveData<List<TripTable>>  getAllTrips(){
         return listLiveData;
     }
 

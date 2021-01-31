@@ -1,66 +1,110 @@
 package com.example.tripreminder.Fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.example.tripreminder.Adapters.RecyclerHomeAdapter;
+import com.example.tripreminder.MenuItemsForOneElement;
+import com.example.tripreminder.NotesControl;
 import com.example.tripreminder.R;
+import com.example.tripreminder.RoomDataBase.TripTable;
+import com.example.tripreminder.RoomDataBase.TripViewModel;
+import com.example.tripreminder.SimpleMenu;
+import com.example.tripreminder.model.Trip;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link HomeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 public class HomeFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private TripViewModel tripViewModel;
+    private RecyclerView recyclerView;
+    private RecyclerHomeAdapter recyclerHomeAdapter;
+    private List<TripTable> trips = new ArrayList<>();
+    public static final String NOTE_INTENT="notes";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public HomeFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment HomeFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static HomeFragment newInstance(String param1, String param2) {
-        HomeFragment fragment = new HomeFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        recyclerView = view.findViewById(R.id.recyclerviewHome);
+        recyclerHomeAdapter = new RecyclerHomeAdapter(getActivity());
+
+
+        tripViewModel= new ViewModelProvider(getActivity(),ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication())).get(TripViewModel.class);
+        tripViewModel.getAllTrips().observe(getActivity(), new Observer<List<TripTable>>() {
+            @Override
+            public void onChanged(List<TripTable> tripTables) {
+                trips=tripTables;
+                recyclerHomeAdapter.setTrips(trips);
+                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+
+            }
+        });
+
+        recyclerView.setAdapter(recyclerHomeAdapter);
+
+        recyclerHomeAdapter.OnItemClickListener(new RecyclerHomeAdapter.OcCLickListenerAble() {
+            @Override
+            public void onItemClick(String type, TripTable tripTable) {
+                Toast.makeText(getActivity(), "id= " + type, Toast.LENGTH_SHORT).show();
+                if (type.equals(RecyclerHomeAdapter.MENU)){
+                    menueItemOptions();
+                }else if (type.equals(RecyclerHomeAdapter.NOTES)){
+
+                    notesItemOptions(tripTable);
+                }else if (type.equals(RecyclerHomeAdapter.START)){
+                    startItemOptions();
+                }
+
+            }
+        });
+
+        return view;
+    }
+
+    private void startItemOptions() {
+
+    }
+
+    private void notesItemOptions(TripTable tripTable) {
+        Intent intent=new Intent(getActivity(), NotesControl.class);
+        Bundle bundle=new Bundle();
+        //bundle.putInt(tripTable);
+        intent.putExtra(NOTE_INTENT, tripTable.getId());
+        startActivity(intent);
+    }
+
+    private void menueItemOptions() {
+        Intent intent=new Intent(getActivity(), SimpleMenu.class);
+        Bundle bundle=new Bundle();
+        //bundle.putInt(tripTable);
+       // intent.putExtra(NOTE_INTENT, tripTable.getId());
+        startActivity(intent);
     }
 }
