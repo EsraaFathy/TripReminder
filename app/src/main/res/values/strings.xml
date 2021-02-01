@@ -63,5 +63,8 @@
     <string name="edit_trip">Edit Trip</string>
     <string name="delete_trip">Delete Trip</string>
     <string name="cancel_trip">Cancel Trip</string>
+    <string name="delete_note">Delete Note</string>
+    <string name="her_you_can_add_your_trip_notes">Her You can add your trip notes</string>
+    <string name="test">test</string>
 
 </resources>
