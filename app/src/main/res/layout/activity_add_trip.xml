@@ -1,251 +1,256 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/profile_background_pg"
-    tools:context=".AddTripActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <data>
+
+    </data>
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:weightSum="3">
+        android:layout_height="match_parent"
+        android:background="@drawable/profile_background_pg"
+        tools:context=".AddTripActivity">
 
-        <ImageView
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_weight="1"
-            android:layout_gravity="center"
-            android:layout_margin="40dp"
-            android:src="@drawable/destination"/>
-
-        <androidx.cardview.widget.CardView
-            android:layout_weight="2"
-            android:layout_height="wrap_content"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_marginTop="20dp"
-            android:layout_marginStart="15dp"
-            android:layout_marginEnd="15dp"
-            android:layout_marginBottom="20dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:id="@+id/register_card"
-            app:layout_constraintTop_toBottomOf="@+id/logo"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="8dp">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:weightSum="3">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/my_layout"
-                android:layout_width="match_parent"
+            <ImageView
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:layout_margin="40dp"
+                android:src="@drawable/destination" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_weight="2"
                 android:layout_height="wrap_content"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:paddingBottom="16dp">
+                android:layout_width="match_parent"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:id="@+id/register_card"
+                app:layout_constraintTop_toBottomOf="@+id/logo"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="8dp">
 
-
-                <EditText
-                    android:id="@+id/tripNameInput"
-                    android:layout_width="0dp"
-                    android:layout_height="35dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginEnd="16dp"
-                    android:autofillHints=""
-                    android:background="@drawable/btnframe"
-                    android:ems="10"
-                    android:hint="@string/trip_name"
-                    android:inputType="textPersonName"
-                    android:paddingStart="8dp"
-                    android:textColor="@color/colorSecond"
-                    android:textSize="13sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:targetApi="o" />
-
-                <TextView
-                    android:id="@+id/textView2"
-                    android:layout_width="wrap_content"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/my_layout"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/start_point"
-                    android:textColor="@color/colorSecond"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="@+id/tripNameInput"
-                    app:layout_constraintTop_toBottomOf="@+id/tripNameInput" />
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:paddingBottom="16dp">
 
 
-                <EditText
-                    android:id="@+id/startPointSearchView"
+                    <EditText
+                        android:id="@+id/tripNameInput"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginEnd="16dp"
+                        android:autofillHints=""
+                        android:background="@drawable/btnframe"
+                        android:ems="10"
+                        android:hint="@string/trip_name"
+                        android:inputType="textPersonName"
+                        android:paddingStart="8dp"
+                        android:textColor="@color/colorSecond"
+                        android:textSize="13sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:targetApi="o" />
 
-                    android:layout_width="0dp"
-                    android:layout_height="35dp"
-                    android:layout_marginTop="4dp"
-                    android:background="@drawable/btnframe"
-                    android:drawableStart="@drawable/ic_location"
-                    android:paddingStart="5dp"
-                    android:textColor="@color/colorSecond"
-                    android:textSize="13sp"
-                    app:layout_constraintEnd_toEndOf="@+id/tripNameInput"
-                    app:layout_constraintStart_toStartOf="@+id/textView2"
-                    app:layout_constraintTop_toBottomOf="@+id/textView2" />
-
-                <TextView
-                    android:id="@+id/textView4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/end_point"
-                    android:textColor="@color/colorSecond"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="@+id/startPointSearchView"
-                    app:layout_constraintTop_toBottomOf="@+id/startPointSearchView" />
-
-                <EditText
-                    android:id="@+id/endPointSearchView"
-                    android:layout_width="0dp"
-                    android:layout_height="35dp"
-                    android:layout_marginTop="4dp"
-                    android:background="@drawable/btnframe"
-                    android:drawableStart="@drawable/ic_location"
-                    android:paddingStart="5dp"
-                    android:textColor="@color/colorSecond"
-                    android:textSize="13sp"
-                    app:layout_constraintEnd_toEndOf="@+id/startPointSearchView"
-                    app:layout_constraintStart_toStartOf="@+id/textView4"
-                    app:layout_constraintTop_toBottomOf="@+id/textView4" />
-
-                <TextView
-                    android:id="@+id/textView3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/start_details"
-                    android:textColor="@color/colorSecond"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="@+id/endPointSearchView"
-                    app:layout_constraintTop_toBottomOf="@+id/endPointSearchView" />
-
-                <ImageView
-                    android:id="@+id/calender_btn"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="4dp"
-                    android:background="#FBFAFB"
-                    android:contentDescription="@string/calender_image"
-                    android:src="@drawable/ic_calender"
-                    app:layout_constraintStart_toStartOf="@+id/textView5"
-                    app:layout_constraintTop_toBottomOf="@+id/textView3" />
-
-                <TextView
-                    android:id="@+id/dateTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/calender_btn"
-                    app:layout_constraintStart_toEndOf="@+id/calender_btn"
-                    app:layout_constraintTop_toTopOf="@+id/calender_btn"
-                    android:hint="1/30/2020"/>
-
-                <ImageView
-                    android:id="@+id/timeBtn"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:background="#FBFAFB"
-                    android:contentDescription="@string/time_image"
-                    android:src="@drawable/ic_time"
-                    app:layout_constraintStart_toStartOf="@+id/textView6"
-                    app:layout_constraintTop_toTopOf="@+id/calender_btn" />
-
-                <TextView
-                    android:id="@+id/textView5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/repeating"
-                    android:textColor="@color/colorSecond"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="@+id/endPointSearchView"
-                    app:layout_constraintTop_toBottomOf="@+id/calender_btn" />
-
-                <Spinner
-                    android:id="@+id/repeating_spinner"
-                    style="@android:style/Widget.Holo.Light.Spinner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:backgroundTint="@color/black"
-                    android:entries="@array/repeating_options"
-                    app:layout_constraintStart_toStartOf="@+id/textView5"
-                    app:layout_constraintTop_toBottomOf="@+id/textView5" />
-
-                <TextView
-                    android:id="@+id/textView6"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="120dp"
-                    android:text="@string/trip_type"
-                    android:textColor="@color/colorSecond"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toEndOf="@+id/textView5"
-                    app:layout_constraintTop_toTopOf="@+id/textView5" />
-
-                <Spinner
-                    android:id="@+id/trip_type"
-                    style="@android:style/Widget.Holo.Light.Spinner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:backgroundTint="@color/black"
-                    android:entries="@array/trip_options"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/repeating_spinner"
-                    app:layout_constraintTop_toBottomOf="@+id/textView6" />
-
-                <Button
-                    android:id="@+id/add_trip_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginBottom="21dp"
-                    android:background="@drawable/button_bg"
-                    android:text="@string/save_add_btn"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.452"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/repeating_spinner"
-                    app:layout_constraintVertical_bias="0.19"
-                    app:backgroundTint="@null"/>
-
-                <TextView
-                    android:id="@+id/timeTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:textSize="16sp"
-                    android:hint="10:22"
-                    app:layout_constraintBottom_toBottomOf="@+id/timeBtn"
-                    app:layout_constraintStart_toEndOf="@+id/timeBtn"
-                    app:layout_constraintTop_toTopOf="@+id/timeBtn" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </androidx.cardview.widget.CardView>
-
-    </LinearLayout>
+                    <TextView
+                        android:id="@+id/textView2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/start_point"
+                        android:textColor="@color/colorSecond"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="@+id/tripNameInput"
+                        app:layout_constraintTop_toBottomOf="@+id/tripNameInput" />
 
 
+                    <EditText
+                        android:id="@+id/startPointSearchView"
+
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_marginTop="4dp"
+                        android:background="@drawable/btnframe"
+                        android:drawableStart="@drawable/ic_location"
+                        android:paddingStart="5dp"
+                        android:textColor="@color/colorSecond"
+                        android:textSize="13sp"
+                        app:layout_constraintEnd_toEndOf="@+id/tripNameInput"
+                        app:layout_constraintStart_toStartOf="@+id/textView2"
+                        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+                    <TextView
+                        android:id="@+id/textView4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/end_point"
+                        android:textColor="@color/colorSecond"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="@+id/startPointSearchView"
+                        app:layout_constraintTop_toBottomOf="@+id/startPointSearchView" />
+
+                    <EditText
+                        android:id="@+id/endPointSearchView"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_marginTop="4dp"
+                        android:background="@drawable/btnframe"
+                        android:drawableStart="@drawable/ic_location"
+                        android:paddingStart="5dp"
+                        android:textColor="@color/colorSecond"
+                        android:textSize="13sp"
+                        app:layout_constraintEnd_toEndOf="@+id/startPointSearchView"
+                        app:layout_constraintStart_toStartOf="@+id/textView4"
+                        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+                    <TextView
+                        android:id="@+id/textView3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/start_details"
+                        android:textColor="@color/colorSecond"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="@+id/endPointSearchView"
+                        app:layout_constraintTop_toBottomOf="@+id/endPointSearchView" />
+
+                    <ImageView
+                        android:id="@+id/calender_btn"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="4dp"
+                        android:background="#FBFAFB"
+                        android:contentDescription="@string/calender_image"
+                        android:src="@drawable/ic_calender"
+                        app:layout_constraintStart_toStartOf="@+id/textView5"
+                        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+                    <TextView
+                        android:id="@+id/dateTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/calender_btn"
+                        app:layout_constraintStart_toEndOf="@+id/calender_btn"
+                        app:layout_constraintTop_toTopOf="@+id/calender_btn"
+                        android:hint="1/30/2020" />
+
+                    <ImageView
+                        android:id="@+id/timeBtn"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:background="#FBFAFB"
+                        android:contentDescription="@string/time_image"
+                        android:src="@drawable/ic_time"
+                        app:layout_constraintStart_toStartOf="@+id/textView6"
+                        app:layout_constraintTop_toTopOf="@+id/calender_btn" />
+
+                    <TextView
+                        android:id="@+id/textView5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/repeating"
+                        android:textColor="@color/colorSecond"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="@+id/endPointSearchView"
+                        app:layout_constraintTop_toBottomOf="@+id/calender_btn" />
+
+                    <Spinner
+                        android:id="@+id/repeating_spinner"
+                        style="@android:style/Widget.Holo.Light.Spinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:backgroundTint="@color/black"
+                        android:entries="@array/repeating_options"
+                        app:layout_constraintStart_toStartOf="@+id/textView5"
+                        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+                    <TextView
+                        android:id="@+id/textView6"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="120dp"
+                        android:text="@string/trip_type"
+                        android:textColor="@color/colorSecond"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toEndOf="@+id/textView5"
+                        app:layout_constraintTop_toTopOf="@+id/textView5" />
+
+                    <Spinner
+                        android:id="@+id/trip_type"
+                        style="@android:style/Widget.Holo.Light.Spinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:backgroundTint="@color/black"
+                        android:entries="@array/trip_options"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toEndOf="@+id/repeating_spinner"
+                        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+                    <Button
+                        android:id="@+id/add_trip_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginBottom="21dp"
+                        android:background="@drawable/button_bg"
+                        android:text="@string/save_add_btn"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.452"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/repeating_spinner"
+                        app:layout_constraintVertical_bias="0.19"
+                        app:backgroundTint="@null" />
+
+                    <TextView
+                        android:id="@+id/timeTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:textSize="16sp"
+                        android:hint="10:22"
+                        app:layout_constraintBottom_toBottomOf="@+id/timeBtn"
+                        app:layout_constraintStart_toEndOf="@+id/timeBtn"
+                        app:layout_constraintTop_toTopOf="@+id/timeBtn" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
 
 
-</ScrollView>
+    </ScrollView>
+</layout>

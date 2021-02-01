@@ -36,24 +36,9 @@ public class BaseHomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_base_home);
-            activityBaseHomeBinding = DataBindingUtil.setContentView(this, R.layout.activity_base_home);
-
-        mAuth=FirebaseAuth.getInstance();
-        currentUser=mAuth.getCurrentUser();
-
-
-
-
-//        activityBaseHomeBinding.addTrip.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                // TODO: Adda the intent to go to add note activity
-//                startActivity(new Intent(BaseHomeActivity.this,AddTripActivity.class));
-//
-//            }
-//        });
-
+        activityBaseHomeBinding = DataBindingUtil.setContentView(this, R.layout.activity_base_home);
+        mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
         activityBaseHomeBinding.bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
     }
 
@@ -88,17 +73,15 @@ public class BaseHomeActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        if(currentUser==null){
+        if (currentUser == null) {
             sendToLoginActivity();
-        }
-
-        else{
+        } else {
             UsersDao.getUser(mAuth.getUid(), new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    User databaseUser=dataSnapshot.getValue(User.class);
-                    DataHolder.dataBaseUser=databaseUser;
-                    DataHolder.authUser=mAuth.getCurrentUser();
+                    User databaseUser = dataSnapshot.getValue(User.class);
+                    DataHolder.dataBaseUser = databaseUser;
+                    DataHolder.authUser = mAuth.getCurrentUser();
                 }
 
                 @Override
@@ -111,8 +94,8 @@ public class BaseHomeActivity extends AppCompatActivity {
     }
 
     private void sendToLoginActivity() {
-        Intent intent= new Intent(BaseHomeActivity.this, LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK| Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        Intent intent = new Intent(BaseHomeActivity.this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
 

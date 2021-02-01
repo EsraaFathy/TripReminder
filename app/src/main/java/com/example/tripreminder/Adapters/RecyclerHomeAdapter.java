@@ -46,10 +46,8 @@ public class RecyclerHomeAdapter extends RecyclerView.Adapter<RecyclerHomeAdapte
         holder.title.setText(trips.get(position).getTitle());
         holder.time.setText(trips.get(position).getTime());
         holder.date.setText(trips.get(position).getDate());
-        if (trips.get(position).getStatus())
-        holder.status.setText("available");
-        else
-        holder.status.setText("not available");
+
+        holder.status.setText(trips.get(position).getStatus());
 
         holder.from.setText(trips.get(position).getFrom());
         holder.to.setText(trips.get(position).getTo());
