@@ -43,6 +43,8 @@ public class HomeFragment extends Fragment {
     public static final String NOTE_INTENT_Note = "notes";
     public static final String NOTE_INTENT_FROM = "from";
     private ImageView imageView;
+    List<TripTable> tripsRoom;
+
 
 
     public HomeFragment() {
@@ -72,6 +74,12 @@ public class HomeFragment extends Fragment {
             }
         });
 
+//        List<TripTable> tripTables = new ArrayList<>();
+//        tripTables.add(new TripTable("Esraa Fathy", "01:43 AA", "01-02-2021", "comming", "Repeated Monthly", true, "Egypt", "Italy", ""));
+//        tripTables.add(new TripTable("Esraa Fathy1", "01:43 AA", "01-02-2021", "comming", "Repeated Monthly", true, "Egypt", "Italy", ""));
+//        tripTables.add(new TripTable("Esraa Fathy2", "01:43 AA", "01-02-2021", "comming", "Repeated Monthly", true, "Egypt", "Italy", ""));
+//        tripTables.add(new TripTable("Esraa Fathy3", "01:43 AA", "01-02-2021", "comming", "Repeated Monthly", true, "Egypt", "Italy", ""));
+
         tripViewModel = new ViewModelProvider(getActivity(), ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication())).get(TripViewModel.class);
         tripViewModel.getAllTrips().observe(getActivity(), new Observer<List<TripTable>>() {
             @Override
@@ -79,11 +87,9 @@ public class HomeFragment extends Fragment {
                 trips = tripTables;
                 recyclerHomeAdapter.setTrips(trips);
                 recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-
             }
         });
-
+        //saveFromFirebaseToRoom(tripTables);
         recyclerView.setAdapter(recyclerHomeAdapter);
 
         recyclerHomeAdapter.OnItemClickListener(new RecyclerHomeAdapter.OcCLickListenerAble() {
@@ -128,7 +134,7 @@ public class HomeFragment extends Fragment {
     private void menueItemOptions(TripTable tripTable) {
         Intent intent = new Intent(getActivity(), MenuItemsForOneElement.class);
         intent.putExtra(NOTE_INTENT_ID, tripTable.getId());
-        Toast.makeText(getActivity(), ""+tripTable.getId(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "" + tripTable.getId(), Toast.LENGTH_SHORT).show();
         intent.putExtra(NOTE_INTENT_title, tripTable.getTitle());
         intent.putExtra(NOTE_INTENT_date, tripTable.getDate());
         intent.putExtra(NOTE_INTENT_time, tripTable.getTime());
@@ -139,6 +145,25 @@ public class HomeFragment extends Fragment {
         intent.putExtra(NOTE_INTENT_FROM, tripTable.getFrom());
         intent.putExtra(NOTE_INTENT_Note, tripTable.getNotes());
         startActivity(intent);
+    }
+
+
+    private void saveFromFirebaseToRoom(List<TripTable> trips) {
+        tripViewModel.deleteAllTrips();
+        for (TripTable table : trips) {
+            tripViewModel.insert(table);
+        }
+
+    }
+
+    private List<TripTable> saveFromRoomToFirebase() {
+        tripViewModel.getAllTrips().observe(getActivity(), new Observer<List<TripTable>>() {
+            @Override
+            public void onChanged(List<TripTable> tripTables) {
+                tripsRoom = tripTables;
+            }
+        });
+        return tripsRoom;
     }
 
 
