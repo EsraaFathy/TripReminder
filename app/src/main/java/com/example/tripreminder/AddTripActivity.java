@@ -7,9 +7,14 @@ import androidx.fragment.app.DialogFragment;
 
 import androidx.lifecycle.ViewModelProvider;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -27,6 +32,7 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 
 import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import com.example.tripreminder.RoomDataBase.TripTable;
 import com.example.tripreminder.RoomDataBase.TripViewModel;
@@ -54,11 +60,20 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
     private static final int START_REQUEST = 100;
     private static final int END_REQUEST = 101;
 
+    Calendar calender;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_trip);
+        calender = Calendar.getInstance();
+        calender.setTimeInMillis(System.currentTimeMillis());
+
         initViews();
+        createNotificationChannel();
+
+
 
         Places.initialize(this, API_KEY);
         startPointSearchView.setFocusable(false);
@@ -88,6 +103,11 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
             dialogFragment.show(getSupportFragmentManager(), "datepicker");
         });
 
+        add_trip_btn.setOnClickListener(v -> {
+            prepareNotification();
+        });
+
+
     }
 
     private void initViews(){
@@ -104,10 +124,14 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
         repeating_spinner = findViewById(R.id.repeating_spinner);
         trip_type = findViewById(R.id.trip_type);
 
+
+        add_trip_btn = findViewById(R.id.add_trip_btn);
         // TODO: this used to insert data in to room database
         tripViewModel= new ViewModelProvider(AddTripActivity.this, ViewModelProvider.AndroidViewModelFactory.getInstance(AddTripActivity.this.getApplication())).get(TripViewModel.class);
         tripViewModel.insert(new TripTable( "Added two", "01:33", "31/1/2021", false, "1", false, "zag", "italy", ""));
 
+        timeTextView.setText(MessageFormat.format("{0}:{1}", calender.getTime().getHours(), calender.getTime().getMinutes()));
+        dateTextView.setText(MessageFormat.format("{0}/{1}/{2}", calender.getTime().getDay(), calender.getTime().getMonth()+1, calender.getTime().getYear()+1900));
     }
 
     @Override // data from the place api
@@ -144,13 +168,58 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
 
     @Override
     public void onTimeSet(android.widget.TimePicker view, int hourOfDay, int minute) {
-        Toast.makeText(this, "hour : "+hourOfDay+"minute", Toast.LENGTH_SHORT).show();
+
+        calender.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        calender.set(Calendar.MINUTE, minute);
+        calender.set(Calendar.SECOND, 0);
+
+        long seconds = calender.getTimeInMillis() - System.currentTimeMillis();
+        seconds/= 1000;
+        Toast.makeText(this, "Seconds :"+seconds, Toast.LENGTH_SHORT).show();
+
         timeTextView.setText(MessageFormat.format("{0}:{1}", hourOfDay, minute));
     }
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        System.out.println("ONDate");
+        calender.set(Calendar.YEAR, year);
+        calender.set(Calendar.MONTH, month);
+        calender.set(Calendar.DAY_OF_MONTH,dayOfMonth);
+        calender.set(Calendar.SECOND, 0);
+
+        long days = calender.getTimeInMillis() - System.currentTimeMillis();
+        days/= (1000*60*60);
+        Toast.makeText(this, "days :"+days, Toast.LENGTH_SHORT).show();
+
         dateTextView.setText(MessageFormat.format("{0}/{1}/{2}", dayOfMonth, month, year));
+    }
+
+    private void prepareNotification(){
+        Intent intent = new Intent(getApplicationContext(),MyReciever.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+        long period = calender.getTimeInMillis() ;
+
+        alarmManager.set(AlarmManager.RTC_WAKEUP,period,pendingIntent);
+
+        Toast.makeText(getApplicationContext(), "period : "+period, Toast.LENGTH_SHORT).show();
+    }
+
+    private void createNotificationChannel(){
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            CharSequence name = "notificationChannerl";
+            String desc = "Channel for remind trip notification";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel("notification",name,importance);
+            channel.setDescription(desc);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 }
 
