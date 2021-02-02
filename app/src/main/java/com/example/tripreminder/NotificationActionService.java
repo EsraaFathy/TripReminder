@@ -7,7 +7,9 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.IBinder;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -16,8 +18,12 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import com.example.tripreminder.serveses.FloatingViewService;
+
 import java.util.Locale;
 import java.util.Random;
+
+import static androidx.core.app.ActivityCompat.startActivityForResult;
 
 public class NotificationActionService extends Service {
 
@@ -72,7 +78,19 @@ public class NotificationActionService extends Service {
 
                         System.out.println("null source");
                     }
+
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                    startService(new Intent(getApplicationContext(), FloatingViewService.class));
+//                    finish();
+                    }else if (Settings.canDrawOverlays(this)) {
+                    startService(new Intent(getApplicationContext(), FloatingViewService.class));
+//                    finish();
+                }else {
+//                    askPermission();
+                    Toast.makeText(this, "You need System Alert Window Permission to do this", Toast.LENGTH_SHORT).show();
+                }
                 startActivity(mapIntent);
+
                 MyReciever.notificationManager.cancelAll();
                 MyReciever.rigntone.stop();
                     //Todo: delete this trip

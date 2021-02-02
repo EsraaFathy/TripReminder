@@ -12,8 +12,10 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TableLayout;
@@ -33,29 +35,31 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
+import static androidx.core.app.ActivityCompat.startActivityForResult;
+
 public class AddTripActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
     ActivityAddTripBinding binding;
-    private int id=-1;
+    private int id = -1;
     private TripTable tripTable;
 
-
-
+    private static final int SYSTEM_ALERT_WINDOW_PERMISSION = 2084;
     private static final String API_KEY = "AIzaSyA7dH75J8SZ0-GkeHqHANbflPhdpbfU5yI";
     private static final int START_REQUEST = 100;
     private static final int END_REQUEST = 101;
-    private Place start,end;
+    private Place start, end;
     Calendar calender;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_add_trip);
-        binding.timeTextView.setText(MessageFormat.format("{0}:{1}", calender.getTime().getHours(), calender.getTime().getMinutes()));
-        binding.dateTextView.setText(MessageFormat.format("{0}/{1}/{2}", calender.getTime().getDay(), calender.getTime().getMonth()+1, calender.getTime().getYear()+1900));
-
-        getIntentToEditTrip();
         calender = Calendar.getInstance();
         calender.setTimeInMillis(System.currentTimeMillis());
+
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_add_trip);
+        binding.timeTextView.setText(MessageFormat.format("{0}:{1}", calender.getTime().getHours(), calender.getTime().getMinutes()));
+        binding.dateTextView.setText(MessageFormat.format("{0}/{1}/{2}", calender.getTime().getDay(), calender.getTime().getMonth() + 1, calender.getTime().getYear() + 1900));
+
+        getIntentToEditTrip();
         createNotificationChannel();
 
         Places.initialize(this, API_KEY);
@@ -63,14 +67,14 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
         binding.endPointSearchView.setFocusable(false);
 
         binding.startPointSearchView.setOnClickListener(v -> {
-            List<Place.Field> fieldList = Arrays.asList(Place.Field.ADDRESS,Place.Field.LAT_LNG,Place.Field.NAME);
-            Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN,fieldList).build(this);
+            List<Place.Field> fieldList = Arrays.asList(Place.Field.ADDRESS, Place.Field.LAT_LNG, Place.Field.NAME);
+            Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fieldList).build(this);
             startActivityForResult(intent, START_REQUEST);
         });
 
         binding.endPointSearchView.setOnClickListener(v -> {
-            List<Place.Field> fieldList = Arrays.asList(Place.Field.ADDRESS,Place.Field.LAT_LNG,Place.Field.NAME);
-            Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN,fieldList).build(this);
+            List<Place.Field> fieldList = Arrays.asList(Place.Field.ADDRESS, Place.Field.LAT_LNG, Place.Field.NAME);
+            Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fieldList).build(this);
             startActivityForResult(intent, END_REQUEST);
         });
 
@@ -82,7 +86,6 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
             DialogFragment dialogFragment = new DatePickerClass();
             dialogFragment.show(getSupportFragmentManager(), "datepicker");
         });
-
 
 
         binding.addTripBtn.setOnClickListener(new View.OnClickListener() {
@@ -100,10 +103,14 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
                             binding.startPointSearchView.getText().toString(),
                             binding.endPointSearchView.getText().toString());
                 }
-                if(start == null || end == null )
+                if (end == null)
                     Toast.makeText(getApplicationContext(), "Please add Trip Data", Toast.LENGTH_LONG).show();
-               else
-                prepareAlarm();
+                else
+                    prepareAlarm();
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(getApplicationContext())){
+                    askPermission();
+                }
             }
         });
 
@@ -113,26 +120,26 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        switch (requestCode){
+        switch (requestCode) {
             case START_REQUEST:
 
-                if(resultCode == RESULT_OK){
+                if (resultCode == RESULT_OK) {
                     Place place = Autocomplete.getPlaceFromIntent(data); //place.getLatLng() place.getAddress()
                     binding.startPointSearchView.setText(place.getAddress());
                     start = place;
 
-                }else{
+                } else {
                     Toast.makeText(this, "An error occured , Try again...", Toast.LENGTH_SHORT).show();
                 }
 
                 break;
             case END_REQUEST:
 
-                if(resultCode == RESULT_OK){
+                if (resultCode == RESULT_OK) {
                     Place place = Autocomplete.getPlaceFromIntent(data); //place.getLatLng() place.getAddress()
                     binding.endPointSearchView.setText(place.getAddress());
                     end = place;
-                }else{
+                } else {
                     Toast.makeText(this, "An error occured , Try again...", Toast.LENGTH_SHORT).show();
                 }
 
@@ -152,8 +159,8 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
         calender.set(Calendar.SECOND, 0);
 
         long seconds = calender.getTimeInMillis() - System.currentTimeMillis();
-        seconds/= 1000;
-        Toast.makeText(this, "Seconds :"+seconds, Toast.LENGTH_SHORT).show();
+        seconds /= 1000;
+        Toast.makeText(this, "Seconds :" + seconds, Toast.LENGTH_SHORT).show();
 
         binding.timeTextView.setText(MessageFormat.format("{0}:{1}", hourOfDay, minute));
     }
@@ -163,29 +170,29 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
         System.out.println("ONDate");
         calender.set(Calendar.YEAR, year);
         calender.set(Calendar.MONTH, month);
-        calender.set(Calendar.DAY_OF_MONTH,dayOfMonth);
+        calender.set(Calendar.DAY_OF_MONTH, dayOfMonth);
         calender.set(Calendar.SECOND, 0);
 
         long days = calender.getTimeInMillis() - System.currentTimeMillis();
-        days/= (1000*60*60);
-        Toast.makeText(this, "days :"+days, Toast.LENGTH_SHORT).show();
+        days /= (1000 * 60 * 60);
+        Toast.makeText(this, "days :" + days, Toast.LENGTH_SHORT).show();
 
         binding.dateTextView.setText(MessageFormat.format("{0}/{1}/{2}", dayOfMonth, month, year));
     }
 
-    private void prepareAlarm(){
+    private void prepareAlarm() {
 
-        Alarm alarm = new Alarm(this,calender,start,end);
+        Alarm alarm = new Alarm(this, calender, start, end);
         alarm.prepareAlarm();
     }
 
-    private void createNotificationChannel(){
+    private void createNotificationChannel() {
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "notificationChannerl";
             String desc = "Channel for remind trip notification";
             int importance = NotificationManager.IMPORTANCE_HIGH;
-            NotificationChannel channel = new NotificationChannel("notification",name,importance);
+            NotificationChannel channel = new NotificationChannel("notification", name, importance);
             channel.setDescription(desc);
 
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
@@ -204,7 +211,7 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
     }
 
     private boolean getWay() {
-        boolean way=true;
+        boolean way = true;
         switch (binding.tripType.getSelectedItemPosition()) {
             case 0:
                 way = true;
@@ -216,7 +223,7 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
     }
 
     private String getRepetation() {
-        String repetation="";
+        String repetation = "";
         switch (binding.repeatingSpinner.getSelectedItemPosition()) {
             case 0:
                 repetation = "No Repeated";
@@ -235,7 +242,7 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
     }
 
     private void editTripInRoom(String title, String time, String date, String status, String repetition, boolean ways, String from, String to) {
-        if (title.equals("") || time.equals("") || date.equals("") || repetition.equals("") || from.equals("") || to.equals("")) {
+        if (title.equals("") || time.equals("") || date.equals("") || repetition.equals("") || to.equals("")) {
             Toast.makeText(this, "Their is some data missed", Toast.LENGTH_SHORT).show();
 
         } else {
@@ -249,10 +256,10 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
     }
 
     private void addTripToRoom(String title, String time, String date, String status, String repetition, boolean ways, String from, String to) {
-        if (title.equals("") || time.equals("") || date.equals("") || repetition.equals("") || from.equals("") || to.equals("")) {
+        if (title.equals("") || time.equals("") || date.equals("") || repetition.equals("") || to.equals("")) {
             //Toast.makeText(this, "Their is some data missed", Toast.LENGTH_SHORT).show();
-            Toast.makeText(this, "tile"+title+ "\ntime"+time+ "\ndate"+ date+ "\nstatus"+ status+ "\nper"+repetition+ "\nways"+
-                    ways+ "\nform"+ from+ "\nto"+ to, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "tile" + title + "\ntime" + time + "\ndate" + date + "\nstatus" + status + "\nper" + repetition + "\nways" +
+                    ways + "\nform" + from + "\nto" + to, Toast.LENGTH_SHORT).show();
 
         } else {
             TripViewModel tripViewModel;
@@ -268,7 +275,7 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
         if (intent.getStringExtra("key") != null) {
             binding.addTripBtn.setText("Edit");
             id = intent.getIntExtra(HomeFragment.NOTE_INTENT_ID, -1);
-            Toast.makeText(this, "id = "+id, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "id = " + id, Toast.LENGTH_SHORT).show();
             tripTable = new TripTable(
                     intent.getStringExtra(HomeFragment.NOTE_INTENT_title),
                     intent.getStringExtra(HomeFragment.NOTE_INTENT_time),
@@ -314,49 +321,11 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
 
     }
 
+    private void askPermission() {
+        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                Uri.parse("package:" + getPackageName()));
+        startActivityForResult(intent, SYSTEM_ALERT_WINDOW_PERMISSION);
+    }
 
-
-//    @Override // data from the place api
-//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        switch (requestCode){
-//            case START_REQUEST:
-//
-//                if(resultCode == RESULT_OK){
-//                    Place place = Autocomplete.getPlaceFromIntent(data); //place.getLatLng() place.getAddress()
-//                    startPointSearchView.setText(place.getAddress());
-//                }else{
-//                    Toast.makeText(this, "An error occured , Try again...", Toast.LENGTH_SHORT).show();
-//                }
-//
-//                break;
-//            case END_REQUEST:
-//
-//                if(resultCode == RESULT_OK){
-//                    Place place = Autocomplete.getPlaceFromIntent(data); //place.getLatLng() place.getAddress()
-//                    endPointSearchView.setText(place.getAddress());
-//                }else{
-//                    Toast.makeText(this, "An error occured , Try again...", Toast.LENGTH_SHORT).show();
-//                }
-//
-//                break;
-//
-//            default:
-//                Toast.makeText(this, "Please Select a Place !!", Toast.LENGTH_SHORT).show();
-//        }
-//
-//    }
-//
-//    @Override
-//    public void onTimeSet(android.widget.TimePicker view, int hourOfDay, int minute) {
-//        Toast.makeText(this, "hour : "+hourOfDay+"minute", Toast.LENGTH_SHORT).show();
-//        timeTextView.setText(MessageFormat.format("{0}:{1}", hourOfDay, minute));
-//    }
-//
-//    @Override
-//    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-//        dateTextView.setText(MessageFormat.format("{0}/{1}/{2}", dayOfMonth, month, year));
-//    }
 
 }
