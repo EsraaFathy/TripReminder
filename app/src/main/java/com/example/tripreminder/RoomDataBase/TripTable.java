@@ -14,14 +14,14 @@ public class TripTable {
     private String title;
     private String time;
     private String date;
-    private boolean status;
+    private String status;
     private String repetition;
     private boolean ways;
     private String from;
     private String to;
     private String notes;
-//MNN
-    public TripTable(String title, String time, String date, boolean status, String repetition, boolean ways, String from, String to, String notes) {
+
+    public TripTable(String title, String time, String date, String status, String repetition, boolean ways, String from, String to, String notes) {
         this.title = title;
         this.time = time;
         this.date = date;
@@ -31,6 +31,10 @@ public class TripTable {
         this.from = from;
         this.to = to;
         this.notes = notes;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public void setId(int id) {
@@ -49,7 +53,7 @@ public class TripTable {
         return date;
     }
 
-    public boolean getStatus() {
+    public String getStatus() {
         return status;
     }
 
@@ -75,5 +79,9 @@ public class TripTable {
 
     public int getId() {
         return id;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 }

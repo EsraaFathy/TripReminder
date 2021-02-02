@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tripreminder.R;
+import com.example.tripreminder.RoomDataBase.TripTable;
 import com.example.tripreminder.model.HistoryItem;
 
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ import java.util.List;
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ItemViewHolder>{
     List<HistoryItem> items;
     Context context; //should be iniatized in the constructor with the list
+    private OcCLickListenerAble ocCLickListenerAble;
 
     public HistoryAdapter(List<HistoryItem> items,Context context) {
         this.items = items;
@@ -142,5 +144,11 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ItemView
             cardView=itemView.findViewById(R.id.base_cardview);
         }
     }
+    public void OnItemClickListener(OcCLickListenerAble ocCLickListenerAble) {
+        this.ocCLickListenerAble = ocCLickListenerAble;
+    }
 
+    public interface OcCLickListenerAble {
+        void onItemClick(String type, TripTable tripTable);
+    }
 }

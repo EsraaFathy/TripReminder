@@ -31,7 +31,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
-public class BaseHomeActivity extends AppCompatActivity{
+public class BaseHomeActivity extends AppCompatActivity {
     private ActivityBaseHomeBinding activityBaseHomeBinding;
     private Fragment baseFragment;
     private FirebaseUser currentUser;
@@ -42,12 +42,11 @@ public class BaseHomeActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_base_home);
-        activityBaseHomeBinding = DataBindingUtil.setContentView(BaseHomeActivity.this, R.layout.activity_base_home);
+            activityBaseHomeBinding = DataBindingUtil.setContentView(this, R.layout.activity_base_home);
 
-        mAuth = FirebaseAuth.getInstance();
-        currentUser = mAuth.getCurrentUser();
+        mAuth=FirebaseAuth.getInstance();
+        currentUser=mAuth.getCurrentUser();
         activityBaseHomeBinding.toolbar.setSubtitle("Upcoming");
-        
 //        activityBaseHomeBinding.toolbar.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
@@ -66,14 +65,7 @@ public class BaseHomeActivity extends AppCompatActivity{
 //        });
 
 
-//        activityBaseHomeBinding.addTrip.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                // TODO: Adda the intent to go to add note activity
-//                startActivity(new Intent(BaseHomeActivity.this,AddTripActivity.class));
-//
-//            }
-//        });
+
 
         activityBaseHomeBinding.bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
     }
@@ -107,7 +99,6 @@ public class BaseHomeActivity extends AppCompatActivity{
             return true;
         }
     };
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -145,5 +136,6 @@ public class BaseHomeActivity extends AppCompatActivity{
                 Uri.parse("package:" + getPackageName()));
         startActivityForResult(intent, SYSTEM_ALERT_WINDOW_PERMISSION);
     }
+
 
 }

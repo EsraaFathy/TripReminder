@@ -60,5 +60,11 @@
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="profile">Profile</string>
-
+    <string name="notes">Notes</string>
+    <string name="edit_trip">Edit Trip</string>
+    <string name="delete_trip">Delete Trip</string>
+    <string name="cancel_trip">Cancel Trip</string>
+    <string name="delete_note">Delete Note</string>
+    <string name="her_you_can_add_your_trip_notes">Her You can add your trip notes</string>
+    <string name="test">test</string>
 </resources>

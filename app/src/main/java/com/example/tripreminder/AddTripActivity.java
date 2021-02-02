@@ -2,113 +2,179 @@ package com.example.tripreminder;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
-import androidx.fragment.app.DialogFragment;
-
+import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
+import android.view.View;
 import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.Spinner;
-import android.widget.TextView;
+import android.widget.TableLayout;
 import android.widget.Toast;
 
-import com.example.tripreminder.RoomDataBase.DatePickerClass;
-import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.widget.Autocomplete;
-import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
-
-import java.text.MessageFormat;
-import java.util.Arrays;
-import java.util.List;
+import com.example.tripreminder.Fragments.HomeFragment;
 import com.example.tripreminder.RoomDataBase.TripTable;
 import com.example.tripreminder.RoomDataBase.TripViewModel;
+import com.example.tripreminder.databinding.ActivityAddTripBinding;
 
-public class AddTripActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
+import java.text.MessageFormat;
 
-    private EditText tripNameInput;
-    private EditText startPointSearchView;
-    private EditText endPointSearchView;
-
-    private ImageView  calender_btn;
-    private ImageView timeBtn;
-
-    private TextView dateTextView;
-    private TextView timeTextView;
-
-    private Spinner repeating_spinner;
-    private Spinner trip_type;
-
-    private Button add_trip_btn;
-
-    private TripViewModel tripViewModel;
-
-    private static final String API_KEY = "AIzaSyA7dH75J8SZ0-GkeHqHANbflPhdpbfU5yI";
-    private static final int START_REQUEST = 100;
-    private static final int END_REQUEST = 101;
+public class AddTripActivity extends AppCompatActivity {
+    ActivityAddTripBinding binding;
+    private int id=-1;
+    private TripTable tripTable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_trip);
-        initViews();
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_add_trip);
+        getIntentToEditTrip();
 
-        Places.initialize(this, API_KEY);
-        startPointSearchView.setFocusable(false);
-        endPointSearchView.setFocusable(false);
-
-        startPointSearchView.setOnClickListener(v -> {
-            List<Place.Field> fieldList = Arrays.asList(Place.Field.ADDRESS,Place.Field.LAT_LNG,Place.Field.NAME);
-            Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN,fieldList).build(this);
-            startActivityForResult(intent, START_REQUEST);
+        binding.addTripBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (binding.addTripBtn.getText().equals("Edit")) {
+                    Toast.makeText(AddTripActivity.this, "bla bla", Toast.LENGTH_SHORT).show();
+                    editTripFromUI();
+                } else {
+                    String repetation = getRepetation();
+                    boolean way = getWay();
+                    addTripToRoom(binding.tripNameInput.getText().toString(),
+                            binding.timeTextView.getText().toString(), binding.dateTextView.getText().toString(), "up Coming",
+                            repetation, way,
+                            binding.startPointSearchView.getText().toString(),
+                            binding.endPointSearchView.getText().toString());
+                }
+            }
         });
-        endPointSearchView.setOnClickListener(v -> {
-            List<Place.Field> fieldList = Arrays.asList(Place.Field.ADDRESS,Place.Field.LAT_LNG,Place.Field.NAME);
-            Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN,fieldList).build(this);
-            startActivityForResult(intent, END_REQUEST);
-        });
 
-
-
-
-        timeBtn.setOnClickListener(v -> {
-            DialogFragment dialogFragment = new TimePickerClass();
-            dialogFragment.show(getSupportFragmentManager(), "timepicker");
-
-        });
-        calender_btn.setOnClickListener(v -> {
-            DialogFragment dialogFragment = new DatePickerClass();
-            dialogFragment.show(getSupportFragmentManager(), "datepicker");
-        });
 
     }
 
-    private void initViews(){
-        tripNameInput = findViewById(R.id.tripNameInput);
-        startPointSearchView = findViewById(R.id.startPointSearchView);
-        endPointSearchView = findViewById(R.id.endPointSearchView);
+    private void editTripFromUI() {
+        String repetation = getRepetation();
+        boolean way = getWay();
+        editTripInRoom(binding.tripNameInput.getText().toString(),
+                binding.timeTextView.getText().toString(), binding.dateTextView.getText().toString(), tripTable.getStatus(),
+                repetation, way,
+                binding.startPointSearchView.getText().toString(),
+                binding.endPointSearchView.getText().toString());
+    }
 
-        calender_btn = findViewById(R.id.calender_btn);
-        timeBtn = findViewById(R.id.timeBtn);
+    private boolean getWay() {
+        boolean way=true;
+        switch (binding.tripType.getSelectedItemPosition()) {
+            case 0:
+                way = true;
+                break;
+            case 1:
+                way = false;
+        }
+        return way;
+    }
 
-        dateTextView = findViewById(R.id.dateTextView);
-        timeTextView = findViewById(R.id.timeTextView);
+    private String getRepetation() {
+        String repetation="";
+        switch (binding.repeatingSpinner.getSelectedItemPosition()) {
+            case 0:
+                repetation = "No Repeated";
+                break;
+            case 1:
+                repetation = "Repeated Daily";
+                break;
+            case 2:
+                repetation = "Repeated weekly";
+                break;
+            case 3:
+                repetation = "Repeated Monthly";
+                break;
+        }
+        return repetation;
+    }
 
-        repeating_spinner = findViewById(R.id.repeating_spinner);
-        trip_type = findViewById(R.id.trip_type);
+    private void editTripInRoom(String title, String time, String date, String status, String repetition, boolean ways, String from, String to) {
+        if (title.equals("") || time.equals("") || date.equals("") || repetition.equals("") || from.equals("") || to.equals("")) {
+            Toast.makeText(this, "Their is some data missed", Toast.LENGTH_SHORT).show();
 
-        // TODO: this used to insert data in to room database
-        tripViewModel= new ViewModelProvider(AddTripActivity.this, ViewModelProvider.AndroidViewModelFactory.getInstance(AddTripActivity.this.getApplication())).get(TripViewModel.class);
-        tripViewModel.insert(new TripTable( "Added two", "01:33", "31/1/2021", false, "1", false, "zag", "italy", ""));
+        } else {
+            TripViewModel tripViewModel;
+            TripTable table = new TripTable(title, time, date, status, repetition, ways, from, to, tripTable.getNotes());
+            tripViewModel = new ViewModelProvider(AddTripActivity.this, ViewModelProvider.AndroidViewModelFactory.getInstance(AddTripActivity.this.getApplication())).get(TripViewModel.class);
+            table.setId(id);
+            tripViewModel.update(table);
+            finish();
+        }
+    }
+
+    private void addTripToRoom(String title, String time, String date, String status, String repetition, boolean ways, String from, String to) {
+        if (title.equals("") || time.equals("") || date.equals("") || repetition.equals("") || from.equals("") || to.equals("")) {
+            //Toast.makeText(this, "Their is some data missed", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "tile"+title+ "\ntime"+time+ "\ndate"+ date+ "\nstatus"+ status+ "\nper"+repetition+ "\nways"+
+                    ways+ "\nform"+ from+ "\nto"+ to, Toast.LENGTH_SHORT).show();
+
+        } else {
+            TripViewModel tripViewModel;
+            tripViewModel = new ViewModelProvider(AddTripActivity.this, ViewModelProvider.AndroidViewModelFactory.getInstance(AddTripActivity.this.getApplication())).get(TripViewModel.class);
+            tripViewModel.insert(new TripTable(title, time, date, status, repetition, ways, from, to, ""));
+            finish();
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void getIntentToEditTrip() {
+        Intent intent = getIntent();
+        if (intent.getStringExtra("key") != null) {
+            binding.addTripBtn.setText("Edit");
+            id = intent.getIntExtra(HomeFragment.NOTE_INTENT_ID, -1);
+            Toast.makeText(this, "id = "+id, Toast.LENGTH_SHORT).show();
+            tripTable = new TripTable(
+                    intent.getStringExtra(HomeFragment.NOTE_INTENT_title),
+                    intent.getStringExtra(HomeFragment.NOTE_INTENT_time),
+                    intent.getStringExtra(HomeFragment.NOTE_INTENT_date),
+                    intent.getStringExtra(HomeFragment.NOTE_INTENT_status),
+                    intent.getStringExtra(HomeFragment.NOTE_INTENT_repetition),
+                    intent.getBooleanExtra(HomeFragment.NOTE_INTENT_ways, true),
+                    intent.getStringExtra(HomeFragment.NOTE_INTENT_FROM),
+                    intent.getStringExtra(HomeFragment.NOTE_INTENT_to),
+                    intent.getStringExtra(HomeFragment.NOTE_INTENT_Note));
+            editTrip(tripTable);
+        }
+    }
+
+    private void editTrip(TripTable tripTable) {
+        // TODO add text to edit text in ui
+        binding.tripNameInput.setText(tripTable.getTitle());
+        binding.startPointSearchView.setText(tripTable.getFrom());
+        binding.endPointSearchView.setText(tripTable.getTo());
+        binding.dateTextView.setText(tripTable.getDate());
+        binding.timeTextView.setText(tripTable.getTime());
+
+        switch (tripTable.getRepetition()) {
+            case "No Repeated":
+                binding.repeatingSpinner.setSelection(0);
+                break;
+            case "Repeated Daily":
+                binding.repeatingSpinner.setSelection(1);
+                break;
+            case "Repeated weekly":
+                binding.repeatingSpinner.setSelection(2);
+                break;
+            case "Repeated Monthly":
+                binding.repeatingSpinner.setSelection(3);
+                break;
+        }
+
+
+        if (tripTable.getWays())
+            binding.tripType.setSelection(0);
+        else
+            binding.tripType.setSelection(1);
 
     }
+
+
 
     @Override // data from the place api
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -152,9 +218,5 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         dateTextView.setText(MessageFormat.format("{0}/{1}/{2}", dayOfMonth, month, year));
     }
-}
 
-//    String my_data= String.format(Locale.ENGLISH, "http://maps.google.com/maps?daddr=30.6178118,32.2761602(الممر)");
-//    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(my_data));
-//intent.setPackage("com.google.android.apps.maps");
-//        startActivity(intent);
+}
