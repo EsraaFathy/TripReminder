@@ -6,6 +6,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
 
     <application
@@ -15,11 +17,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TripReminder">
-        <activity android:name=".SimpleMenu"
-            android:theme="@style/Theme.AppCompat.Dialog"/>
+<!--        <activity android:name=".AlertNotification" android:theme="@style/Theme.AppCompat.Dialog">--> // created by amin , delete
+<!--            <intent-filter >-->
+<!--                <action android:name="android.intent.action.SEND"></action>-->
+<!--            </intent-filter>-->
+<!--        </activity>-->
+        <activity
+            android:name=".SimpleMenu"
+            android:theme="@style/Theme.AppCompat.Dialog" />
         <activity
             android:name=".MenuItemsForOneElement"
-            android:theme="@style/Theme.AppCompat.Dialog"></activity>
+            android:theme="@style/Theme.AppCompat.Dialog" />
         <activity android:name=".NotesControl" />
         <activity android:name=".AddTripActivity">
             <intent-filter>
@@ -29,15 +37,23 @@
             </intent-filter>
         </activity>
         <activity android:name=".BaseHomeActivity">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
 
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
         <activity android:name=".MainActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".RegisterActivity" />
+
+
+        <service
+            android:name=".NotificationActionService"
+            android:enabled="true" />
+
         <receiver
             android:name=".MyReciever"
             android:label="BroadcastReceiverAux">

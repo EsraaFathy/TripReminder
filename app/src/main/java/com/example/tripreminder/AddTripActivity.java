@@ -3,16 +3,20 @@ package com.example.tripreminder;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.DialogFragment;
 
 import androidx.lifecycle.ViewModelProvider;
 
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -34,6 +38,8 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Random;
+
 import com.example.tripreminder.RoomDataBase.TripTable;
 import com.example.tripreminder.RoomDataBase.TripViewModel;
 
@@ -60,17 +66,24 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
     private static final int START_REQUEST = 100;
     private static final int END_REQUEST = 101;
 
+
+    private Place start,end;
     Calendar calender;
 
-
+    static NotificationManagerCompat notificationManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_trip);
         calender = Calendar.getInstance();
         calender.setTimeInMillis(System.currentTimeMillis());
+//        calender.set
+
+        calender = Calendar.getInstance();
+        calender.setTimeInMillis(System.currentTimeMillis());
 
         initViews();
+//        add_trip_btn.setEnabled(false);
         createNotificationChannel();
 
 
@@ -104,8 +117,12 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
         });
 
         add_trip_btn.setOnClickListener(v -> {
-            prepareNotification();
+            if(start == null || end == null ){
+                Toast.makeText(this, "Please add Trip Data", Toast.LENGTH_LONG).show();
+            }else
+                prepareAlarm();
         });
+
 
 
     }
@@ -144,6 +161,8 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
                 if(resultCode == RESULT_OK){
                     Place place = Autocomplete.getPlaceFromIntent(data); //place.getLatLng() place.getAddress()
                     startPointSearchView.setText(place.getAddress());
+                    start = place;
+
                 }else{
                     Toast.makeText(this, "An error occured , Try again...", Toast.LENGTH_SHORT).show();
                 }
@@ -154,6 +173,7 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
                 if(resultCode == RESULT_OK){
                     Place place = Autocomplete.getPlaceFromIntent(data); //place.getLatLng() place.getAddress()
                     endPointSearchView.setText(place.getAddress());
+                    end = place;
                 }else{
                     Toast.makeText(this, "An error occured , Try again...", Toast.LENGTH_SHORT).show();
                 }
@@ -195,17 +215,10 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
         dateTextView.setText(MessageFormat.format("{0}/{1}/{2}", dayOfMonth, month, year));
     }
 
-    private void prepareNotification(){
-        Intent intent = new Intent(getApplicationContext(),MyReciever.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+    private void prepareAlarm(){
 
-        long period = calender.getTimeInMillis() ;
-
-        alarmManager.set(AlarmManager.RTC_WAKEUP,period,pendingIntent);
-
-        Toast.makeText(getApplicationContext(), "period : "+period, Toast.LENGTH_SHORT).show();
+        Alarm alarm = new Alarm(this,calender,start,end);
+        alarm.prepareAlarm();
     }
 
     private void createNotificationChannel(){
