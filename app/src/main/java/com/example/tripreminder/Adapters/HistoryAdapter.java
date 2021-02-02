@@ -1,7 +1,9 @@
 package com.example.tripreminder.Adapters;
 
+import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.text.Layout;
 import android.transition.AutoTransition;
 import android.transition.TransitionManager;
@@ -15,6 +17,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tripreminder.R;
@@ -27,8 +30,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ItemView
     List<HistoryItem> items;
     Context context; //should be iniatized in the constructor with the list
 
-    public HistoryAdapter(List<HistoryItem> items) {
+    public HistoryAdapter(List<HistoryItem> items,Context context) {
         this.items = items;
+        this.context=context;
     }
 
     @NonNull
@@ -52,10 +56,29 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ItemView
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                HistoryItem historyItem=items.get(position);
-                items.remove(position);
-                notifyDataSetChanged();
 
+                final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setCancelable(false);
+                builder.setMessage("Are you sure?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        HistoryItem historyItem=items.get(position);
+                        items.remove(position);
+                        notifyDataSetChanged();
+                        dialogInterface.dismiss();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+                final AlertDialog dialog = builder.create();
+                dialog.show();
+                dialog.getButton(dialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(context, R.color.colorPrim));
+                dialog.getButton(dialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(context, R.color.colorPrim));
             }
         });
 
@@ -68,7 +91,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ItemView
                     TransitionManager.beginDelayedTransition(holder.cardView,
                             new AutoTransition());
                     holder.hiddenView.setVisibility(View.GONE);
-                    holder.drop.setImageResource(R.mipmap.ic_dropup);
+                    holder.drop.setImageResource(R.mipmap.ic_dropdown);
                 }
 
                 // If the CardView is not expanded, set its visibility
@@ -78,7 +101,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ItemView
                     TransitionManager.beginDelayedTransition(holder.cardView,
                             new AutoTransition());
                     holder.hiddenView.setVisibility(View.VISIBLE);
-                    holder.drop.setImageResource(R.mipmap.ic_dropdown);
+                    holder.drop.setImageResource(R.mipmap.ic_dropup);
                 }
 
             }

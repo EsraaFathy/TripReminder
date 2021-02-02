@@ -8,8 +8,11 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -20,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.tripreminder.RoomDataBase.TripTable;
 import com.example.tripreminder.database.DataHolder;
 import com.example.tripreminder.database.UsersDao;
 import com.example.tripreminder.model.User;
@@ -39,6 +43,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class LoginActivity extends AppCompatActivity {
 
     private Button logen;
@@ -51,7 +58,10 @@ public class LoginActivity extends AppCompatActivity {
     public static String TAG="";
     private int RC_SIGN_IN = 1;
     private User databaseUser=new User();
+    List<TripTable> tribsList;
     String Name,Email;
+    Handler handler;
+    Thread th;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +77,15 @@ public class LoginActivity extends AppCompatActivity {
                 .build();
 
         googleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        handler=new Handler(){
+
+            @Override
+            public void handleMessage(@NonNull Message msg) {
+                super.handleMessage(msg);
+                LoginActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+            }
+        };
 
         newUser.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,8 +124,9 @@ public class LoginActivity extends AppCompatActivity {
         else {
             loadingBar.setTitle("Signing in");
             loadingBar.setMessage("Please wait...");
-            loadingBar.setCanceledOnTouchOutside(true);
+            //loadingBar.setCanceledOnTouchOutside(true);
             loadingBar.show();
+            LoginActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
             mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
@@ -126,6 +146,7 @@ public class LoginActivity extends AppCompatActivity {
                                 Toast.makeText(LoginActivity.this,""+ R.string.logged_is_successful, Toast.LENGTH_SHORT).show();
                                 loadingBar.dismiss();
                                 saveDataInSharedPerefrence(getApplicationContext());
+                                LoginActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                                 sendToMainActivity();
 
                             }
@@ -135,6 +156,7 @@ public class LoginActivity extends AppCompatActivity {
                                 String message = databaseError.toException().getLocalizedMessage();
                                 Toast.makeText(LoginActivity.this, ""+R.string.error + message, Toast.LENGTH_SHORT).show();
                                 loadingBar.dismiss();
+                                LoginActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                             }
                         });
 
@@ -143,6 +165,7 @@ public class LoginActivity extends AppCompatActivity {
                         String message = task.getException().toString();
                         Toast.makeText(LoginActivity.this, "Error: "+ message, Toast.LENGTH_SHORT).show();
                         loadingBar.dismiss();
+                        LoginActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                     }
                 }
             });
@@ -240,8 +263,9 @@ public class LoginActivity extends AppCompatActivity {
 
         loadingBar.setTitle("Signing in");
         loadingBar.setMessage("Please wait...");
-        loadingBar.setCanceledOnTouchOutside(true);
+        //loadingBar.setCanceledOnTouchOutside(true);
         loadingBar.show();
+        LoginActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
         String currentUserId = mAuth.getCurrentUser().getUid();
         UsersDao.getUser(currentUserId, new ValueEventListener() {
             @Override
@@ -257,6 +281,7 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(LoginActivity.this,""+databaseUser.toString(), Toast.LENGTH_SHORT).show();
                 loadingBar.dismiss();
                 saveDataInSharedPerefrence(getApplicationContext());
+                LoginActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                 sendToMainActivity();
 
             }
@@ -266,6 +291,7 @@ public class LoginActivity extends AppCompatActivity {
                 String message = databaseError.toException().getLocalizedMessage();
                 Toast.makeText(LoginActivity.this, ""+R.string.error + message, Toast.LENGTH_SHORT).show();
                 loadingBar.dismiss();
+                LoginActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
             }
         });
 
@@ -282,8 +308,47 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    public static void googleLogOut(){
-        googleSignInClient.signOut();
-        Log.i("log","you logged out");
+
+    public void sync(){
+        String currentUserId=mAuth.getCurrentUser().getUid();
+        UsersDao.getUserTrips(currentUserId, new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                tribsList=new ArrayList<>();
+                for(DataSnapshot dataSnapshot1: snapshot.getChildren()){
+                    String title= dataSnapshot1.child("title").getValue().toString();
+                    String time= dataSnapshot1.child("time").getValue().toString();
+                    String date= dataSnapshot1.child("date").getValue().toString();
+                    String status= dataSnapshot1.child("status").getValue().toString();
+                    String repetition=dataSnapshot1.child("repetition").getValue().toString();
+                    String ways=dataSnapshot1.child("ways").getValue().toString();
+                    String from=dataSnapshot1.child("from").getValue().toString();
+                    String to=dataSnapshot1.child("to").getValue().toString();
+                    String note=dataSnapshot1.child("notes").getValue().toString();
+                    //TripTable trip=new TripTable(title,time,date,status,repetition,ways,from,to,note);
+                    //tribsList.add(trip);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+                Toast.makeText(LoginActivity.this, "Failed to get your data", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
     }
+
+    class Sync implements Runnable{
+
+        @Override
+        public void run() {
+            LoginActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+            sync();
+            handler.sendEmptyMessage(0);
+        }
+
+    }
+
 }

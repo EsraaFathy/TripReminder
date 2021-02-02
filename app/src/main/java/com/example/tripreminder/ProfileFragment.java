@@ -7,7 +7,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,9 +39,22 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -53,6 +69,9 @@ public class ProfileFragment extends Fragment {
     TripViewModel tripViewModel;
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
+    Handler handler;
+    Thread th;
+    Sync sync;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +96,15 @@ public class ProfileFragment extends Fragment {
         currentUser=mAuth.getCurrentUser();
         tripViewModel= ViewModelProviders.of(this).get(TripViewModel.class);
         loadDataInSharedPerefrence(getContext());
+        sync=new Sync();
+        handler=new Handler(){
+
+            @Override
+            public void handleMessage(@NonNull Message msg) {
+                super.handleMessage(msg);
+                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+            }
+        };
 
         logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,7 +116,8 @@ public class ProfileFragment extends Fragment {
         syncBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sync();
+                th=new Thread(sync);
+                th.start();
             }
         });
 
@@ -140,6 +169,7 @@ public class ProfileFragment extends Fragment {
                 if (task.isSuccessful()){
                     Toast.makeText(getActivity(), "Your data is backed up", Toast.LENGTH_LONG).show();
 
+
                 }else {
                     String message = task.getException().getLocalizedMessage();
                     Toast.makeText(getActivity(), ""+R.string.error + message, Toast.LENGTH_LONG).show();
@@ -149,5 +179,15 @@ public class ProfileFragment extends Fragment {
 
     }
 
+    class Sync implements Runnable{
+
+        @Override
+        public void run() {
+            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+            sync();
+            handler.sendEmptyMessage(0);
+        }
+
+    }
 
 }
