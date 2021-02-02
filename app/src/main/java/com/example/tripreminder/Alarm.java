@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.libraries.places.api.model.Place;
@@ -27,13 +28,15 @@ public class Alarm {
         Intent intent = new Intent(context,MyReciever.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        intent.putExtra("sourceLat", startPlace.getLatLng().latitude);
-        intent.putExtra("sourceLon", startPlace.getLatLng().longitude);
-        intent.putExtra("sourceName", startPlace.getName());
-
+        if(startPlace !=null){
+            Log.i("log", "not null alarm");
+            intent.putExtra("sourceLat", startPlace.getLatLng().latitude);
+            intent.putExtra("sourceLon", startPlace.getLatLng().longitude);
+            intent.putExtra("sourceName", startPlace.getName());
+        }
         intent.putExtra("destinationLat", endPlace.getLatLng().latitude);
         intent.putExtra("destinationLon", endPlace.getLatLng().longitude);
-        intent.putExtra("destinationName", startPlace.getName());
+        intent.putExtra("destinationName", endPlace.getName());
 
         final int random = new Random().nextInt(1000000);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, random, intent, 0);

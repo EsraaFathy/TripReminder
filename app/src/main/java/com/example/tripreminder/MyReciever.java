@@ -25,21 +25,21 @@ public class MyReciever extends BroadcastReceiver {
     public static final String SNOOZE_SERVICE = "com.example.tripreminder.SnoozeService";
     public static final String CANCEL_SERVICE = "com.example.tripreminder.CancelService";
 
-    Intent intent;
+    Intent myIntent;
     public static NotificationManagerCompat notificationManager;
     @Override
     public void onReceive(Context context, Intent intent) {
         System.out.println("OnRecieve");
-        this.intent = intent;
-        System.out.println(intent.getExtras().get("sourceName"));
-        Log.i("log", intent.getExtras().get("sourceName").toString());
+        this.myIntent = intent;
+
         createNotification(context);
 
         try{
 
             Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
             rigntone = RingtoneManager.getRingtone(context, uri);
-            rigntone.play();
+            if(!rigntone.isPlaying())
+                rigntone.play();
         }
         catch(Exception e){}
     }
@@ -47,21 +47,24 @@ public class MyReciever extends BroadcastReceiver {
     private void createNotification(Context context){
 
         Intent startInten = new Intent(context,NotificationActionService.class).setAction(START_SERVICE);
-        PendingIntent startPendingIntent = PendingIntent.getService(context, 0, startInten, PendingIntent.FLAG_ONE_SHOT);
         setTripDate(startInten);
+        PendingIntent startPendingIntent = PendingIntent.getService(context, 0, startInten, PendingIntent.FLAG_ONE_SHOT);
+
 
         Intent snoozeIntent = new Intent(context,NotificationActionService.class).setAction(SNOOZE_SERVICE);
-        PendingIntent snoozePendingIntent = PendingIntent.getService(context, 0, snoozeIntent, PendingIntent.FLAG_ONE_SHOT);
         setTripDate(snoozeIntent);
+        PendingIntent snoozePendingIntent = PendingIntent.getService(context, 0, snoozeIntent, PendingIntent.FLAG_ONE_SHOT);
+
 
         Intent cancelIntent = new Intent(context,NotificationActionService.class).setAction(CANCEL_SERVICE);
-        PendingIntent cancelPendingIntent = PendingIntent.getService(context, 0, cancelIntent, PendingIntent.FLAG_ONE_SHOT);
         setTripDate(cancelIntent);
+        PendingIntent cancelPendingIntent = PendingIntent.getService(context, 0, cancelIntent, PendingIntent.FLAG_ONE_SHOT);
+
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "notification")
                 .setSmallIcon(R.drawable.ic_baseline_add_alert_24)
                 .setContentTitle("Remind me a trip")
-                .setContentText(intent.getExtras().getString("sourceName"))
+                .setContentText(myIntent.getExtras().getString("sourceName"))
                 .setPriority(Notification.PRIORITY_HIGH)
 //                .setContentIntent(pendingIntent) // what works on tap notification
 
@@ -80,12 +83,17 @@ public class MyReciever extends BroadcastReceiver {
 
     }
     private void setTripDate(Intent pass){
-        Log.i("log", "startTripData :"+intent.getDoubleExtra("sourceLat", 0));
-        pass.putExtra("sourceLat",intent.getDoubleExtra("sourceLat",0));
-        pass.putExtra("sourceLon",intent.getDoubleExtra("sourceLon",0));
-        pass.putExtra("sourceName",intent.getStringExtra("sourceName"));
-        pass.putExtra("destinationLan", intent.getDoubleExtra("destinationLat",0));
-        pass.putExtra("destinationLon",intent.getDoubleExtra("destinationLon",0));
-        pass.putExtra("destinationName",intent.getStringExtra("destinationName"));
+
+
+        if((myIntent.hasExtra("sourceName"))){ // source exists
+            Log.i("log", "not null myrec");
+            pass.putExtra("sourceLat",myIntent.getDoubleExtra("sourceLat",0));
+            pass.putExtra("sourceLon",myIntent.getDoubleExtra("sourceLon",0));
+            pass.putExtra("sourceName",myIntent.getExtras().getString("sourceName","null"));
+        }
+
+        pass.putExtra("destinationLat", myIntent.getDoubleExtra("destinationLat",0));
+        pass.putExtra("destinationLon",myIntent.getDoubleExtra("destinationLon",0));
+        pass.putExtra("destinationName",myIntent.getExtras().getString("destinationName","null"));
     }
 }

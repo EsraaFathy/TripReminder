@@ -23,7 +23,9 @@ public class NotificationActionService extends Service {
 
 
     private Intent intent;
-    private static String URL= "http://maps.google.com/maps?daddr=";
+
+    private String SOURCE_URL= "http://maps.google.com/maps?saddr=";
+    private String DEST_URL= "http://maps.google.com/maps?daddr=";
     public NotificationActionService(){
 //        super("NotificationActionService");
 
@@ -37,23 +39,43 @@ public class NotificationActionService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        this.intent = intent;
+
         MyReciever.rigntone.stop();
         switch (intent.getAction()){
             case MyReciever.START_SERVICE:
-                Toast.makeText(getApplicationContext(), "start", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "start", Toast.LENGTH_SHORT).show();
+                    double sourceLat,sourceLon,destinationLat,destinationLon;
+                    String sourceName,destinationName;
 
-                    String my_data= String.format(Locale.ENGLISH, "http://maps.google.com/maps?daddr=30.6178118,32.2761602(الممر)");
-                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(my_data));
-                    mapIntent.setPackage("com.google.android.apps.maps");
-                    startActivity(intent);
+                    destinationLat = intent.getDoubleExtra("destinationLat", 0);
+                    destinationLon = intent.getDoubleExtra("destinationLon", 0);
+                    destinationName = intent.getStringExtra("destinationName");
+                    Intent mapIntent;
+                    String my_data;
 
-                if (mapIntent.resolveActivity(getPackageManager()) != null) {
-                    startActivity(mapIntent);
-                    Log.i("log", "onPackageManager");
-                }
+                    if(!intent.getExtras().getString("sourceName", "null").equals("null")){ // source exists
+                        Log.i("log", "not null notif");
+                        sourceLat = intent.getDoubleExtra("sourceLat",0);
+                        sourceLon = intent.getDoubleExtra("sourceLon",0);
+                        sourceName = intent.getStringExtra("sourceName");
 
+
+                        my_data= String.format(Locale.ENGLISH, SOURCE_URL+sourceLat+","+sourceLon+"("+sourceName+")&daddr="+destinationLat+","+destinationLon+"("+destinationName+")");
+                        mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(my_data));
+                        mapIntent.setPackage("com.google.android.apps.maps");
+                        mapIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    }else{
+                        my_data= String.format(Locale.ENGLISH, DEST_URL+destinationLat+","+destinationLon+"("+destinationName+")");
+                        mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(my_data));
+                        mapIntent.setPackage("com.google.android.apps.maps");
+                        mapIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                        System.out.println("null source");
+                    }
+                startActivity(mapIntent);
                 MyReciever.notificationManager.cancelAll();
+                MyReciever.rigntone.stop();
+                    //Todo: delete this trip
                 break;
             case MyReciever.SNOOZE_SERVICE:
                 Toast.makeText(getApplicationContext(), "Snooze", Toast.LENGTH_SHORT).show();
@@ -62,6 +84,7 @@ public class NotificationActionService extends Service {
             case MyReciever.CANCEL_SERVICE:
                 Toast.makeText(getApplicationContext(), "Cancel", Toast.LENGTH_SHORT).show();
                 MyReciever.notificationManager.cancelAll();
+                MyReciever.rigntone.stop();
         }
         return super.onStartCommand(intent, flags, startId);
     }

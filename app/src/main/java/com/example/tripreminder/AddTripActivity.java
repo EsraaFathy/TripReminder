@@ -117,9 +117,9 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
         });
 
         add_trip_btn.setOnClickListener(v -> {
-            if(start == null || end == null ){
-                Toast.makeText(this, "Please add Trip Data", Toast.LENGTH_LONG).show();
-            }else
+//            if(start == null || end == null ){
+//                Toast.makeText(this, "Please add Trip Data", Toast.LENGTH_LONG).show();
+//            }else
                 prepareAlarm();
         });
 
