@@ -158,7 +158,7 @@
                         app:layout_constraintBottom_toBottomOf="@+id/calender_btn"
                         app:layout_constraintStart_toEndOf="@+id/calender_btn"
                         app:layout_constraintTop_toTopOf="@+id/calender_btn"
-                        android:hint="1/30/2020" />
+                        android:text="1/30/2020" />
 
                     <ImageView
                         android:id="@+id/timeBtn"
@@ -240,7 +240,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
                         android:textSize="16sp"
-                        android:hint="10:22"
+                        android:text="10:22"
                         app:layout_constraintBottom_toBottomOf="@+id/timeBtn"
                         app:layout_constraintStart_toEndOf="@+id/timeBtn"
                         app:layout_constraintTop_toTopOf="@+id/timeBtn" />

@@ -49,6 +49,8 @@ public class HistoryFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerviewHistory);
         historyAdapter = new HistoryAdapter();
         tripViewModel = new ViewModelProvider(getActivity(), ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication())).get(TripViewModel.class);
+
+
         tripViewModel.getHistory("up Coming").observe(getActivity(), new Observer<List<TripTable>>() {
             @Override
             public void onChanged(List<TripTable> tripTables) {
