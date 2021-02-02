@@ -8,6 +8,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -104,8 +105,9 @@ public class RegisterActivity extends AppCompatActivity {
         else {
             loadingBar.setTitle("Creating new account");
             loadingBar.setMessage("Please wait, while we are creating an account for you");
-            loadingBar.setCanceledOnTouchOutside(true);
+            //loadingBar.setCanceledOnTouchOutside(true);
             loadingBar.show();
+            RegisterActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
             mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
@@ -126,12 +128,14 @@ public class RegisterActivity extends AppCompatActivity {
                                     Toast.makeText(RegisterActivity.this, ""+R.string.account_created_successfully, Toast.LENGTH_SHORT).show();
                                     loadingBar.dismiss();
                                     saveDataInSharedPerefrence(getApplicationContext());
+                                    RegisterActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                                     sendToMainActivity();
                                 }else {
 //if we have any error
                                     String message = task.getException().getLocalizedMessage();
                                     Toast.makeText(RegisterActivity.this, ""+R.string.error + message, Toast.LENGTH_SHORT).show();
                                     loadingBar.dismiss();
+                                    RegisterActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                                 }
 
                             }
@@ -141,6 +145,7 @@ public class RegisterActivity extends AppCompatActivity {
                         String message = task.getException().toString();
                         Toast.makeText(RegisterActivity.this, "Error: "+ message, Toast.LENGTH_SHORT).show();
                         loadingBar.dismiss();
+                        RegisterActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                     }
 
                 }
@@ -244,8 +249,9 @@ public class RegisterActivity extends AppCompatActivity {
 
         loadingBar.setTitle("Creating new account");
         loadingBar.setMessage("Please wait, while we are creating an account for you");
-        loadingBar.setCanceledOnTouchOutside(true);
+        //loadingBar.setCanceledOnTouchOutside(true);
         loadingBar.show();
+        RegisterActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
         String currentUserID = mAuth.getCurrentUser().getUid();
         //final User user=new User();
         user=new User();
@@ -262,12 +268,14 @@ public class RegisterActivity extends AppCompatActivity {
                     Toast.makeText(RegisterActivity.this, ""+R.string.account_created_successfully, Toast.LENGTH_SHORT).show();
                     loadingBar.dismiss();
                     saveDataInSharedPerefrence(getApplicationContext());
+                    RegisterActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                     sendToMainActivity();
                 }else {
 //if we have any error
                     String message = task.getException().getLocalizedMessage();
                     Toast.makeText(RegisterActivity.this, "#$%"+R.string.error + message, Toast.LENGTH_LONG).show();
                     loadingBar.dismiss();
+                    RegisterActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                 }
 
             }

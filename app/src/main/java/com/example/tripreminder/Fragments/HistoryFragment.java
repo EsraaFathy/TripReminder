@@ -44,10 +44,10 @@ public class HistoryFragment extends Fragment {
         HistoryItem historyItem1=new HistoryItem("tree clup","12:33","9/12/2020",
                 "Done","Elmammar","resturant");
         HistoryItem historyItem2=new HistoryItem("tree clup","12:33","9/12/2020",
-                "Done","Elmammar","resturant");
+                "cancelled","Elmammar","resturant");
         list.add(historyItem1);
         list.add(historyItem2);
-        historyAdapter=new HistoryAdapter(list);
+        historyAdapter=new HistoryAdapter(list,getContext());
         recyclerView.setAdapter(historyAdapter);
         Toast.makeText(getActivity(), "in history fragment", Toast.LENGTH_SHORT).show();
 

@@ -21,10 +21,9 @@ public class UsersDao {
                 .addOnCompleteListener(onCompleteListener);
     }
 
-    public static void getUserTrips(User user, String currentUserId, OnCompleteListener<Void> onCompleteListener){
-        DataBase.getUsers().child(currentUserId).child(DataBase.USER_Trip_REF)
-                .setValue(user)
-                .addOnCompleteListener(onCompleteListener);
+    public static void getUserTrips(String currentUserId, ValueEventListener valueEventListener){
+        DataBase.getUsers().child(currentUserId).child(DataBase.USER_Trip_REF).child(DataBase.USER_Trip_branch)
+                .addValueEventListener(valueEventListener);
     }
 
     public static void getUser(String userId, ValueEventListener valueEventListener){

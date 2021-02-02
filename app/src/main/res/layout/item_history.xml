@@ -104,6 +104,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/fixed_layout">
+                <!--                android:visibility="gone"-->
+
 
                 <!--Child LinearLayout 1-->
                 <LinearLayout
@@ -120,34 +122,36 @@
                         android:text="@string/from"
                         android:textColor="#000000"
                         android:drawableStart="@drawable/ic_origin"
-                        android:layout_weight="1"/>
+                        android:layout_weight=".9"/>
 
                     <TextView
                         android:id="@+id/from_tv"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
+                        android:layout_marginStart="10dp"
                         android:layout_marginTop="20dp"
                         tools:text="Tree clup"
-                        android:layout_weight="1"/>
+                        android:layout_weight="1.1"/>
                     <TextView
+                        android:id="@+id/carTo"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
                         android:layout_marginTop="20dp"
                         android:drawableStart="@drawable/ic_car"
-                        tools:text="@string/to"
+                        android:text="@string/to"
                         android:textColor="#000000"
-                        android:layout_weight="1"/>
+                        android:layout_weight=".9"/>
 
                     <TextView
                         android:id="@+id/to_tv"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
+                        android:layout_marginStart="10dp"
                         android:layout_marginTop="20dp"
+                        android:layout_marginEnd="5dp"
                         tools:text="suiz canal"
-                        android:layout_weight="1"/>
+                        android:layout_weight="1.2"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -163,34 +167,36 @@
                         android:text="@string/date"
                         android:textColor="#000000"
                         android:drawableStart="@drawable/ic_calender"
-                        android:layout_weight="1"/>
+                        android:layout_weight=".9"/>
 
                     <TextView
                         android:id="@+id/date_tv"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
+                        android:layout_marginStart="10dp"
                         android:layout_marginTop="20dp"
                         tools:text="12/12/2021"
-                        android:layout_weight="1"/>
+                        android:layout_weight="1.1"/>
                     <TextView
+                        android:id="@+id/clockTime_tv"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
                         android:layout_marginTop="20dp"
                         android:drawableStart="@drawable/ic_time"
-                        tools:text="@string/time"
+                        android:text="@string/time"
                         android:textColor="#000000"
-                        android:layout_weight="1"/>
+                        android:layout_weight=".9"/>
 
                     <TextView
                         android:id="@+id/time_tv"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
+                        android:layout_marginStart="10dp"
                         android:layout_marginTop="20dp"
+                        android:layout_marginEnd="5dp"
                         tools:text="00:00"
-                        android:layout_weight="1"/>
+                        android:layout_weight="1.1"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
