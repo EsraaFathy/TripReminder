@@ -24,7 +24,13 @@ public interface TripDAO {
     @Query("DELETE FROM trips")
     void deleteAllRecords();
 
+    @Query("SELECT * FROM trips WHERE status LIKE '%' || :Status || '%'")
+    LiveData<List<TripTable>> getAllHomeTrips(String Status);
+
+    @Query("SELECT * FROM trips WHERE status not LIKE '%' || :UpComming || '%'")
+    LiveData<List<TripTable>> getHistory(String UpComming);
+
     @Query("SELECT * FROM trips")
-    LiveData<List<TripTable>> getAllRecords();
+    LiveData<List<TripTable>> getAllToAsync();
 }
-//J
+

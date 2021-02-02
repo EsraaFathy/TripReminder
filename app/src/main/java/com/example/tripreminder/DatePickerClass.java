@@ -1,4 +1,4 @@
-package com.example.tripreminder.RoomDataBase;
+package com.example.tripreminder;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;

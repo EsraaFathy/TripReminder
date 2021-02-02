@@ -8,13 +8,16 @@ import androidx.lifecycle.LiveData;
 import java.util.List;
 
 public class TripRepository {
-    private TripDAO tripDAO;
+    private static TripDAO tripDAO;
     private LiveData<List<TripTable>> getAllData;
-
+    private LiveData<List<TripTable>> history;
+    private static LiveData<List<TripTable>> allToSync;
     public TripRepository(Application application) {
         TripRoomDataBase tripRoomDataBase =TripRoomDataBase.getInstance(application);
         tripDAO=tripRoomDataBase.tripDao();
-        getAllData=tripDAO.getAllRecords();
+        getAllData=tripDAO.getAllHomeTrips("up Coming");
+        history=tripDAO.getHistory("up Coming");
+        allToSync=tripDAO.getAllToAsync();
     }
 
     public void insert(TripTable tripTable){
@@ -27,8 +30,14 @@ public class TripRepository {
 
     }
 
+    public LiveData<List<TripTable>> getAllToSync(){
+        return allToSync;
+    }
     public LiveData<List<TripTable>> getAllRecord(){
         return getAllData;
+    }
+    public LiveData<List<TripTable>> getHistory(String upComing){
+        return history;
     }
 
     public void delete(TripTable tripTable){
@@ -38,6 +47,21 @@ public class TripRepository {
     public void deleteAllRecords(){
         new DeleteAllAsyncTask(tripDAO).execute();
     }
+
+
+//    private static class GetAsyncToFireBase extends AsyncTask<Void,Void,Void>{
+//
+//        @Override
+//        protected Void doInBackground(Void... voids) {
+//            allToSync=tripDAO.getAllTrips();
+//            return null;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Void aVoid) {
+//            super.onPostExecute(aVoid);
+//        }
+//    }
 
     private static class InsertAsyncTask extends AsyncTask<TripTable,Void,Void>{
         private TripDAO tripDAO;

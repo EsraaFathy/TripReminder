@@ -16,7 +16,7 @@
         android:paddingTop="5dp">
 
         <TextView
-            android:id="@+id/dateTextViewTripItem"
+            android:id="@+id/dateTextViewHistoryItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/date"
@@ -26,32 +26,32 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/timeTextViewTripItem"
+            android:id="@+id/timeTextViewHistoryItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:text="@string/time"
             android:textColor="#000"
             android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="@+id/dateTextViewTripItem"
-            app:layout_constraintStart_toEndOf="@+id/dateTextViewTripItem"
-            app:layout_constraintTop_toTopOf="@+id/dateTextViewTripItem"
+            app:layout_constraintBottom_toBottomOf="@+id/dateTextViewHistoryItem"
+            app:layout_constraintStart_toEndOf="@+id/dateTextViewHistoryItem"
+            app:layout_constraintTop_toTopOf="@+id/dateTextViewHistoryItem"
             app:layout_constraintVertical_bias="0.0" />
 
         <ImageView
-            android:id="@+id/menueIconTripItem"
+            android:id="@+id/menueIconHistoryItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginTop="10dp"
             android:contentDescription="@string/mune"
-            app:layout_constraintBottom_toBottomOf="@+id/timeTextViewTripItem"
+            app:layout_constraintBottom_toBottomOf="@+id/timeTextViewHistoryItem"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/timeTextViewTripItem"
+            app:layout_constraintTop_toTopOf="@+id/timeTextViewHistoryItem"
             app:srcCompat="@drawable/ic_menu" />
 
         <TextView
-            android:id="@+id/TripNameTripItem"
+            android:id="@+id/TripNameHistoryItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -61,7 +61,7 @@
             android:textColor="@color/dark_green"
             android:textSize="24sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/dateTextViewTripItem" />
+            app:layout_constraintTop_toBottomOf="@+id/dateTextViewHistoryItem" />
 
         <ImageView
             android:id="@+id/imageView2"
@@ -71,7 +71,7 @@
             android:layout_marginTop="100dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/TripNameTripItem"
+            app:layout_constraintTop_toBottomOf="@+id/TripNameHistoryItem"
             app:layout_constraintVertical_bias="0.26"
             app:layout_constraintEnd_toStartOf="@+id/startButton"
             app:srcCompat="@drawable/ic_start" />
@@ -93,14 +93,14 @@
             app:layout_constraintTop_toTopOf="@+id/imageView2" />
 
         <TextView
-            android:id="@+id/statusTripItem"
+            android:id="@+id/statusHistoryItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/status"
-            app:layout_constraintBottom_toBottomOf="@+id/TripNameTripItem"
+            app:layout_constraintBottom_toBottomOf="@+id/TripNameHistoryItem"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/TripNameTripItem"
-            app:layout_constraintTop_toTopOf="@+id/TripNameTripItem"
+            app:layout_constraintStart_toEndOf="@+id/TripNameHistoryItem"
+            app:layout_constraintTop_toTopOf="@+id/TripNameHistoryItem"
             app:layout_constraintVertical_bias="1.0" />
 
         <TextView
@@ -111,7 +111,7 @@
             android:layout_marginTop="24dp"
             android:text="@string/from"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/TripNameTripItem" />
+            app:layout_constraintTop_toBottomOf="@+id/TripNameHistoryItem" />
 
 
         <TextView
@@ -126,7 +126,7 @@
             app:layout_constraintVertical_bias="0.378" />
 
         <TextView
-            android:id="@+id/fromTripItem"
+            android:id="@+id/fromHistoryItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
@@ -138,22 +138,23 @@
             app:layout_constraintVertical_bias="0.0" />
 
         <TextView
-            android:id="@+id/toTripItem"
+            android:id="@+id/toHistoryItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="36dp"
+            android:textColor="@color/black"
             android:text="@string/to"
             app:layout_constraintStart_toEndOf="@+id/toTripItem1"
             app:layout_constraintTop_toTopOf="@+id/toTripItem1" />
 
         <ImageView
-            android:id="@+id/notesTripItem"
+            android:id="@+id/notesHistoryItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="16dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/statusTripItem"
+            app:layout_constraintTop_toBottomOf="@+id/statusHistoryItem"
             app:srcCompat="@drawable/ic_notes" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

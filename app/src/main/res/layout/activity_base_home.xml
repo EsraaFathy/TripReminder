@@ -14,17 +14,19 @@
         tools:context=".BaseHomeActivity">
 
         <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:paddingHorizontal="20dp"
-            android:paddingVertical="5dp"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:background="@drawable/action_bar_shape"
+            android:background="@color/colorPrimDark"
+            app:subtitleTextColor="@color/white"
             app:layout_constraintBottom_toTopOf="@id/guideline"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:titleTextColor="@color/white"
             app:title="@string/app_name"
-            app:navigationIcon="@mipmap/ic_launcher" />
+            app:navigationIcon="@drawable/ic_location" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"
@@ -32,16 +34,16 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintGuide_begin="20dp"
-            app:layout_constraintGuide_percent=".1" />
+            app:layout_constraintGuide_percent=".084" />
 
-        <fragment
+        <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragmentBasic"
             class="com.example.tripreminder.Fragments.HomeFragment"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@id/guideline1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/guideline"
             app:layout_constraintVertical_bias="0.0" />
@@ -52,7 +54,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintGuide_begin="20dp"
-            app:layout_constraintGuide_percent=".9" />
+            app:layout_constraintGuide_percent=".92" />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNavigationView"

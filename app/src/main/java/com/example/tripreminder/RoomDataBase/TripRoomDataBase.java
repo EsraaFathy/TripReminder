@@ -53,12 +53,12 @@ public abstract class TripRoomDataBase extends RoomDatabase {
 
         @Override
         protected Void doInBackground(Void... voids) {
-//            tripDAO.Insert(new TripTable("tiletest","00:00","11/1/2010",true,"1",true,"her","their",""));
-//            tripDAO.Insert(new TripTable("tiletest","00:00","11/1/2010",true,"1",true,"her","their",""));
-//            tripDAO.Insert(new TripTable("tiletest","00:00","11/1/2010",true,"1",true,"her","their",""));
-//            tripDAO.Insert(new TripTable("tiletest","00:00","11/1/2010",true,"1",true,"her","their",""));
-//            tripDAO.Insert(new TripTable("tiletest","00:00","11/1/2010",true,"1",true,"her","their",""));
-//            tripDAO.Insert(new TripTable("tiletest","00:00","11/1/2010",true,"1",true,"her","their",""));
+//            tripDAO.Insert(new TripTable("tiletest","00:00","11/1/2010","UpComming","1",true,"her","their",""));
+//            tripDAO.Insert(new TripTable("tiletest","00:00","11/1/2010","UpComming","1",true,"her","their",""));
+//            tripDAO.Insert(new TripTable("tiletest","00:00","11/1/2010","UpComming","1",true,"her","their",""));
+//            tripDAO.Insert(new TripTable("tiletest","00:00","11/1/2010","UpComming","1",true,"her","their",""));
+//            tripDAO.Insert(new TripTable("tiletest","00:00","11/1/2010","UpComming","1",true,"her","their",""));
+//            tripDAO.Insert(new TripTable("tiletest","00:00","11/1/2010","UpComming","1",true,"her","their",""));
             return null;
         }
     }
