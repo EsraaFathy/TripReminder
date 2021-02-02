@@ -74,12 +74,6 @@ public class HomeFragment extends Fragment {
             }
         });
 
-//        List<TripTable> tripTables = new ArrayList<>();
-//        tripTables.add(new TripTable("Esraa Fathy", "01:43 AA", "01-02-2021", "comming", "Repeated Monthly", true, "Egypt", "Italy", ""));
-//        tripTables.add(new TripTable("Esraa Fathy1", "01:43 AA", "01-02-2021", "comming", "Repeated Monthly", true, "Egypt", "Italy", ""));
-//        tripTables.add(new TripTable("Esraa Fathy2", "01:43 AA", "01-02-2021", "comming", "Repeated Monthly", true, "Egypt", "Italy", ""));
-//        tripTables.add(new TripTable("Esraa Fathy3", "01:43 AA", "01-02-2021", "comming", "Repeated Monthly", true, "Egypt", "Italy", ""));
-
         tripViewModel = new ViewModelProvider(getActivity(), ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication())).get(TripViewModel.class);
         tripViewModel.getAllTrips().observe(getActivity(), new Observer<List<TripTable>>() {
             @Override
@@ -87,10 +81,10 @@ public class HomeFragment extends Fragment {
                 trips = tripTables;
                 recyclerHomeAdapter.setTrips(trips);
                 recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                recyclerView.setAdapter(recyclerHomeAdapter);
             }
         });
         //saveFromFirebaseToRoom(tripTables);
-        recyclerView.setAdapter(recyclerHomeAdapter);
 
         recyclerHomeAdapter.OnItemClickListener(new RecyclerHomeAdapter.OcCLickListenerAble() {
             @Override

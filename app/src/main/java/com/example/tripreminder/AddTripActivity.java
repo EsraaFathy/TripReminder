@@ -176,47 +176,47 @@ public class AddTripActivity extends AppCompatActivity {
 
 
 
-    @Override // data from the place api
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        switch (requestCode){
-            case START_REQUEST:
-
-                if(resultCode == RESULT_OK){
-                    Place place = Autocomplete.getPlaceFromIntent(data); //place.getLatLng() place.getAddress()
-                    startPointSearchView.setText(place.getAddress());
-                }else{
-                    Toast.makeText(this, "An error occured , Try again...", Toast.LENGTH_SHORT).show();
-                }
-
-                break;
-            case END_REQUEST:
-
-                if(resultCode == RESULT_OK){
-                    Place place = Autocomplete.getPlaceFromIntent(data); //place.getLatLng() place.getAddress()
-                    endPointSearchView.setText(place.getAddress());
-                }else{
-                    Toast.makeText(this, "An error occured , Try again...", Toast.LENGTH_SHORT).show();
-                }
-
-                break;
-
-            default:
-                Toast.makeText(this, "Please Select a Place !!", Toast.LENGTH_SHORT).show();
-        }
-
-    }
-
-    @Override
-    public void onTimeSet(android.widget.TimePicker view, int hourOfDay, int minute) {
-        Toast.makeText(this, "hour : "+hourOfDay+"minute", Toast.LENGTH_SHORT).show();
-        timeTextView.setText(MessageFormat.format("{0}:{1}", hourOfDay, minute));
-    }
-
-    @Override
-    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        dateTextView.setText(MessageFormat.format("{0}/{1}/{2}", dayOfMonth, month, year));
-    }
+//    @Override // data from the place api
+//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//        switch (requestCode){
+//            case START_REQUEST:
+//
+//                if(resultCode == RESULT_OK){
+//                    Place place = Autocomplete.getPlaceFromIntent(data); //place.getLatLng() place.getAddress()
+//                    startPointSearchView.setText(place.getAddress());
+//                }else{
+//                    Toast.makeText(this, "An error occured , Try again...", Toast.LENGTH_SHORT).show();
+//                }
+//
+//                break;
+//            case END_REQUEST:
+//
+//                if(resultCode == RESULT_OK){
+//                    Place place = Autocomplete.getPlaceFromIntent(data); //place.getLatLng() place.getAddress()
+//                    endPointSearchView.setText(place.getAddress());
+//                }else{
+//                    Toast.makeText(this, "An error occured , Try again...", Toast.LENGTH_SHORT).show();
+//                }
+//
+//                break;
+//
+//            default:
+//                Toast.makeText(this, "Please Select a Place !!", Toast.LENGTH_SHORT).show();
+//        }
+//
+//    }
+//
+//    @Override
+//    public void onTimeSet(android.widget.TimePicker view, int hourOfDay, int minute) {
+//        Toast.makeText(this, "hour : "+hourOfDay+"minute", Toast.LENGTH_SHORT).show();
+//        timeTextView.setText(MessageFormat.format("{0}:{1}", hourOfDay, minute));
+//    }
+//
+//    @Override
+//    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+//        dateTextView.setText(MessageFormat.format("{0}/{1}/{2}", dayOfMonth, month, year));
+//    }
 
 }

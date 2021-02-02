@@ -25,6 +25,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.room.Database;
 
@@ -94,7 +95,9 @@ public class ProfileFragment extends Fragment {
         syncBtn = view.findViewById(R.id.sync_btn);
         mAuth = FirebaseAuth.getInstance();
         currentUser=mAuth.getCurrentUser();
-        tripViewModel= ViewModelProviders.of(this).get(TripViewModel.class);
+
+        tripViewModel= new ViewModelProvider(getActivity(), ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication())).get(TripViewModel.class);
+
         loadDataInSharedPerefrence(getContext());
         sync=new Sync();
         handler=new Handler(){
@@ -151,11 +154,11 @@ public class ProfileFragment extends Fragment {
 
         //List<TripTable> trips= tripViewModel.getAllTrips().getValue();
         List<TripTable> trips=new ArrayList<>();
-        TripTable trip1=new TripTable("ismalilia","12.00","12/11/2021",true,"2",false,
+        TripTable trip1=new TripTable("ismalilia","12.00","12/11/2021","true","2",false,
                 "tree","units","notes");
-        TripTable trip2=new TripTable("ismalilia","12.00","12/11/2021",true,"2",false,
+        TripTable trip2=new TripTable("ismalilia","12.00","12/11/2021","true","2",false,
                 "tree","units","notes");
-        TripTable trip3=new TripTable("ismalilia","12.00","12/11/2021",true,"2",false,
+        TripTable trip3=new TripTable("ismalilia","12.00","12/11/2021","true","2",false,
                 "tree","units","notes");
         trips.add(trip1);
         trips.add(trip2);

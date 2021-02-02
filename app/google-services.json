@@ -52,11 +52,27 @@
       },
       "oauth_client": [
         {
+          "client_id": "493194378070-e7imm4n3236tj36f3o81u7avlrgh293j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tripreminder",
+            "certificate_hash": "0d22b8ed5facf4b06d816e5dccdab3271aa224df"
+          }
+        },
+        {
           "client_id": "493194378070-fg8pkfdgkpusmtrh42356p7kjious5vr.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.tripreminder",
             "certificate_hash": "0e779bae923a0f4710b624a1864c1a6c85181a24"
+          }
+        },
+        {
+          "client_id": "493194378070-nn4dkvaegp984u90dmm0ne9u7jr67toq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tripreminder",
+            "certificate_hash": "545ec72c13e3dd5dfb8d5b4951c1c251d1d24c80"
           }
         },
         {

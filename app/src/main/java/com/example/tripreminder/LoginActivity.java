@@ -272,6 +272,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Toast.makeText(LoginActivity.this,"In onDataChange ", Toast.LENGTH_SHORT).show();
                 final User databaseUser=(User) dataSnapshot.getValue(User.class);
+                Toast.makeText(LoginActivity.this, ""+databaseUser, Toast.LENGTH_SHORT).show();
                 Email=databaseUser.getEmail();
                 Name=databaseUser.getName();
                 //databaseUser=(User) dataSnapshot.getValue(User.class);

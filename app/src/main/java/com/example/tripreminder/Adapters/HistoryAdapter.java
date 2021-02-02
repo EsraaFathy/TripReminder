@@ -28,13 +28,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ItemViewHolder>{
-    List<HistoryItem> items;
+    List<TripTable> items;
+    public static String DROP="drop";
+    public static String DELETE="delete";
     Context context; //should be iniatized in the constructor with the list
     private OcCLickListenerAble ocCLickListenerAble;
 
-    public HistoryAdapter(List<HistoryItem> items,Context context) {
+    public HistoryAdapter(Context context) {
         this.items = items;
         this.context=context;
+    }
+
+    public void setItems(List<TripTable> items) {
+        this.items = items;
     }
 
     @NonNull
@@ -46,7 +52,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ItemView
 
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, final int position) {
-        final HistoryItem item = items.get(position);
+        final TripTable item = items.get(position);
         holder.tripName.setText(item.getTitle());
         holder.from.setText(item.getFrom());
         holder.to.setText(item.getTo());
@@ -55,59 +61,59 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ItemView
         holder.status.setText(item.getStatus());
 
 
-        holder.delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+//        holder.delete.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+////                final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+////                builder.setCancelable(false);
+////                builder.setMessage("Are you sure?");
+////                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+////                    @Override
+////                    public void onClick(DialogInterface dialogInterface, int i) {
+////                        TripTable historyItem=items.get(position);
+////                        items.remove(position);
+////                        notifyDataSetChanged();
+////                        dialogInterface.dismiss();
+////                    }
+////                });
+////                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+////                    @Override
+////                    public void onClick(DialogInterface dialogInterface, int i) {
+////                        dialogInterface.dismiss();
+////                    }
+////                });
+////                final AlertDialog dialog = builder.create();
+////                dialog.show();
+////                dialog.getButton(dialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(context, R.color.colorPrim));
+////                dialog.getButton(dialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(context, R.color.colorPrim));
+//            }
+//        });
 
-                final AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setCancelable(false);
-                builder.setMessage("Are you sure?");
-                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        HistoryItem historyItem=items.get(position);
-                        items.remove(position);
-                        notifyDataSetChanged();
-                        dialogInterface.dismiss();
-                    }
-                });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                    }
-                });
-                final AlertDialog dialog = builder.create();
-                dialog.show();
-                dialog.getButton(dialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(context, R.color.colorPrim));
-                dialog.getButton(dialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(context, R.color.colorPrim));
-            }
-        });
-
-        holder.drop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if (holder.hiddenView.getVisibility() == View.VISIBLE) {
-
-                    TransitionManager.beginDelayedTransition(holder.cardView,
-                            new AutoTransition());
-                    holder.hiddenView.setVisibility(View.GONE);
-                    holder.drop.setImageResource(R.mipmap.ic_dropdown);
-                }
-
-                // If the CardView is not expanded, set its visibility
-                // to visible and change the expand more icon to expand less.
-                else {
-
-                    TransitionManager.beginDelayedTransition(holder.cardView,
-                            new AutoTransition());
-                    holder.hiddenView.setVisibility(View.VISIBLE);
-                    holder.drop.setImageResource(R.mipmap.ic_dropup);
-                }
-
-            }
-        });
+//        holder.drop.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                if (holder.hiddenView.getVisibility() == View.VISIBLE) {
+//
+//                    TransitionManager.beginDelayedTransition(holder.cardView,
+//                            new AutoTransition());
+//                    holder.hiddenView.setVisibility(View.GONE);
+//                    holder.drop.setImageResource(R.mipmap.ic_dropdown);
+//                }
+//
+//                // If the CardView is not expanded, set its visibility
+//                // to visible and change the expand more icon to expand less.
+//                else {
+//
+//                    TransitionManager.beginDelayedTransition(holder.cardView,
+//                            new AutoTransition());
+//                    holder.hiddenView.setVisibility(View.VISIBLE);
+//                    holder.drop.setImageResource(R.mipmap.ic_dropup);
+//                }
+//
+//            }
+//        });
 
     }
 
@@ -116,7 +122,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ItemView
         return items==null?0:items.size();
     }
 
-    public void filterList(ArrayList<HistoryItem> filteredList){
+    public void filterList(ArrayList<TripTable> filteredList){
         items=filteredList;
         notifyDataSetChanged();
     }
@@ -142,6 +148,37 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ItemView
             drop=itemView.findViewById(R.id.arrow_btn);
             hiddenView=itemView.findViewById(R.id.hidden_view);
             cardView=itemView.findViewById(R.id.base_cardview);
+
+            delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ocCLickListenerAble.onItemClick(DELETE,items.get(getAdapterPosition()));
+
+                }
+            });
+
+            drop.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (hiddenView.getVisibility() == View.VISIBLE) {
+                        TransitionManager.beginDelayedTransition(cardView,
+                                new AutoTransition());
+                        hiddenView.setVisibility(View.GONE);
+                        drop.setImageResource(R.mipmap.ic_dropdown);
+                    }
+
+                    // If the CardView is not expanded, set its visibility
+                    // to visible and change the expand more icon to expand less.
+                    else {
+
+                        TransitionManager.beginDelayedTransition(cardView,
+                                new AutoTransition());
+                        hiddenView.setVisibility(View.VISIBLE);
+                        drop.setImageResource(R.mipmap.ic_dropup);
+                        ocCLickListenerAble.onItemClick(DROP,items.get(getAdapterPosition()));
+                    }
+                }
+            });
         }
     }
     public void OnItemClickListener(OcCLickListenerAble ocCLickListenerAble) {
