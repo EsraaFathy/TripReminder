@@ -3,6 +3,7 @@ package com.example.tripreminder;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -24,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.tripreminder.RoomDataBase.TripTable;
+import com.example.tripreminder.RoomDataBase.TripViewModel;
 import com.example.tripreminder.database.DataHolder;
 import com.example.tripreminder.database.UsersDao;
 import com.example.tripreminder.model.User;
@@ -58,7 +60,10 @@ public class LoginActivity extends AppCompatActivity {
     public static String TAG="";
     private int RC_SIGN_IN = 1;
     private User databaseUser=new User();
+    private TripViewModel tripViewModel;
+    private List<TripTable> trips = new ArrayList<>();
     List<TripTable> tribsList;
+    Sync sync;
     String Name,Email;
     Handler handler;
     Thread th;
@@ -69,6 +74,8 @@ public class LoginActivity extends AppCompatActivity {
         // TODO: this to move to test my code
         //startActivity(new Intent(LoginActivity.this,BaseHomeActivity.class));
         mAuth = FirebaseAuth.getInstance();
+        tripViewModel = new ViewModelProvider(LoginActivity.this, ViewModelProvider.AndroidViewModelFactory.getInstance(LoginActivity.this.getApplication())).get(TripViewModel.class);
+        sync=new Sync();
         InitiatizeFields();
         GoogleSignInOptions gso = new GoogleSignInOptions
                 .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -147,6 +154,8 @@ public class LoginActivity extends AppCompatActivity {
                                 loadingBar.dismiss();
                                 saveDataInSharedPerefrence(getApplicationContext());
                                 LoginActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+                                th=new Thread(sync);
+                                th.start();
                                 sendToMainActivity();
 
                             }
@@ -273,17 +282,23 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(LoginActivity.this,"In onDataChange ", Toast.LENGTH_SHORT).show();
                 final User databaseUser=(User) dataSnapshot.getValue(User.class);
                 Toast.makeText(LoginActivity.this, ""+databaseUser, Toast.LENGTH_SHORT).show();
-                Email=databaseUser.getEmail();
-                Name=databaseUser.getName();
-                //databaseUser=(User) dataSnapshot.getValue(User.class);
-                Log.i("log","after snapShot: "+Name+Email);
-                DataHolder.dataBaseUser=databaseUser;
-                DataHolder.authUser=mAuth.getCurrentUser();
-                Toast.makeText(LoginActivity.this,""+databaseUser.toString(), Toast.LENGTH_SHORT).show();
-                loadingBar.dismiss();
-                saveDataInSharedPerefrence(getApplicationContext());
-                LoginActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-                sendToMainActivity();
+                if (databaseUser==null){
+                    Toast.makeText(LoginActivity.this, "You are not registered please register", Toast.LENGTH_SHORT).show();
+                }else {
+                    Email = databaseUser.getEmail();
+                    Name = databaseUser.getName();
+                    //databaseUser=(User) dataSnapshot.getValue(User.class);
+                    Log.i("log", "after snapShot: " + Name + Email);
+                    DataHolder.dataBaseUser = databaseUser;
+                    DataHolder.authUser = mAuth.getCurrentUser();
+                    Toast.makeText(LoginActivity.this, "" + databaseUser.toString(), Toast.LENGTH_SHORT).show();
+                    loadingBar.dismiss();
+                    saveDataInSharedPerefrence(getApplicationContext());
+                    th=new Thread(sync);
+                    th.start();
+                    LoginActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+                    sendToMainActivity();
+                }
 
             }
 
@@ -310,6 +325,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
+
     public void sync(){
         String currentUserId=mAuth.getCurrentUser().getUid();
         UsersDao.getUserTrips(currentUserId, new ValueEventListener() {
@@ -326,9 +342,16 @@ public class LoginActivity extends AppCompatActivity {
                     String from=dataSnapshot1.child("from").getValue().toString();
                     String to=dataSnapshot1.child("to").getValue().toString();
                     String note=dataSnapshot1.child("notes").getValue().toString();
-                    //TripTable trip=new TripTable(title,time,date,status,repetition,ways,from,to,note);
-                    //tribsList.add(trip);
+
+                    boolean b=true;
+                    if(ways.equals("true"))
+                        b=true;
+                    else
+                        b=false;
+                    TripTable trip=new TripTable(title,time,date,status,repetition,b,from,to,note);
+                    tribsList.add(trip);
                 }
+                saveFromFirebaseToRoom(tribsList);
             }
 
             @Override
@@ -350,6 +373,13 @@ public class LoginActivity extends AppCompatActivity {
             handler.sendEmptyMessage(0);
         }
 
+    }
+
+    private void saveFromFirebaseToRoom(List<TripTable> trips) {
+        tripViewModel.deleteAllTrips();
+        for (TripTable table : trips) {
+            tripViewModel.insert(table);
+        }
     }
 
 }

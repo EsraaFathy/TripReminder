@@ -142,23 +142,7 @@ public class HomeFragment extends Fragment {
     }
 
 
-    private void saveFromFirebaseToRoom(List<TripTable> trips) {
-        tripViewModel.deleteAllTrips();
-        for (TripTable table : trips) {
-            tripViewModel.insert(table);
-        }
 
-    }
-
-    private List<TripTable> saveFromRoomToFirebase() {
-        tripViewModel.getAllTrips().observe(getActivity(), new Observer<List<TripTable>>() {
-            @Override
-            public void onChanged(List<TripTable> tripTables) {
-                tripsRoom = tripTables;
-            }
-        });
-        return tripsRoom;
-    }
 
 
 }

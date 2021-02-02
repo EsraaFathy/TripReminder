@@ -25,6 +25,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.room.Database;
@@ -34,6 +35,7 @@ import com.example.tripreminder.RoomDataBase.TripViewModel;
 import com.example.tripreminder.database.DataBase;
 import com.example.tripreminder.database.DataHolder;
 import com.example.tripreminder.database.UsersDao;
+import com.example.tripreminder.model.Trip;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -67,9 +69,11 @@ public class ProfileFragment extends Fragment {
     TextView emailTxt;
     TextView logoutBtn;
     Button syncBtn;
-    TripViewModel tripViewModel;
+    List<TripTable> tables;
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
+    private TripTable tripTable;
+    private TripViewModel tripViewModel;
     Handler handler;
     Thread th;
     Sync sync;
@@ -81,7 +85,18 @@ public class ProfileFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_profile, container, false);
+        View view=inflater.inflate(R.layout.fragment_profile, container, false);
+        fullNameTxt = view.findViewById(R.id.name);
+        emailTxt = view.findViewById(R.id.email);
+        logoutBtn =  view.findViewById(R.id.logout_tve);
+        syncBtn = view.findViewById(R.id.sync_btn);
+        mAuth = FirebaseAuth.getInstance();
+        currentUser=mAuth.getCurrentUser();
+        tables=new ArrayList<>();
+        tripViewModel= new ViewModelProvider(getActivity(),
+                ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication())).get(TripViewModel.class);
+
+        return view;
     }
 
     @SuppressLint("RestrictedApi")
@@ -89,15 +104,7 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
        super.onViewCreated(view, savedInstanceState);
-        fullNameTxt = view.findViewById(R.id.name);
-        emailTxt = view.findViewById(R.id.email);
-        logoutBtn =  view.findViewById(R.id.logout_tve);
-        syncBtn = view.findViewById(R.id.sync_btn);
-        mAuth = FirebaseAuth.getInstance();
-        currentUser=mAuth.getCurrentUser();
-
-        tripViewModel= new ViewModelProvider(getActivity(), ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication())).get(TripViewModel.class);
-
+                tables=saveFromRoomToFirebase();
         loadDataInSharedPerefrence(getContext());
         sync=new Sync();
         handler=new Handler(){
@@ -136,6 +143,7 @@ public class ProfileFragment extends Fragment {
     }
 
     public void logOut(){
+        tripViewModel.deleteAllTrips();
         FirebaseAuth.getInstance().signOut();
         DataHolder.dataBaseUser=null;
         DataHolder.authUser=null;
@@ -150,19 +158,10 @@ public class ProfileFragment extends Fragment {
 
     }
 
-    public void sync(){
+    public void sync(List<TripTable> trips){
 
         //List<TripTable> trips= tripViewModel.getAllTrips().getValue();
-        List<TripTable> trips=new ArrayList<>();
-        TripTable trip1=new TripTable("ismalilia","12.00","12/11/2021","true","2",false,
-                "tree","units","notes");
-        TripTable trip2=new TripTable("ismalilia","12.00","12/11/2021","true","2",false,
-                "tree","units","notes");
-        TripTable trip3=new TripTable("ismalilia","12.00","12/11/2021","true","2",false,
-                "tree","units","notes");
-        trips.add(trip1);
-        trips.add(trip2);
-        trips.add(trip3);
+
         Log.i("sync",""+trips);
         String currentUserId=currentUser.getUid();
         //DataBase.getUsers().child(currentUserId).child(DataBase.USER_Trip_REF).setValue("");
@@ -187,10 +186,22 @@ public class ProfileFragment extends Fragment {
         @Override
         public void run() {
             getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
-            sync();
+            sync(tables);
             handler.sendEmptyMessage(0);
         }
 
+    }
+
+
+    private List<TripTable> saveFromRoomToFirebase() {
+
+        tripViewModel.getGetAllAsync().observe(getActivity(), new Observer<List<TripTable>>() {
+            @Override
+            public void onChanged(List<TripTable> tripTables) {
+                tables = tripTables;
+            }
+        });
+        return tables;
     }
 
 }
