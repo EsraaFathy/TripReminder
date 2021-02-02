@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tripreminder.R;
 import com.example.tripreminder.RoomDataBase.TripTable;
-import com.example.tripreminder.model.Trip;
 
 import java.util.List;
 
@@ -46,9 +45,7 @@ public class RecyclerHomeAdapter extends RecyclerView.Adapter<RecyclerHomeAdapte
         holder.title.setText(trips.get(position).getTitle());
         holder.time.setText(trips.get(position).getTime());
         holder.date.setText(trips.get(position).getDate());
-
         holder.status.setText(trips.get(position).getStatus());
-
         holder.from.setText(trips.get(position).getFrom());
         holder.to.setText(trips.get(position).getTo());
 
@@ -74,16 +71,14 @@ public class RecyclerHomeAdapter extends RecyclerView.Adapter<RecyclerHomeAdapte
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            title = itemView.findViewById(R.id.TripNameTripItem);
-            time = itemView.findViewById(R.id.timeTextViewTripItem);
-            date = itemView.findViewById(R.id.dateTextViewTripItem);
-            status = itemView.findViewById(R.id.statusTripItem);
-//            repetition = itemView.findViewById(R.id.rep);
-//            ways = itemView.findViewById();
-            from = itemView.findViewById(R.id.fromTripItem);
-            to = itemView.findViewById(R.id.toTripItem);
-            notes = itemView.findViewById(R.id.notesTripItem);
-            menu = itemView.findViewById(R.id.menueIconTripItem);
+            title = itemView.findViewById(R.id.TripNameHistoryItem);
+            time = itemView.findViewById(R.id.timeTextViewHistoryItem);
+            date = itemView.findViewById(R.id.dateTextViewHistoryItem);
+            status = itemView.findViewById(R.id.statusHistoryItem);
+            from = itemView.findViewById(R.id.fromHistoryItem);
+            to = itemView.findViewById(R.id.toHistoryItem);
+            notes = itemView.findViewById(R.id.notesHistoryItem);
+            menu = itemView.findViewById(R.id.menueIconHistoryItem);
             startButton = itemView.findViewById(R.id.startButton);
 
             menu.setOnClickListener(new View.OnClickListener() {

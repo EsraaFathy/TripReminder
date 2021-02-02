@@ -20,7 +20,7 @@ public class TripTable {
     private String from;
     private String to;
     private String notes;
-//MNN
+
     public TripTable(String title, String time, String date, String status, String repetition, boolean ways, String from, String to, String notes) {
         this.title = title;
         this.time = time;
@@ -79,5 +79,9 @@ public class TripTable {
 
     public int getId() {
         return id;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 }

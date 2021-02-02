@@ -10,11 +10,13 @@ import java.util.List;
 public class TripRepository {
     private TripDAO tripDAO;
     private LiveData<List<TripTable>> getAllData;
+    private LiveData<List<TripTable>> history;
 
     public TripRepository(Application application) {
         TripRoomDataBase tripRoomDataBase =TripRoomDataBase.getInstance(application);
         tripDAO=tripRoomDataBase.tripDao();
-        getAllData=tripDAO.getAllRecords();
+        getAllData=tripDAO.getAllRecords("up Coming");
+        history=tripDAO.getHistory("up Coming");
     }
 
     public void insert(TripTable tripTable){
@@ -30,6 +32,9 @@ public class TripRepository {
     public LiveData<List<TripTable>> getAllRecord(){
         return getAllData;
     }
+    public LiveData<List<TripTable>> getHistory(String upComing){
+        return history;
+    }
 
     public void delete(TripTable tripTable){
         new DeleteAsyncTask(tripDAO).execute(tripTable);
@@ -38,6 +43,9 @@ public class TripRepository {
     public void deleteAllRecords(){
         new DeleteAllAsyncTask(tripDAO).execute();
     }
+
+
+
 
     private static class InsertAsyncTask extends AsyncTask<TripTable,Void,Void>{
         private TripDAO tripDAO;

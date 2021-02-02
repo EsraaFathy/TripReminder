@@ -33,7 +33,7 @@
             app:layout_constraintGuide_begin="0dp"
             app:layout_constraintGuide_percent=".08" />
 
-        <fragment
+        <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragmentBasic"
             class="com.example.tripreminder.Fragments.HomeFragment"
             android:layout_width="0dp"
