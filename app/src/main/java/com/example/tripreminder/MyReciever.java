@@ -1,6 +1,5 @@
 package com.example.tripreminder;
 
-import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -32,56 +31,60 @@ public class MyReciever extends BroadcastReceiver {
         System.out.println("OnRecieve");
         this.myIntent = intent;
 
-        createNotification(context);
+        Intent alert = new Intent(context, AlertDialog.class);
+        setTripDate(alert);
+        alert.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        context.startActivity(alert);
 
-        try{
-
-            Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-            rigntone = RingtoneManager.getRingtone(context, uri);
-            if(!rigntone.isPlaying())
-                rigntone.play();
-        }
-        catch(Exception e){}
+//        createNotification(context);
+//        try{
+//
+//            Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+//            rigntone = RingtoneManager.getRingtone(context, uri);
+//            if(!rigntone.isPlaying())
+//                rigntone.play();
+//        }
+//        catch(Exception e){}
     }
 
-    private void createNotification(Context context){
-
-        Intent startInten = new Intent(context,NotificationActionService.class).setAction(START_SERVICE);
-        setTripDate(startInten);
-        PendingIntent startPendingIntent = PendingIntent.getService(context, 0, startInten, PendingIntent.FLAG_ONE_SHOT);
-
-
-        Intent snoozeIntent = new Intent(context,NotificationActionService.class).setAction(SNOOZE_SERVICE);
-        setTripDate(snoozeIntent);
-        PendingIntent snoozePendingIntent = PendingIntent.getService(context, 0, snoozeIntent, PendingIntent.FLAG_ONE_SHOT);
-
-
-        Intent cancelIntent = new Intent(context,NotificationActionService.class).setAction(CANCEL_SERVICE);
-        setTripDate(cancelIntent);
-        PendingIntent cancelPendingIntent = PendingIntent.getService(context, 0, cancelIntent, PendingIntent.FLAG_ONE_SHOT);
-
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "notification")
-                .setSmallIcon(R.drawable.ic_baseline_add_alert_24)
-                .setContentTitle("Remind me a trip")
-                .setContentText(myIntent.getExtras().getString("sourceName"))
-                .setPriority(Notification.PRIORITY_HIGH)
-//                .setContentIntent(pendingIntent) // what works on tap notification
-
-                .addAction(R.drawable.ic_baseline_task_alt_24,"Start",startPendingIntent)
-                .addAction(R.drawable.ic_baseline_snooze_24, "Snooze", snoozePendingIntent)
-                .addAction(R.drawable.ic_baseline_cancel_24, "Cancel", cancelPendingIntent)
-
-
-                .setCategory(NotificationCompat.CATEGORY_SYSTEM)
-                .setAutoCancel(true);
-
-        notificationManager = NotificationManagerCompat.from(context);
-        Notification n = builder.build();
-        final int random = new Random().nextInt(10000);
-        notificationManager.notify(random, n);
-
-    }
+//    private void createNotification(Context context){
+//
+//        Intent startInten = new Intent(context,NotificationActionService.class).setAction(START_SERVICE);
+//        setTripDate(startInten);
+//        PendingIntent startPendingIntent = PendingIntent.getService(context, 0, startInten, PendingIntent.FLAG_ONE_SHOT);
+//
+//
+//        Intent snoozeIntent = new Intent(context,NotificationActionService.class).setAction(SNOOZE_SERVICE);
+//        setTripDate(snoozeIntent);
+//        PendingIntent snoozePendingIntent = PendingIntent.getService(context, 0, snoozeIntent, PendingIntent.FLAG_ONE_SHOT);
+//
+//
+//        Intent cancelIntent = new Intent(context,NotificationActionService.class).setAction(CANCEL_SERVICE);
+//        setTripDate(cancelIntent);
+//        PendingIntent cancelPendingIntent = PendingIntent.getService(context, 0, cancelIntent, PendingIntent.FLAG_ONE_SHOT);
+//
+//
+//        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "notification")
+//                .setSmallIcon(R.drawable.ic_baseline_add_alert_24)
+//                .setContentTitle("Remind me a trip")
+//                .setContentText(myIntent.getExtras().getString("sourceName"))
+//                .setPriority(Notification.PRIORITY_HIGH)
+////                .setContentIntent(pendingIntent) // what works on tap notification
+//
+//                .addAction(R.drawable.ic_baseline_task_alt_24,"Start",startPendingIntent)
+//                .addAction(R.drawable.ic_baseline_snooze_24, "Snooze", snoozePendingIntent)
+//                .addAction(R.drawable.ic_baseline_cancel_24, "Cancel", cancelPendingIntent)
+//
+//
+//                .setCategory(NotificationCompat.CATEGORY_SYSTEM)
+//                .setAutoCancel(true);
+//
+//        notificationManager = NotificationManagerCompat.from(context);
+//        Notification n = builder.build();
+//        final int random = new Random().nextInt(10000);
+//        notificationManager.notify(random, n);
+//
+//    }
     private void setTripDate(Intent pass){
 
 
@@ -95,5 +98,6 @@ public class MyReciever extends BroadcastReceiver {
         pass.putExtra("destinationLat", myIntent.getDoubleExtra("destinationLat",0));
         pass.putExtra("destinationLon",myIntent.getDoubleExtra("destinationLon",0));
         pass.putExtra("destinationName",myIntent.getExtras().getString("destinationName","null"));
+
     }
 }

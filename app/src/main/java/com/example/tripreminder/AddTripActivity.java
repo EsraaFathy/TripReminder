@@ -25,6 +25,7 @@ import com.example.tripreminder.Fragments.HomeFragment;
 import com.example.tripreminder.RoomDataBase.TripTable;
 import com.example.tripreminder.RoomDataBase.TripViewModel;
 import com.example.tripreminder.databinding.ActivityAddTripBinding;
+import com.example.tripreminder.model.Trip;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
@@ -97,14 +98,14 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
                 } else {
                     String repetation = getRepetation();
                     boolean way = getWay();
-                    addTripToRoom(binding.tripNameInput.getText().toString(),
+                     addTripToRoom(binding.tripNameInput.getText().toString(),
                             binding.timeTextView.getText().toString(), binding.dateTextView.getText().toString(), "up Coming",
                             repetation, way,
                             binding.startPointSearchView.getText().toString(),
                             binding.endPointSearchView.getText().toString());
                 }
                 if (end == null)
-                    Toast.makeText(getApplicationContext(), "Please add Trip Data", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Please add Trip Destination", Toast.LENGTH_LONG).show();
                 else
                     prepareAlarm();
 
@@ -182,7 +183,7 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
 
     private void prepareAlarm() {
 
-        Alarm alarm = new Alarm(this, calender, start, end);
+        Alarm alarm = new Alarm(this, calender, start, end, getWay(),binding.tripNameInput.getText().toString());
         alarm.prepareAlarm();
     }
 
@@ -255,18 +256,22 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
         }
     }
 
-    private void addTripToRoom(String title, String time, String date, String status, String repetition, boolean ways, String from, String to) {
+    private TripTable addTripToRoom(String title, String time, String date, String status, String repetition, boolean ways, String from, String to) {
         if (title.equals("") || time.equals("") || date.equals("") || repetition.equals("") || to.equals("")) {
             //Toast.makeText(this, "Their is some data missed", Toast.LENGTH_SHORT).show();
             Toast.makeText(this, "tile" + title + "\ntime" + time + "\ndate" + date + "\nstatus" + status + "\nper" + repetition + "\nways" +
                     ways + "\nform" + from + "\nto" + to, Toast.LENGTH_SHORT).show();
 
         } else {
+            TripTable trip = new TripTable(title, time, date, status, repetition, ways, from, to, "");
             TripViewModel tripViewModel;
             tripViewModel = new ViewModelProvider(AddTripActivity.this, ViewModelProvider.AndroidViewModelFactory.getInstance(AddTripActivity.this.getApplication())).get(TripViewModel.class);
-            tripViewModel.insert(new TripTable(title, time, date, status, repetition, ways, from, to, ""));
+            tripViewModel.insert(trip);
             finish();
+            return trip;
         }
+        return null;
+
     }
 
     @SuppressLint("SetTextI18n")
@@ -312,7 +317,6 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
                 binding.repeatingSpinner.setSelection(3);
                 break;
         }
-
 
         if (tripTable.getWays())
             binding.tripType.setSelection(0);
