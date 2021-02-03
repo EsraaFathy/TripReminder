@@ -16,26 +16,21 @@ public class TripRepository {
     private LiveData<List<TripTable>> getAllData;
     private LiveData<List<TripTable>> history;
     private static LiveData<List<TripTable>> allToSync;
-    private static LiveData<String> notes;
-//    static String s;
 
-//    static Handler handler=new Handler(new Handler.Callback() {
-//        @Override
-//        public boolean handleMessage(@NonNull Message msg) {
-//            s=msg.obj.toString();
-//            return false;
-//        }
-//    });
 
-    public TripTable getTripTableById(long l){
-        return tripDAO.getTripTableById(l);
-    }
     public TripRepository(Application application) {
         TripRoomDataBase tripRoomDataBase = TripRoomDataBase.getInstance(application);
         tripDAO = tripRoomDataBase.tripDao();
         getAllData = tripDAO.getAllHomeTrips("up Coming");
         history = tripDAO.getHistory("up Coming");
         allToSync = tripDAO.getAllToAsync();
+    }
+
+    public List<String> getTitleDistance(){
+        return tripDAO.getAllDistance();
+    }
+    public TripTable getTripTableById(long l){
+        return tripDAO.getTripTableById(l);
     }
 
     public long insert(TripTable tripTable) {

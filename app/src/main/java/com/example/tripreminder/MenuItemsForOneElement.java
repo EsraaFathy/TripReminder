@@ -51,7 +51,8 @@ public class MenuItemsForOneElement extends AppCompatActivity {
                 intent.getBooleanExtra(HomeFragment.NOTE_INTENT_ways,true),
                 intent.getStringExtra(HomeFragment.NOTE_INTENT_FROM),
                 intent.getStringExtra(HomeFragment.NOTE_INTENT_to),
-                intent.getStringExtra(HomeFragment.NOTE_INTENT_Note));
+                intent.getStringExtra(HomeFragment.NOTE_INTENT_Note),
+                 intent.getDoubleExtra(HomeFragment.DISTANCE,0.0));
         setTitle(intent.getStringExtra(HomeFragment.NOTE_INTENT_title) + " trip");
         binding.AllNotes.setOnClickListener(new View.OnClickListener() {
             @Override

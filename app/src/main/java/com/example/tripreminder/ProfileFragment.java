@@ -203,5 +203,15 @@ public class ProfileFragment extends Fragment {
         });
         return tables;
     }
+    private void getDistanceReport(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<String> s=tripViewModel.getTitleDistance();
+                Log.d("TAG", "onItemClick: Data base distanses" +s.get(1));
+
+            }
+        }).start();
+    }
 
 }

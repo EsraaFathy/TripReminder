@@ -30,11 +30,13 @@ import com.example.tripreminder.Fragments.HomeFragment;
 import com.example.tripreminder.RoomDataBase.TripTable;
 import com.example.tripreminder.RoomDataBase.TripViewModel;
 import com.example.tripreminder.databinding.ActivityAddTripBinding;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 
+import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -55,6 +57,7 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
     private ProgressDialog loadingBar;
     private TripViewModel tripViewModel;
     Long idT;
+    private double distance=0.0;
 
 
     Calendar calender;
@@ -238,9 +241,11 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
         boolean way = true;
         switch (binding.tripType.getSelectedItemPosition()) {
             case 0:
+                /// one way
                 way = true;
                 break;
             case 1:
+                /// rounded trip
                 way = false;
         }
         return way;
@@ -270,7 +275,8 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
             Toast.makeText(this, "Their is some data missed", Toast.LENGTH_SHORT).show();
 
         } else {
-            TripTable table = new TripTable(title, time, date, status, repetition, ways, from, to, tripTable.getNotes());
+            distance=calculationByDistance(start.getLatLng(),end.getLatLng());
+            TripTable table = new TripTable(title, time, date, status, repetition, ways, from, to, tripTable.getNotes(),distance);
             table.setId(id);
             tripViewModel.update(table);
             finish();
@@ -289,7 +295,9 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    TripTable table = new TripTable(title, time, date, status, repetition, ways, from, to, "");
+                    distance=calculationByDistance(start.getLatLng(),end.getLatLng());
+                    Log.d("TAG", "run distance: "+distance);
+                    TripTable table = new TripTable(title, time, date, status, repetition, ways, from, to, "",distance);
                     idT = tripViewModel.insert(table);
                     handler.sendEmptyMessage(1);
 
@@ -314,7 +322,8 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
                     intent.getBooleanExtra(HomeFragment.NOTE_INTENT_ways, true),
                     intent.getStringExtra(HomeFragment.NOTE_INTENT_FROM),
                     intent.getStringExtra(HomeFragment.NOTE_INTENT_to),
-                    intent.getStringExtra(HomeFragment.NOTE_INTENT_Note));
+                    intent.getStringExtra(HomeFragment.NOTE_INTENT_Note),
+                    intent.getDoubleExtra(HomeFragment.DISTANCE,0.0));
             editTrip(tripTable);
         }
     }
@@ -368,6 +377,31 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
         tripTable.setStatus(status);
         tripTable.setId(idT);
         tripViewModel.update(tripTable);
+    }
+
+    public double calculationByDistance(LatLng StartP, LatLng EndP) {
+        int Radius = 6371;// radius of earth in Km
+        double lat1 = StartP.latitude;
+        double lat2 = EndP.latitude;
+        double lon1 = StartP.longitude;
+        double lon2 = EndP.longitude;
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                + Math.cos(Math.toRadians(lat1))
+                * Math.cos(Math.toRadians(lat2)) * Math.sin(dLon / 2)
+                * Math.sin(dLon / 2);
+        double c = 2 * Math.asin(Math.sqrt(a));
+        double valueResult = Radius * c;
+        double km = valueResult / 1;
+        DecimalFormat newFormat = new DecimalFormat("####");
+        int kmInDec = Integer.valueOf(newFormat.format(km));
+        double meter = valueResult % 1000;
+        int meterInDec = Integer.valueOf(newFormat.format(meter));
+        Log.i("Radius Value", "" + valueResult + "   KM  " + kmInDec
+                + " Meter   " + meterInDec);
+
+        return Radius * c;
     }
 
 }

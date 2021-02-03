@@ -13,7 +13,6 @@ public class TripViewModel extends AndroidViewModel {
     private LiveData<List<TripTable>> listLiveData;
     private LiveData<List<TripTable>> historyList;
     private LiveData<List<TripTable>> getAllAsync;
-//    private LiveData<String> notes;
 
     public TripViewModel(@NonNull Application application) {
         super(application);
@@ -21,6 +20,9 @@ public class TripViewModel extends AndroidViewModel {
         listLiveData=tripRepository.getAllRecord();
         historyList=tripRepository.getHistory("up Coming");
         getAllAsync=tripRepository.getAllToSync();
+    }
+    public List<String> getTitleDistance(){
+        return tripRepository.getTitleDistance();
     }
     public TripTable getTripRowById(long id){
         return tripRepository.getTripTableById(id);

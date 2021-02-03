@@ -124,7 +124,8 @@ public class NotesControl extends AppCompatActivity {
                 intent.getBooleanExtra(HomeFragment.NOTE_INTENT_ways, true),
                 intent.getStringExtra(HomeFragment.NOTE_INTENT_FROM),
                 intent.getStringExtra(HomeFragment.NOTE_INTENT_to),
-                intent.getStringExtra(HomeFragment.NOTE_INTENT_Note));
+                intent.getStringExtra(HomeFragment.NOTE_INTENT_Note),
+                intent.getDoubleExtra(HomeFragment.DISTANCE,0.0));
         notes = intent.getStringExtra(HomeFragment.NOTE_INTENT_Note);
     }
 

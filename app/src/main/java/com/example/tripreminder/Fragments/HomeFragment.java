@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +43,7 @@ public class HomeFragment extends Fragment {
     public static final String NOTE_INTENT_to = "to";
     public static final String NOTE_INTENT_Note = "notes";
     public static final String NOTE_INTENT_FROM = "from";
+    public static final String DISTANCE = "DISTANCE";
     private ImageView imageView;
     List<TripTable> tripsRoom;
 
@@ -102,7 +104,8 @@ public class HomeFragment extends Fragment {
 
                     notesItemOptions(tripTable);
                 } else if (type.equals(RecyclerHomeAdapter.START)) {
-                    startItemOptions();
+
+                     startItemOptions();
                 }
 
             }
@@ -127,6 +130,7 @@ public class HomeFragment extends Fragment {
         intent.putExtra(NOTE_INTENT_to, tripTable.getTo());
         intent.putExtra(NOTE_INTENT_FROM, tripTable.getFrom());
         intent.putExtra(NOTE_INTENT_Note, tripTable.getNotes());
+        intent.putExtra(DISTANCE, tripTable.getDistance());
         startActivity(intent);
     }
 
@@ -143,6 +147,8 @@ public class HomeFragment extends Fragment {
         intent.putExtra(NOTE_INTENT_to, tripTable.getTo());
         intent.putExtra(NOTE_INTENT_FROM, tripTable.getFrom());
         intent.putExtra(NOTE_INTENT_Note, tripTable.getNotes());
+        intent.putExtra(DISTANCE, tripTable.getDistance());
+
 
 
 

@@ -20,8 +20,14 @@ public class TripTable {
     private String from;
     private String to;
     private String notes;
+    private double distance;
 
-    public TripTable(String title, String time, String date, String status, String repetition, boolean ways, String from, String to, String notes) {
+
+    public double getDistance() {
+        return distance;
+    }
+
+    public TripTable(String title, String time, String date, String status, String repetition, boolean ways, String from, String to, String notes, double distance) {
         this.title = title;
         this.time = time;
         this.date = date;
@@ -31,6 +37,7 @@ public class TripTable {
         this.from = from;
         this.to = to;
         this.notes = notes;
+        this.distance = distance;
     }
 
     public void setStatus(String status) {
