@@ -381,7 +381,12 @@ public class LoginActivity extends AppCompatActivity {
     private void saveFromFirebaseToRoom(List<TripTable> trips) {
         tripViewModel.deleteAllTrips();
         for (TripTable table : trips) {
-            tripViewModel.insert(table);
+          new Thread(new Runnable() {
+              @Override
+              public void run() {
+                  tripViewModel.insert(table);
+              }
+          }).start();
         }
     }
 

@@ -47,7 +47,13 @@ public class BaseHomeActivity extends AppCompatActivity {
         mAuth=FirebaseAuth.getInstance();
         currentUser=mAuth.getCurrentUser();
         activityBaseHomeBinding.toolbar.setSubtitle("Upcoming");
-//        activityBaseHomeBinding.toolbar.setOnClickListener(new View.OnClickListener() {
+        activityBaseHomeBinding.toolbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent= new Intent(BaseHomeActivity.this,TransparentActivity.class);
+                startActivity(intent);
+            }
+        });
 //            @Override
 //            public void onClick(View view) {
 //                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {

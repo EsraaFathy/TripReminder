@@ -30,7 +30,7 @@ public class Alarm {
     }
 
     public void prepareAlarm(){
-        Intent intent = new Intent(context,AlertDialog.class);
+        Intent intent = new Intent(context,TransparentActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         if(startPlace !=null){

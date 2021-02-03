@@ -18,6 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TripReminder">
         <activity android:name=".AlertDialog" android:theme="@style/Theme.AppCompat.Dialog"></activity>
+        <activity android:name=".TransparentActivity" android:theme="@style/Theme.AppCompat.Translucent"></activity>
         <activity
             android:name=".MenuItemsForOneElement"
             android:theme="@style/Theme.AppCompat.Dialog" />
