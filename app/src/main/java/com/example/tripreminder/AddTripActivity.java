@@ -31,6 +31,9 @@ import com.example.tripreminder.RoomDataBase.TripTable;
 import com.example.tripreminder.RoomDataBase.TripViewModel;
 import com.example.tripreminder.databinding.ActivityAddTripBinding;
 import com.google.android.gms.maps.model.LatLng;
+
+import com.example.tripreminder.model.Trip;
+
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
@@ -120,12 +123,17 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
                 } else {
                     String repetation = getRepetation();
                     boolean way = getWay();
-                    addTripToRoom(binding.tripNameInput.getText().toString(),
+                     addTripToRoom(binding.tripNameInput.getText().toString(),
                             binding.timeTextView.getText().toString(), binding.dateTextView.getText().toString(), "up Coming",
                             repetation, way,
                             binding.startPointSearchView.getText().toString(),
                             binding.endPointSearchView.getText().toString());
                 }
+
+//                if (end == null)
+//                    Toast.makeText(getApplicationContext(), "Please add Trip Destination", Toast.LENGTH_LONG).show();
+//                else
+//                    prepareAlarm();
 
             }
         });
@@ -209,7 +217,7 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
 
     private void prepareAlarm() {
 
-        Alarm alarm = new Alarm(this, calender, start, end);
+        Alarm alarm = new Alarm(this, calender, start, end, getWay(),binding.tripNameInput.getText().toString());
         alarm.prepareAlarm();
     }
 
@@ -288,6 +296,7 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
         if (title.equals("") || time.equals("") || date.equals("") || repetition.equals("") || to.equals("")) {
             Toast.makeText(this, "Their is some data missed", Toast.LENGTH_SHORT).show();
         } else {
+
             loadingBar.setTitle("Creating new account");
             loadingBar.setMessage("Please wait, while we are creating an account for you");
             loadingBar.setCanceledOnTouchOutside(false);
@@ -303,7 +312,10 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
 
                 }
             }).start();
+
         }
+
+
     }
 
     @SuppressLint("SetTextI18n")
@@ -350,7 +362,6 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
                 binding.repeatingSpinner.setSelection(3);
                 break;
         }
-
 
         if (tripTable.getWays())
             binding.tripType.setSelection(0);
