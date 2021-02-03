@@ -13,7 +13,7 @@ import java.util.List;
 public interface TripDAO {
 
     @Insert
-    void Insert(TripTable tripTable);
+    long Insert(TripTable tripTable);
 
     @Update
     void Update(TripTable tripTable);
@@ -32,5 +32,8 @@ public interface TripDAO {
 
     @Query("SELECT * FROM trips")
     LiveData<List<TripTable>> getAllToAsync();
+
+    @Query("SELECT notes FROM trips WHERE  id = :id LIMIT 1")
+    LiveData<String> getNote(int id);
 }
 

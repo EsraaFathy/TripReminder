@@ -12,8 +12,8 @@ public class TripViewModel extends AndroidViewModel {
     private TripRepository tripRepository;
     private LiveData<List<TripTable>> listLiveData;
     private LiveData<List<TripTable>> historyList;
-   private LiveData<List<TripTable>> getAllAsync;
-
+    private LiveData<List<TripTable>> getAllAsync;
+    private LiveData<String> notes;
 
     public TripViewModel(@NonNull Application application) {
         super(application);
@@ -23,8 +23,11 @@ public class TripViewModel extends AndroidViewModel {
         getAllAsync=tripRepository.getAllToSync();
     }
 
-    public void insert(TripTable tripTable){
-        tripRepository.insert(tripTable);
+    public LiveData<String> getNotes(int idQuary){
+        return tripRepository.getNotes(idQuary);
+    }
+    public long insert(TripTable tripTable){
+        return tripRepository.insert(tripTable);
     }
     public void delete(TripTable tripTable){
         tripRepository.delete(tripTable);
@@ -35,7 +38,6 @@ public class TripViewModel extends AndroidViewModel {
     public void deleteAllTrips(){
         tripRepository.deleteAllRecords();
     }
-
     public LiveData<List<TripTable>>  getAllTrips(){
         return listLiveData;
     }

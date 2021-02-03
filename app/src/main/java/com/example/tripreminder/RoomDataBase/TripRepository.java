@@ -2,7 +2,11 @@ package com.example.tripreminder.RoomDataBase;
 
 import android.app.Application;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
 import java.util.List;
@@ -12,73 +16,109 @@ public class TripRepository {
     private LiveData<List<TripTable>> getAllData;
     private LiveData<List<TripTable>> history;
     private static LiveData<List<TripTable>> allToSync;
+    private static LiveData<String> notes;
+    static String s;
+
+    static Handler handler=new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(@NonNull Message msg) {
+            s=msg.obj.toString();
+            return false;
+        }
+    });
+
+
     public TripRepository(Application application) {
-        TripRoomDataBase tripRoomDataBase =TripRoomDataBase.getInstance(application);
-        tripDAO=tripRoomDataBase.tripDao();
-        getAllData=tripDAO.getAllHomeTrips("up Coming");
-        history=tripDAO.getHistory("up Coming");
-        allToSync=tripDAO.getAllToAsync();
+        TripRoomDataBase tripRoomDataBase = TripRoomDataBase.getInstance(application);
+        tripDAO = tripRoomDataBase.tripDao();
+        getAllData = tripDAO.getAllHomeTrips("up Coming");
+        history = tripDAO.getHistory("up Coming");
+        allToSync = tripDAO.getAllToAsync();
     }
 
-    public void insert(TripTable tripTable){
-        new InsertAsyncTask(tripDAO).execute(tripTable);
+    public long insert(TripTable tripTable) {
+        return tripDAO.Insert(tripTable);
     }
 
-//KHDSKJD
-    public void update(TripTable tripTable){
+    public void update(TripTable tripTable) {
         new UpDateAsyncTask(tripDAO).execute(tripTable);
 
     }
 
-    public LiveData<List<TripTable>> getAllToSync(){
+    public LiveData<String>  getNotes(int id) {
+        return tripDAO.getNote(id);
+    }
+
+    public LiveData<List<TripTable>> getAllToSync() {
         return allToSync;
     }
-    public LiveData<List<TripTable>> getAllRecord(){
+
+    public LiveData<List<TripTable>> getAllRecord() {
         return getAllData;
     }
-    public LiveData<List<TripTable>> getHistory(String upComing){
+
+    public LiveData<List<TripTable>> getHistory(String upComing) {
         return history;
     }
 
-    public void delete(TripTable tripTable){
+    public void delete(TripTable tripTable) {
         new DeleteAsyncTask(tripDAO).execute(tripTable);
     }
 
-    public void deleteAllRecords(){
+    public void deleteAllRecords() {
         new DeleteAllAsyncTask(tripDAO).execute();
     }
 
+    private static class NoteQuery extends AsyncTask<Void, Void, LiveData<String>> {
+        int id;
+        TripDAO tripDAO;
+        public NoteQuery(TripDAO tripDAO,int id) {
+            this.id = id;
+            this.tripDAO=tripDAO;
+        }
 
-//    private static class GetAsyncToFireBase extends AsyncTask<Void,Void,Void>{
-//
-//        @Override
-//        protected Void doInBackground(Void... voids) {
-//            allToSync=tripDAO.getAllTrips();
-//            return null;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Void aVoid) {
-//            super.onPostExecute(aVoid);
-//        }
-//    }
+        @Override
+        protected LiveData<String> doInBackground(Void... voids) {
+            Log.d("TAG", "doInBackground: triprepo"+ id);
+           return tripDAO.getNote(id);
+        }
 
-    private static class InsertAsyncTask extends AsyncTask<TripTable,Void,Void>{
+        @Override
+        protected void onPostExecute(LiveData<String> stringLiveData) {
+            notes=stringLiveData;
+            handler.sendEmptyMessage(0);
+            Log.d("TAG on post",""+notes );
+
+        }
+    }
+
+
+    private static class InsertAsyncTask extends AsyncTask<TripTable, Long, Long> {
+        AsuncFinishListener asuncFinishListener;
         private TripDAO tripDAO;
 
-        public InsertAsyncTask(TripDAO tripDAO) {
+        public static interface AsuncFinishListener{
+            public void returnData(Long l);
+        }
+
+        public InsertAsyncTask(AsuncFinishListener asuncFinishListener, TripDAO tripDAO) {
+            this.asuncFinishListener = asuncFinishListener;
             this.tripDAO = tripDAO;
         }
 
         @Override
-        protected Void doInBackground(TripTable... tripTables) {
-            tripDAO.Insert(tripTables[0]);
-            return null;
+        protected Long doInBackground(TripTable... tripTables) {
+            return tripDAO.Insert(tripTables[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Long aVoid) {
+            asuncFinishListener.returnData(aVoid);
         }
     }
 
 
-    private static class DeleteAsyncTask extends AsyncTask<TripTable,Void,Void>{
+    private static class DeleteAsyncTask extends AsyncTask<TripTable, Void, Void> {
         private TripDAO tripDAO;
 
         public DeleteAsyncTask(TripDAO tripDAO) {
@@ -90,11 +130,11 @@ public class TripRepository {
             tripDAO.Delete(tripTables[0]);
             return null;
         }
+
     }
 
 
-
-    private static class UpDateAsyncTask extends AsyncTask<TripTable,Void,Void>{
+    private static class UpDateAsyncTask extends AsyncTask<TripTable, Void, Void> {
         private TripDAO tripDAO;
 
         public UpDateAsyncTask(TripDAO tripDAO) {
@@ -109,7 +149,7 @@ public class TripRepository {
     }
 
 
-    private static class DeleteAllAsyncTask extends AsyncTask<Void,Void,Void>{
+    private static class DeleteAllAsyncTask extends AsyncTask<Void, Void, Void> {
         private TripDAO tripDAO;
 
         public DeleteAllAsyncTask(TripDAO tripDAO) {

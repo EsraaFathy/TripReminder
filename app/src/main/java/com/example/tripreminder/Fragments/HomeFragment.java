@@ -84,7 +84,6 @@ public class HomeFragment extends Fragment {
                 recyclerView.setAdapter(recyclerHomeAdapter);
             }
         });
-        //saveFromFirebaseToRoom(tripTables);
 
         recyclerHomeAdapter.OnItemClickListener(new RecyclerHomeAdapter.OcCLickListenerAble() {
             @Override
@@ -92,7 +91,13 @@ public class HomeFragment extends Fragment {
                 Toast.makeText(getActivity(), "id= " + type, Toast.LENGTH_SHORT).show();
                 if (type.equals(RecyclerHomeAdapter.MENU)) {
                     menueItemOptions(tripTable);
-//                    Toast.makeText(getActivity(), ""+tripTable.getId(), Toast.LENGTH_SHORT).show();
+                            tripViewModel.getNotes(tripTable.getId()).observe(getActivity(), new Observer<String>() {
+                                @Override
+                                public void onChanged(String s) {
+                                    Toast.makeText(getActivity(), "notes = " + s, Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
                 } else if (type.equals(RecyclerHomeAdapter.NOTES)) {
 
                     notesItemOptions(tripTable);
@@ -138,6 +143,11 @@ public class HomeFragment extends Fragment {
         intent.putExtra(NOTE_INTENT_to, tripTable.getTo());
         intent.putExtra(NOTE_INTENT_FROM, tripTable.getFrom());
         intent.putExtra(NOTE_INTENT_Note, tripTable.getNotes());
+
+
+
+
+
         startActivity(intent);
     }
 

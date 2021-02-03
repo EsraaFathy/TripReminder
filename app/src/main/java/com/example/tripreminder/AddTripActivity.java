@@ -1,5 +1,6 @@
 package com.example.tripreminder;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -10,12 +11,16 @@ import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TableLayout;
@@ -47,18 +52,30 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
     private static final int START_REQUEST = 100;
     private static final int END_REQUEST = 101;
     private Place start, end;
+    private ProgressDialog loadingBar;
+    Long idT;
+
+
     Calendar calender;
+    Handler handler=new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(@NonNull Message msg) {
+            loadingBar.dismiss();
+            ofterGetID();
+            finish();
+            return false;
+        }
+    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_add_trip);
         calender = Calendar.getInstance();
         calender.setTimeInMillis(System.currentTimeMillis());
-
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_add_trip);
         binding.timeTextView.setText(MessageFormat.format("{0}:{1}", calender.getTime().getHours(), calender.getTime().getMinutes()));
         binding.dateTextView.setText(MessageFormat.format("{0}/{1}/{2}", calender.getTime().getDay(), calender.getTime().getMonth() + 1, calender.getTime().getYear() + 1900));
-
+        loadingBar= new ProgressDialog(this);
         getIntentToEditTrip();
         createNotificationChannel();
 
@@ -103,17 +120,21 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
                             binding.startPointSearchView.getText().toString(),
                             binding.endPointSearchView.getText().toString());
                 }
-                if (end == null)
-                    Toast.makeText(getApplicationContext(), "Please add Trip Data", Toast.LENGTH_LONG).show();
-                else
-                    prepareAlarm();
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(getApplicationContext())){
-                    askPermission();
-                }
             }
         });
 
+    }
+
+    private void ofterGetID() {
+        if (end == null)
+            Toast.makeText(getApplicationContext(), "Please add Trip Data", Toast.LENGTH_LONG).show();
+        else
+            prepareAlarm();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(getApplicationContext())) {
+            askPermission();
+        }
     }
 
     @Override // data from the place api
@@ -257,15 +278,24 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
 
     private void addTripToRoom(String title, String time, String date, String status, String repetition, boolean ways, String from, String to) {
         if (title.equals("") || time.equals("") || date.equals("") || repetition.equals("") || to.equals("")) {
-            //Toast.makeText(this, "Their is some data missed", Toast.LENGTH_SHORT).show();
-            Toast.makeText(this, "tile" + title + "\ntime" + time + "\ndate" + date + "\nstatus" + status + "\nper" + repetition + "\nways" +
-                    ways + "\nform" + from + "\nto" + to, Toast.LENGTH_SHORT).show();
-
+            Toast.makeText(this, "Their is some data missed", Toast.LENGTH_SHORT).show();
         } else {
-            TripViewModel tripViewModel;
-            tripViewModel = new ViewModelProvider(AddTripActivity.this, ViewModelProvider.AndroidViewModelFactory.getInstance(AddTripActivity.this.getApplication())).get(TripViewModel.class);
-            tripViewModel.insert(new TripTable(title, time, date, status, repetition, ways, from, to, ""));
-            finish();
+            loadingBar.setTitle("Creating new account");
+            loadingBar.setMessage("Please wait, while we are creating an account for you");
+            loadingBar.setCanceledOnTouchOutside(false);
+            loadingBar.show();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    TripViewModel tripViewModel;
+                    tripViewModel = new ViewModelProvider(AddTripActivity.this, ViewModelProvider.AndroidViewModelFactory.getInstance(AddTripActivity.this.getApplication())).get(TripViewModel.class);
+                    TripTable table = new TripTable(title, time, date, status, repetition, ways, from, to, "");
+                    idT = tripViewModel.insert(table);
+                    Log.d("TAG", "run: " + id);
+                    handler.sendEmptyMessage(1);
+
+                }
+            }).start();
         }
     }
 

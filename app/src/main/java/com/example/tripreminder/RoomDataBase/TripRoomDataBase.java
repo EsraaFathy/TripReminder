@@ -26,7 +26,6 @@ public abstract class TripRoomDataBase extends RoomDatabase {
         }
         return instance;
     }
-//KKNK
     private static RoomDatabase.Callback roomCallBack=new RoomDatabase.Callback()
     {
         @Override
