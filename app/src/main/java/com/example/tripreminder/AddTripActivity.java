@@ -53,6 +53,7 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
     private static final int END_REQUEST = 101;
     private Place start, end;
     private ProgressDialog loadingBar;
+    private TripViewModel tripViewModel;
     Long idT;
 
 
@@ -72,6 +73,8 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_add_trip);
         calender = Calendar.getInstance();
+        tripViewModel = new ViewModelProvider(AddTripActivity.this, ViewModelProvider.AndroidViewModelFactory.getInstance(AddTripActivity.this.getApplication())).get(TripViewModel.class);
+
         calender.setTimeInMillis(System.currentTimeMillis());
         binding.timeTextView.setText(MessageFormat.format("{0}:{1}", calender.getTime().getHours(), calender.getTime().getMinutes()));
         binding.dateTextView.setText(MessageFormat.format("{0}/{1}/{2}", calender.getTime().getDay(), calender.getTime().getMonth() + 1, calender.getTime().getYear() + 1900));
@@ -267,12 +270,11 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
             Toast.makeText(this, "Their is some data missed", Toast.LENGTH_SHORT).show();
 
         } else {
-            TripViewModel tripViewModel;
             TripTable table = new TripTable(title, time, date, status, repetition, ways, from, to, tripTable.getNotes());
-            tripViewModel = new ViewModelProvider(AddTripActivity.this, ViewModelProvider.AndroidViewModelFactory.getInstance(AddTripActivity.this.getApplication())).get(TripViewModel.class);
             table.setId(id);
             tripViewModel.update(table);
             finish();
+
         }
     }
 
@@ -287,11 +289,8 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    TripViewModel tripViewModel;
-                    tripViewModel = new ViewModelProvider(AddTripActivity.this, ViewModelProvider.AndroidViewModelFactory.getInstance(AddTripActivity.this.getApplication())).get(TripViewModel.class);
                     TripTable table = new TripTable(title, time, date, status, repetition, ways, from, to, "");
                     idT = tripViewModel.insert(table);
-                    Log.d("TAG", "run: " + id);
                     handler.sendEmptyMessage(1);
 
                 }
@@ -357,5 +356,18 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
         startActivityForResult(intent, SYSTEM_ALERT_WINDOW_PERMISSION);
     }
 
+
+    private TripTable getTripTableById(long idT){
+        /// TODO call in thread
+        TripTable table1= tripViewModel.getTripRowById(idT);
+        return table1;
+    }
+    private void UpdateStatusByID(int idT,String status){
+        /// TODO call in thread
+        TripTable table1= tripViewModel.getTripRowById(idT);
+        tripTable.setStatus(status);
+        tripTable.setId(idT);
+        tripViewModel.update(tripTable);
+    }
 
 }

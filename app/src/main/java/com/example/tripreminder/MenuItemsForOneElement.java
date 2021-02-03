@@ -1,5 +1,6 @@
 package com.example.tripreminder;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -11,23 +12,33 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.installations.Utils;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MenuItemsForOneElement extends AppCompatActivity {
-    ActivityMenuItemsForOneElementBinding binding;
-    TripTable tripTable;
+    private ActivityMenuItemsForOneElementBinding binding;
+    private TripTable tripTable;
+    private TripViewModel tripViewModel;
+    private String[] stringList;
     int id;
+    private int lenht=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        setContentView();
         binding= DataBindingUtil.setContentView(this,R.layout.activity_menu_items_for_one_element);
+        tripViewModel = new ViewModelProvider(MenuItemsForOneElement.this, ViewModelProvider.AndroidViewModelFactory.getInstance(MenuItemsForOneElement.this.getApplication())).get(TripViewModel.class);
 
         Intent intent=getIntent();
          id = intent.getIntExtra(HomeFragment.NOTE_INTENT_ID,-1);
@@ -41,11 +52,12 @@ public class MenuItemsForOneElement extends AppCompatActivity {
                 intent.getStringExtra(HomeFragment.NOTE_INTENT_FROM),
                 intent.getStringExtra(HomeFragment.NOTE_INTENT_to),
                 intent.getStringExtra(HomeFragment.NOTE_INTENT_Note));
-
+        setTitle(intent.getStringExtra(HomeFragment.NOTE_INTENT_title) + " trip");
         binding.AllNotes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO i dont know
+                getAllNoes(id);
+
             }
         });
         binding.editTrip.setOnClickListener(new View.OnClickListener() {
@@ -104,5 +116,35 @@ public class MenuItemsForOneElement extends AppCompatActivity {
         intent.putExtra(HomeFragment.NOTE_INTENT_FROM, tripTable.getFrom());
         intent.putExtra(HomeFragment.NOTE_INTENT_Note, tripTable.getNotes());
         startActivity(intent);
+    }
+    // TODO used in float icon
+
+    private String[]  getAllNoes(int id){
+
+        tripViewModel.getNotes(id).observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                stringList = s.split("#");
+                AlertDialog alertDialog = new AlertDialog.Builder(MenuItemsForOneElement.this).create();
+                final TextView n = new TextView(MenuItemsForOneElement.this);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT);
+                n.setLayoutParams(lp);
+                alertDialog.setView(n);
+                for (String value : stringList) {
+                    n.append("   "+value+"\n");
+                }
+                alertDialog.setTitle("Your Notes");
+                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
+            }
+        });
+        return stringList;
     }
 }

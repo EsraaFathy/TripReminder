@@ -35,5 +35,8 @@ public interface TripDAO {
 
     @Query("SELECT notes FROM trips WHERE  id = :id LIMIT 1")
     LiveData<String> getNote(int id);
+
+    @Query("SELECT * FROM trips WHERE  id = :id LIMIT 1")
+    TripTable getTripTableById(long id);
 }
 

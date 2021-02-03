@@ -35,6 +35,7 @@ public class NotesControl extends AppCompatActivity {
     String notes;
     String newNote;
     List<String> tripNotes = new ArrayList<>();
+    private ImageView back;
 
     int id = -1;
 
@@ -42,33 +43,35 @@ public class NotesControl extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notes_control);
+        back=findViewById(R.id.backNote);
         getTripIntent();
         recyclerViewPopulating();
         tripViewModel = new ViewModelProvider(NotesControl.this, ViewModelProvider.AndroidViewModelFactory.getInstance(NotesControl.this.getApplication())).get(TripViewModel.class);
-        tripViewModel.getAllTrips().observe(NotesControl.this, new Observer<List<TripTable>>() {
+        tripViewModel.getNotes(id).observe(this, new Observer<String>() {
             @Override
-            public void onChanged(List<TripTable> tripTables) {
+            public void onChanged(String s) {
                 tripNotes.clear();
-
-                for (TripTable table : tripTables) {
-                    if (id == table.getId())
-                        notes = table.getNotes();
-                }
-                if (notes.equals("no Notes yet")){
+                notes = s;
+                if (notes.equals("no Notes yet") || notes.equals("")) {
                     recyclerView.setVisibility(View.INVISIBLE);
-                }else {
+                } else {
                     recyclerView.setVisibility(View.VISIBLE);
                     splitNotes(notes);
                     noteAdapter.setNotesList(tripNotes);
                     recyclerView.setAdapter(noteAdapter);
-                    if (tripNotes.size() == 0) {
-                        recyclerView.setVisibility(View.INVISIBLE);
-                    }
                 }
             }
         });
         editNotePopulating();
         upDateToRoom(tripTable, id);
+
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
 
     }
@@ -79,7 +82,6 @@ public class NotesControl extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dialgImplementation();
-
             }
         });
 
@@ -98,7 +100,11 @@ public class NotesControl extends AppCompatActivity {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         newNote = input.getText().toString();
-                        notes = notes + "#" + newNote;
+                        if (notes.equals("no Notes yet") || notes.equals("")) {
+                            notes = newNote;
+                        } else {
+                            notes = notes + "#" + newNote;
+                        }
                         updateNotesInRoom(tripTable, notes);
                         dialog.dismiss();
                     }
@@ -126,17 +132,15 @@ public class NotesControl extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerViewNotes);
         noteAdapter = new NoteAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-
         noteAdapter.OnItemClickListener(new NoteAdapter.SetOnClickListener() {
             @Override
             public void onClickListener(int position, String viewType) {
                 // TODO switch to definnd the view
-                //deleteNote();
+                //deleteNote
                 if (viewType.equals("delete")) {
                     Toast.makeText(NotesControl.this, "deledte", Toast.LENGTH_SHORT).show();
                     deleteNote(position);
-                    //updateNotesInRoom(tripTable,"note");
+                    updateNotesInRoom(tripTable, notes);
                 }
             }
         });
@@ -147,15 +151,14 @@ public class NotesControl extends AppCompatActivity {
         notes = "no Notes yet";
         for (int i = 0; i < tripNotes.size(); i++) {
 
-            if (tripNotes.get(i)!="no Notes yet"){
+            if (!tripNotes.get(i).equals("no Notes yet")) {
                 if (i == 0)
                     notes = tripNotes.get(i);
                 else
-                notes = notes + "#" + tripNotes.get(i);
+                    notes = notes + "#" + tripNotes.get(i);
             }
 
         }
-
         updateNotesInRoom(tripTable, notes);
         splitNotes(notes);
         recyclerView.removeAllViews();
@@ -166,8 +169,6 @@ public class NotesControl extends AppCompatActivity {
 
     private void upDateToRoom(TripTable tripTable, int id) {
         if (id != -1) {
-            TripViewModel tripViewModel;
-            tripViewModel = new ViewModelProvider(NotesControl.this, ViewModelProvider.AndroidViewModelFactory.getInstance(NotesControl.this.getApplication())).get(TripViewModel.class);
             tripTable.setId(id);
             tripViewModel.update(tripTable);
         }
@@ -185,5 +186,9 @@ public class NotesControl extends AppCompatActivity {
         tripTable.setNotes(notes);
         tripViewModel.update(tripTable);
     }
+
+
+
+
 }
 

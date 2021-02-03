@@ -17,17 +17,19 @@ public class TripRepository {
     private LiveData<List<TripTable>> history;
     private static LiveData<List<TripTable>> allToSync;
     private static LiveData<String> notes;
-    static String s;
+//    static String s;
 
-    static Handler handler=new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(@NonNull Message msg) {
-            s=msg.obj.toString();
-            return false;
-        }
-    });
+//    static Handler handler=new Handler(new Handler.Callback() {
+//        @Override
+//        public boolean handleMessage(@NonNull Message msg) {
+//            s=msg.obj.toString();
+//            return false;
+//        }
+//    });
 
-
+    public TripTable getTripTableById(long l){
+        return tripDAO.getTripTableById(l);
+    }
     public TripRepository(Application application) {
         TripRoomDataBase tripRoomDataBase = TripRoomDataBase.getInstance(application);
         tripDAO = tripRoomDataBase.tripDao();
@@ -69,53 +71,53 @@ public class TripRepository {
         new DeleteAllAsyncTask(tripDAO).execute();
     }
 
-    private static class NoteQuery extends AsyncTask<Void, Void, LiveData<String>> {
-        int id;
-        TripDAO tripDAO;
-        public NoteQuery(TripDAO tripDAO,int id) {
-            this.id = id;
-            this.tripDAO=tripDAO;
-        }
+//    private static class NoteQuery extends AsyncTask<Void, Void, LiveData<String>> {
+//        int id;
+//        TripDAO tripDAO;
+//        public NoteQuery(TripDAO tripDAO,int id) {
+//            this.id = id;
+//            this.tripDAO=tripDAO;
+//        }
+//
+//        @Override
+//        protected LiveData<String> doInBackground(Void... voids) {
+//            Log.d("TAG", "doInBackground: triprepo"+ id);
+//           return tripDAO.getNote(id);
+//        }
+//
+//        @Override
+//        protected void onPostExecute(LiveData<String> stringLiveData) {
+//            notes=stringLiveData;
+//            handler.sendEmptyMessage(0);
+//            Log.d("TAG on post",""+notes );
+//
+//        }
+//    }
 
-        @Override
-        protected LiveData<String> doInBackground(Void... voids) {
-            Log.d("TAG", "doInBackground: triprepo"+ id);
-           return tripDAO.getNote(id);
-        }
 
-        @Override
-        protected void onPostExecute(LiveData<String> stringLiveData) {
-            notes=stringLiveData;
-            handler.sendEmptyMessage(0);
-            Log.d("TAG on post",""+notes );
-
-        }
-    }
-
-
-    private static class InsertAsyncTask extends AsyncTask<TripTable, Long, Long> {
-        AsuncFinishListener asuncFinishListener;
-        private TripDAO tripDAO;
-
-        public static interface AsuncFinishListener{
-            public void returnData(Long l);
-        }
-
-        public InsertAsyncTask(AsuncFinishListener asuncFinishListener, TripDAO tripDAO) {
-            this.asuncFinishListener = asuncFinishListener;
-            this.tripDAO = tripDAO;
-        }
-
-        @Override
-        protected Long doInBackground(TripTable... tripTables) {
-            return tripDAO.Insert(tripTables[0]);
-        }
-
-        @Override
-        protected void onPostExecute(Long aVoid) {
-            asuncFinishListener.returnData(aVoid);
-        }
-    }
+//    private static class InsertAsyncTask extends AsyncTask<TripTable, Long, Long> {
+//        AsuncFinishListener asuncFinishListener;
+//        private TripDAO tripDAO;
+//
+//        public static interface AsuncFinishListener{
+//            public void returnData(Long l);
+//        }
+//
+//        public InsertAsyncTask(AsuncFinishListener asuncFinishListener, TripDAO tripDAO) {
+//            this.asuncFinishListener = asuncFinishListener;
+//            this.tripDAO = tripDAO;
+//        }
+//
+//        @Override
+//        protected Long doInBackground(TripTable... tripTables) {
+//            return tripDAO.Insert(tripTables[0]);
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Long aVoid) {
+//            asuncFinishListener.returnData(aVoid);
+//        }
+//    }
 
 
     private static class DeleteAsyncTask extends AsyncTask<TripTable, Void, Void> {
