@@ -57,6 +57,7 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.util.Arrays;
@@ -70,7 +71,6 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
     ActivityAddTripBinding binding;
     private int id = -1;
     private TripTable tripTable;
-
     private static final int SYSTEM_ALERT_WINDOW_PERMISSION = 2084;
     private static final String API_KEY = "AIzaSyA7dH75J8SZ0-GkeHqHANbflPhdpbfU5yI";
     private static final int START_REQUEST = 100;
@@ -78,7 +78,7 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
     private Place start, end;
     private ProgressDialog loadingBar;
     private TripViewModel tripViewModel;
-    Long idT;
+    private Long idT;
     private HandelLocation handelLocation;
     private double distance = 0.0;
     private Location mlocation;
@@ -99,13 +99,14 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
         @Override
         public boolean handleMessage(@NonNull Message msg) {
             Location l = (Location) msg.obj;
+            String fullAddress=getStringLocation(l);
             distance = calculationByDistance(l, end.getLatLng());
             TripTable table = new TripTable(binding.tripNameInput.getText().toString(),
                     binding.timeTextView.getText().toString(),
                     binding.dateTextView.getText().toString(),
                     "up Coming",
-                    repetation, way,
-                    "Your loucation",
+                    getRepetation(), getWay(),
+                    fullAddress,
                     binding.endPointSearchView.getText().toString(),
                     "",
                     distance,
@@ -478,7 +479,21 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
         return table1;
     }
 
-
+    private String getStringLocation(Location mlocation){
+        Geocoder geocoder;
+        List<Address> addresses = null;
+        geocoder = new Geocoder(AddTripActivity.this, Locale.getDefault());
+        try {
+            addresses = geocoder.getFromLocation(mlocation.getLatitude(), mlocation.getLongitude(), 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String address = addresses.get(0).getAddressLine(0);
+        String city = addresses.get(0).getLocality();
+        String state = addresses.get(0).getAdminArea();
+        String country = addresses.get(0).getCountryName();
+        return country+","+state+", "+city+", "+address;
+    }
     private double calculationByDistance(LatLng StartP, LatLng EndP) {
         int Radius = 6371;// radius of earth in Km
         double lat1 = StartP.latitude;
@@ -577,6 +592,8 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
                         message.obj = mlocation;
                         handlerLocation.sendMessage(message);
 
+
+
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -589,6 +606,7 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
             }
             //return currentLocation;
         }
+
 
         public boolean chickPermition() {
             if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
