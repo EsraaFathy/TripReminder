@@ -16,14 +16,14 @@ import java.util.Random;
 
 public class Alarm {
 
-    Calendar calender;
-    Context context;
-    Place startPlace,endPlace;
-    String name;
-    long idT;
-    boolean ways;
-    Location startL;
-    public Alarm(Context context, Calendar calendar, Place start, Place end , boolean way, String name,long idT){
+    private Calendar calender;
+    private Context context;
+    private Place startPlace,endPlace;
+    private String name,repetation;
+    private long idT;
+    private boolean ways;
+    private Location startL;
+    public Alarm(Context context, Calendar calendar, Place start, Place end , boolean way, String name,long idT,String repetation){
         this.context = context;
         this.calender = calendar;
         startPlace = start;
@@ -31,9 +31,10 @@ public class Alarm {
         this.ways = way;
         this.name = name;
         this.idT=idT;
+        this.repetation = repetation;
     }
 
-    public Alarm(Context context, Calendar calendar, Location start, Place end , boolean way, String name,long idT){
+    public Alarm(Context context, Calendar calendar, Location start, Place end , boolean way, String name,long idT,String repetation){
         this.context = context;
         this.calender = calendar;
         this.startL = start;
@@ -41,6 +42,7 @@ public class Alarm {
         this.ways = way;
         this.name = name;
         this.idT=idT;
+        this.repetation = repetation;
     }
 
     public void prepareAlarm(){
@@ -65,12 +67,29 @@ public class Alarm {
         //intent.putExtra("tripId",idT);
         //final int random = new Random().nextInt(1000000);
         intent.putExtra("ID", idT);
+        intent.putExtra("repetation", repetation);
 
         PendingIntent pendingIntent = PendingIntent.getActivity(context, (int)idT, intent, 0);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
-        long period = calender.getTimeInMillis() ;
+        long triggerAt = calender.getTimeInMillis() ;
 
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP,period,pendingIntent);
+        switch(repetation){
+            case "No Repeated":
+                Log.i("log", "no repetation");
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP,triggerAt,pendingIntent);
+                break;
+            case "Repeated Daily":
+                Log.i("log", "repetation daily");
+                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,triggerAt,AlarmManager.INTERVAL_DAY,pendingIntent);
+                break;
+            case "Repeated weekly":
+                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,triggerAt,AlarmManager.INTERVAL_DAY*7,pendingIntent);
+                break;
+            case "Repeated Monthly":
+                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,triggerAt,AlarmManager.INTERVAL_DAY * 30 ,pendingIntent);
+                break;
+        }
+
     }
 }

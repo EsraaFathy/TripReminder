@@ -216,13 +216,19 @@ public class TransparentActivity extends AppCompatActivity {
         r.play();
         final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
         builder.setCancelable(false);
-        builder.setMessage("Are you sure?");
+        builder.setTitle(myIntent.getStringExtra("tripName"));
+        builder.setMessage("Now it's time for trip !!");
         builder.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 idT= (int) myIntent.getLongExtra("ID",-1);
                 notificationManager.cancel((int)idT);
-                UpdateStatusByID(idT,"Canceled");
+
+                if(myIntent.getStringExtra("repetation").equals("no repetation")){
+                    Log.i("log", "no repetation in trans");
+                    UpdateStatusByID(idT,"Canceled");
+                }
+
                 finish();
                 //todo:: cancel trip in database
 
