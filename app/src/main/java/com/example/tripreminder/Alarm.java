@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.util.Log;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -21,10 +22,21 @@ public class Alarm {
     String name;
     long idT;
     boolean ways;
+    Location startL;
     public Alarm(Context context, Calendar calendar, Place start, Place end , boolean way, String name,long idT){
         this.context = context;
         this.calender = calendar;
         startPlace = start;
+        endPlace = end;
+        this.ways = way;
+        this.name = name;
+        this.idT=idT;
+    }
+
+    public Alarm(Context context, Calendar calendar, Location start, Place end , boolean way, String name,long idT){
+        this.context = context;
+        this.calender = calendar;
+        this.startL = start;
         endPlace = end;
         this.ways = way;
         this.name = name;
@@ -40,6 +52,10 @@ public class Alarm {
             intent.putExtra("sourceLat", startPlace.getLatLng().latitude);
             intent.putExtra("sourceLon", startPlace.getLatLng().longitude);
             intent.putExtra("sourceName", startPlace.getName());
+        }else {
+            intent.putExtra("sourceLat", startL.getLatitude());
+            intent.putExtra("sourceLon", startL.getLongitude());
+            intent.putExtra("sourceName", "Your Location");
         }
         intent.putExtra("destinationLat", endPlace.getLatLng().latitude);
         intent.putExtra("destinationLon", endPlace.getLatLng().longitude);
@@ -56,6 +72,5 @@ public class Alarm {
         long period = calender.getTimeInMillis() ;
 
         alarmManager.setExact(AlarmManager.RTC_WAKEUP,period,pendingIntent);
-        Toast.makeText(context, "period : "+period, Toast.LENGTH_SHORT).show();
     }
 }

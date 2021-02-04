@@ -40,6 +40,7 @@ public class TransparentActivity extends AppCompatActivity {
 
     private String SOURCE_URL= "http://maps.google.com/maps?saddr=";
     private String DEST_URL= "http://maps.google.com/maps?daddr=";
+    private String note;
 
     Intent myIntent;
     PendingIntent startPendingIntent;
@@ -47,10 +48,23 @@ public class TransparentActivity extends AppCompatActivity {
     NotificationUtils notificationUtils;
     NotificationManager notificationManager;
     long idT;
+    private String status;
     Handler handler=new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(@NonNull Message message) {
             startFloatingIcon(note);
+            return false;
+        }
+    });
+    Handler statusHandler=new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(@NonNull Message msg) {
+            if (!status.equals("up Coming")){
+                Log.d("TAG", "handleMessage: ");
+                finish();
+            }else {
+                afterHanderStatus();
+            }
             return false;
         }
     });
@@ -61,50 +75,7 @@ public class TransparentActivity extends AppCompatActivity {
         idT= myIntent.getLongExtra("ID",-1);
         Log.i("ID",""+idT);
         tripViewModel = new ViewModelProvider(TransparentActivity.this, ViewModelProvider.AndroidViewModelFactory.getInstance(TransparentActivity.this.getApplication())).get(TripViewModel.class);
-        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        notificationUtils=new NotificationUtils(getApplicationContext());
-        notificationManager=notificationUtils.getManager();
-        Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
-        r.play();
-        final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
-        builder.setCancelable(false);
-        builder.setMessage("Are you sure?");
-        builder.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                idT= (int) myIntent.getLongExtra("ID",-1);
-                notificationManager.cancel((int)idT);
-                UpdateStatusByID(idT,"Canceled");
-                finish();
-                //todo:: cancel trip in database
-
-            }
-        });
-        builder.setNegativeButton("Later", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                // id long
-                createNotification(getApplicationContext(),idT);
-                finish();
-
-            }
-        });
-        builder.setNeutralButton("Start", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                Log.i("startID",""+idT);
-                notificationManager.cancel((int)idT);
-                UpdateStatusByID(idT,"Done");
-                startTrip();
-
-                finish();
-
-            }
-        });
-        final AlertDialog dialog = builder.create();
-        dialog.show();
-        dialog.getButton(dialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(this, R.color.colorPrim));
-        dialog.getButton(dialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(this, R.color.colorPrim));
+        getStatusById(idT);
     }
 
     private void createNotification(Context context,long ID){
@@ -136,7 +107,6 @@ public class TransparentActivity extends AppCompatActivity {
 
 
     }
-    String note;
 
     private String GetNotes(long id){
         tripViewModel.getNotes((int)id).observe(TransparentActivity.this, new Observer<String>() {
@@ -237,6 +207,62 @@ public class TransparentActivity extends AppCompatActivity {
             }
         }.start();
 
+    }
+    private void afterHanderStatus(){
+        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        notificationUtils=new NotificationUtils(getApplicationContext());
+        notificationManager=notificationUtils.getManager();
+        Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+        r.play();
+        final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        builder.setCancelable(false);
+        builder.setMessage("Are you sure?");
+        builder.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                idT= (int) myIntent.getLongExtra("ID",-1);
+                notificationManager.cancel((int)idT);
+                UpdateStatusByID(idT,"Canceled");
+                finish();
+                //todo:: cancel trip in database
+
+            }
+        });
+        builder.setNegativeButton("Later", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                // id long
+                createNotification(getApplicationContext(),idT);
+                finish();
+
+            }
+        });
+        builder.setNeutralButton("Start", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Log.i("startID",""+idT);
+                notificationManager.cancel((int)idT);
+                UpdateStatusByID(idT,"Done");
+                startTrip();
+
+                finish();
+
+            }
+        });
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(dialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(this, R.color.colorPrim));
+        dialog.getButton(dialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(this, R.color.colorPrim));
+
+    }
+    private void getStatusById(long id){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                status=tripViewModel.getStatusById(id);
+                statusHandler.sendEmptyMessage(0);
+            }
+        }).start();
     }
 
 }

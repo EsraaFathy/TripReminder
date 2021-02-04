@@ -122,13 +122,6 @@ public class HomeFragment extends Fragment {
                 Toast.makeText(getActivity(), "id= " + type, Toast.LENGTH_SHORT).show();
                 if (type.equals(RecyclerHomeAdapter.MENU)) {
                     menueItemOptions(tripTable);
-                            tripViewModel.getNotes(tripTable.getId()).observe(getActivity(), new Observer<String>() {
-                                @Override
-                                public void onChanged(String s) {
-                                    Toast.makeText(getActivity(), "notes = " + s, Toast.LENGTH_SHORT).show();
-                                }
-                            });
-
                 } else if (type.equals(RecyclerHomeAdapter.NOTES)) {
 
                     notesItemOptions(tripTable);

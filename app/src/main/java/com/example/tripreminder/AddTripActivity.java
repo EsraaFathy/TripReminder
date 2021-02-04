@@ -3,21 +3,30 @@ package com.example.tripreminder;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.provider.Settings;
 import android.util.Log;
@@ -30,10 +39,18 @@ import com.example.tripreminder.Fragments.HomeFragment;
 import com.example.tripreminder.RoomDataBase.TripTable;
 import com.example.tripreminder.RoomDataBase.TripViewModel;
 import com.example.tripreminder.databinding.ActivityAddTripBinding;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 
 import com.example.tripreminder.model.Trip;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
@@ -60,11 +77,14 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
     private ProgressDialog loadingBar;
     private TripViewModel tripViewModel;
     Long idT;
-    private double distance=0.0;
-
+    private HandelLocation handelLocation;
+    private double distance = 0.0;
+    private Location mlocation;
+    String repetation;
+    boolean way;
 
     Calendar calender;
-    Handler handler=new Handler(new Handler.Callback() {
+    Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(@NonNull Message msg) {
             loadingBar.dismiss();
@@ -73,6 +93,48 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
             return false;
         }
     });
+    Handler handlerLocation = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(@NonNull Message msg) {
+            Location l = (Location) msg.obj;
+            distance = calculationByDistance(l, end.getLatLng());
+            TripTable table = new TripTable(binding.tripNameInput.getText().toString(),
+                    binding.timeTextView.getText().toString(),
+                    binding.dateTextView.getText().toString(),
+                    "up Coming",
+                    repetation, way,
+                    "Your loucation",
+                    binding.endPointSearchView.getText().toString(),
+                    "",
+                    distance,
+                    l.getLatitude(),
+                    l.getLongitude(),
+                    end.getLatLng().latitude,
+                    end.getLatLng().longitude);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    idT = tripViewModel.insert(table);
+                    loadingBar.dismiss();
+                    ofterGetID();
+                    finish();
+                }
+            }).start();
+            return false;
+        }
+    });
+
+    @Override
+
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == HandelLocation.LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                handelLocation.getLocation();
+
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,11 +142,13 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
         binding = DataBindingUtil.setContentView(this, R.layout.activity_add_trip);
         calender = Calendar.getInstance();
         tripViewModel = new ViewModelProvider(AddTripActivity.this, ViewModelProvider.AndroidViewModelFactory.getInstance(AddTripActivity.this.getApplication())).get(TripViewModel.class);
-
+        handelLocation = new HandelLocation(this);
+        repetation = getRepetation();
+        way = getWay();
         calender.setTimeInMillis(System.currentTimeMillis());
         binding.timeTextView.setText(MessageFormat.format("{0}:{1}", calender.getTime().getHours(), calender.getTime().getMinutes()));
         binding.dateTextView.setText(MessageFormat.format("{0}/{1}/{2}", calender.getTime().getDay(), calender.getTime().getMonth() + 1, calender.getTime().getYear() + 1900));
-        loadingBar= new ProgressDialog(this);
+        loadingBar = new ProgressDialog(this);
         getIntentToEditTrip();
         createNotificationChannel();
 
@@ -121,14 +185,26 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
                     Toast.makeText(AddTripActivity.this, "bla bla", Toast.LENGTH_SHORT).show();
                     editTripFromUI();
                 } else {
-                    String repetation = getRepetation();
-                    boolean way = getWay();
-                     addTripToRoom(binding.tripNameInput.getText().toString(),
-                            binding.timeTextView.getText().toString(), binding.dateTextView.getText().toString(), "up Coming",
-                            repetation, way,
-                            binding.startPointSearchView.getText().toString(),
-                            binding.endPointSearchView.getText().toString(),
-                             start.getLatLng().latitude,start.getLatLng().longitude,end.getLatLng().latitude,end.getLatLng().longitude);
+                    if (start == null) {
+                        addTripToRoom(binding.tripNameInput.getText().toString(),
+                                binding.timeTextView.getText().toString(), binding.dateTextView.getText().toString(), "up Coming",
+                                repetation, way,
+                                binding.startPointSearchView.getText().toString(),
+                                binding.endPointSearchView.getText().toString(),
+                                0.0,
+                                0.0,
+                                end.getLatLng().latitude,
+                                end.getLatLng().longitude);
+                    } else {
+                        addTripToRoom(binding.tripNameInput.getText().toString(),
+                                binding.timeTextView.getText().toString(), binding.dateTextView.getText().toString(), "up Coming",
+                                repetation, way,
+                                binding.startPointSearchView.getText().toString(),
+                                binding.endPointSearchView.getText().toString(),
+                                start.getLatLng().latitude,
+                                start.getLatLng().longitude,
+                                end.getLatLng().latitude, end.getLatLng().longitude);
+                    }
                 }
 
 //                if (end == null)
@@ -217,10 +293,14 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
     }
 
     private void prepareAlarm() {
-
-        Alarm alarm = new Alarm(this, calender, start, end, getWay()
-                ,binding.tripNameInput.getText().toString(),idT);
+        Alarm alarm;
+        if (start == null)
+            alarm = new Alarm(this, calender, mlocation, end, getWay(), binding.tripNameInput.getText().toString(), idT);
+        else {
+            alarm = new Alarm(this, calender, start, end, getWay(), binding.tripNameInput.getText().toString(), idT);
+        }
         alarm.prepareAlarm();
+
     }
 
     private void createNotificationChannel() {
@@ -244,7 +324,7 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
                 binding.timeTextView.getText().toString(), binding.dateTextView.getText().toString(), tripTable.getStatus(),
                 repetation, way,
                 binding.startPointSearchView.getText().toString(),
-                binding.endPointSearchView.getText().toString(),start.getLatLng().latitude,start.getLatLng().longitude,end.getLatLng().latitude,end.getLatLng().longitude);
+                binding.endPointSearchView.getText().toString(), start.getLatLng().latitude, start.getLatLng().longitude, end.getLatLng().latitude, end.getLatLng().longitude);
     }
 
     private boolean getWay() {
@@ -280,13 +360,13 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
         return repetation;
     }
 
-    private void editTripInRoom(String title, String time, String date, String status, String repetition, boolean ways, String from, String to,double latStart,double LongStart,double LatEnd,double longEnd) {
+    private void editTripInRoom(String title, String time, String date, String status, String repetition, boolean ways, String from, String to, double latStart, double LongStart, double LatEnd, double longEnd) {
         if (title.equals("") || time.equals("") || date.equals("") || repetition.equals("") || to.equals("")) {
             Toast.makeText(this, "Their is some data missed", Toast.LENGTH_SHORT).show();
 
         } else {
-            distance=calculationByDistance(start.getLatLng(),end.getLatLng());
-            TripTable table = new TripTable(title, time, date, status, repetition, ways, from, to, tripTable.getNotes(),distance,latStart,LongStart,LatEnd,longEnd);
+            distance = calculationByDistance(start.getLatLng(), end.getLatLng());
+            TripTable table = new TripTable(title, time, date, status, repetition, ways, from, to, tripTable.getNotes(), distance, latStart, LongStart, LatEnd, longEnd);
             table.setId(id);
             tripViewModel.update(table);
             finish();
@@ -294,26 +374,29 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
         }
     }
 
-    private void addTripToRoom(String title, String time, String date, String status, String repetition, boolean ways, String from, String to,double latStart,double LongStart,double LatEnd,double longEnd) {
+    private void addTripToRoom(String title, String time, String date, String status, String repetition, boolean ways, String from, String to, double latStart, double LongStart, double LatEnd, double longEnd) {
         if (title.equals("") || time.equals("") || date.equals("") || repetition.equals("") || to.equals("")) {
             Toast.makeText(this, "Their is some data missed", Toast.LENGTH_SHORT).show();
         } else {
-
             loadingBar.setTitle("Creating new account");
             loadingBar.setMessage("Please wait, while we are creating an account for you");
             loadingBar.setCanceledOnTouchOutside(false);
             loadingBar.show();
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    distance=calculationByDistance(start.getLatLng(),end.getLatLng());
-                    Log.d("TAG", "run distance: "+distance);
-                    TripTable table = new TripTable(title, time, date, status, repetition, ways, from, to, "",distance,latStart,LongStart,LatEnd,longEnd);
-                    idT = tripViewModel.insert(table);
-                    handler.sendEmptyMessage(1);
 
-                }
-            }).start();
+            if (from.equals("")) {
+                handelLocation.getLocation();
+            } else {
+                distance = calculationByDistance(start.getLatLng(), end.getLatLng());
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("TAG", "run distance: " + distance);
+                        TripTable table = new TripTable(title, time, date, status, repetition, ways, from, to, "", distance, latStart, LongStart, LatEnd, longEnd);
+                        idT = tripViewModel.insert(table);
+                        handler.sendEmptyMessage(1);
+                    }
+                }).start();
+            }
 
         }
 
@@ -337,11 +420,11 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
                     intent.getStringExtra(HomeFragment.NOTE_INTENT_FROM),
                     intent.getStringExtra(HomeFragment.NOTE_INTENT_to),
                     intent.getStringExtra(HomeFragment.NOTE_INTENT_Note),
-                    intent.getDoubleExtra(HomeFragment.DISTANCE,0.0),
-                    intent.getDoubleExtra(HomeFragment.LatStart,0.0),
-                    intent.getDoubleExtra(HomeFragment.LongStart,0.0),
-                    intent.getDoubleExtra(HomeFragment.LatEnd,0.0),
-                    intent.getDoubleExtra(HomeFragment.LongEnd,0.0));
+                    intent.getDoubleExtra(HomeFragment.DISTANCE, 0.0),
+                    intent.getDoubleExtra(HomeFragment.LatStart, 0.0),
+                    intent.getDoubleExtra(HomeFragment.LongStart, 0.0),
+                    intent.getDoubleExtra(HomeFragment.LatEnd, 0.0),
+                    intent.getDoubleExtra(HomeFragment.LongEnd, 0.0));
             editTrip(tripTable);
         }
     }
@@ -383,14 +466,14 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
     }
 
 
-    private TripTable getTripTableById(long idT){
+    private TripTable getTripTableById(long idT) {
         /// TODO call in thread
-        TripTable table1= tripViewModel.getTripRowById(idT);
+        TripTable table1 = tripViewModel.getTripRowById(idT);
         return table1;
     }
 
 
-    public double calculationByDistance(LatLng StartP, LatLng EndP) {
+    private double calculationByDistance(LatLng StartP, LatLng EndP) {
         int Radius = 6371;// radius of earth in Km
         double lat1 = StartP.latitude;
         double lat2 = EndP.latitude;
@@ -414,5 +497,125 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
 
         return Radius * c;
     }
+
+    private double calculationByDistance(Location location, LatLng EndP) {
+        int Radius = 6371;// radius of earth in Km
+        double lat1 = location.getLatitude();
+        double lat2 = EndP.latitude;
+        double lon1 = location.getLongitude();
+        double lon2 = EndP.longitude;
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                + Math.cos(Math.toRadians(lat1))
+                * Math.cos(Math.toRadians(lat2)) * Math.sin(dLon / 2)
+                * Math.sin(dLon / 2);
+        double c = 2 * Math.asin(Math.sqrt(a));
+        double valueResult = Radius * c;
+        double km = valueResult / 1;
+        DecimalFormat newFormat = new DecimalFormat("####");
+        int kmInDec = Integer.valueOf(newFormat.format(km));
+        double meter = valueResult % 1000;
+        int meterInDec = Integer.valueOf(newFormat.format(meter));
+        Log.i("Radius Value", "" + valueResult + "   KM  " + kmInDec
+                + " Meter   " + meterInDec);
+
+        return Radius * c;
+    }
+
+
+    public class HandelLocation {
+        private final Context context;
+        public final static int LOCATION_PERMISSION_REQUEST_CODE = 1234;
+        private final FusedLocationProviderClient fusedLocationProviderClient;
+        private Location currentLocation;
+        private HandelLocation mangingLocation;
+        Geocoder geocoder;
+
+        @SuppressLint("MissingPermission")
+        private HandelLocation(Context context) {
+            this.context = context;
+            geocoder = new Geocoder(context);
+            LocationCallback mLocationCallback = new LocationCallback() {
+                @Override
+                public void onLocationResult(LocationResult locationResult) {
+                    super.onLocationResult(locationResult);
+                }
+            };
+
+            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
+            LocationRequest locationRequest = LocationRequest.create();
+            locationRequest.setInterval(10000);
+            locationRequest.setFastestInterval(5000);
+            locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            fusedLocationProviderClient.requestLocationUpdates(locationRequest, mLocationCallback, Looper.myLooper());
+        }
+
+        public HandelLocation getMangingLocationinstance(Context context) {
+            if (mangingLocation == null) {
+                mangingLocation = new HandelLocation(context);
+            }
+            return mangingLocation;
+        }
+
+        @SuppressLint("MissingPermission")
+        public void getLocation() {
+            Task<Location> task;
+            if (chickPermition()) {
+                task = fusedLocationProviderClient.getLastLocation();
+                task.addOnSuccessListener(new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        mlocation = location;
+                        Message message = new Message();
+                        message.obj = mlocation;
+                        handlerLocation.sendMessage(message);
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("TAG", "Failed");
+                    }
+                });
+            } else {
+                requestPremition();
+            }
+            //return currentLocation;
+        }
+
+        public boolean chickPermition() {
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                return true;
+            }
+            return false;
+        }
+
+        public void requestPremition() {
+            ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+        }
+
+        public void requestResult(int requestCode, String[] permissions, int[] grantResults) {
+            Log.d("TAG", "requestResult: ");
+        }
+
+
+        public void verifyLocationEnabled() {
+            LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+            final boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            if (!gpsEnabled) {
+                enableLocationSitting();
+            }
+
+        }
+
+        public void enableLocationSitting() {
+            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            context.startActivity(intent);
+        }
+    }
+
 
 }
