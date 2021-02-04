@@ -19,6 +19,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
@@ -56,11 +57,13 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import static androidx.core.app.ActivityCompat.startActivityForResult;
 
@@ -68,7 +71,6 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
     ActivityAddTripBinding binding;
     private int id = -1;
     private TripTable tripTable;
-
     private static final int SYSTEM_ALERT_WINDOW_PERMISSION = 2084;
     private static final String API_KEY = "AIzaSyA7dH75J8SZ0-GkeHqHANbflPhdpbfU5yI";
     private static final int START_REQUEST = 100;
@@ -76,7 +78,7 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
     private Place start, end;
     private ProgressDialog loadingBar;
     private TripViewModel tripViewModel;
-    Long idT;
+    private Long idT;
     private HandelLocation handelLocation;
     private double distance = 0.0;
     private Location mlocation;
@@ -97,13 +99,14 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
         @Override
         public boolean handleMessage(@NonNull Message msg) {
             Location l = (Location) msg.obj;
+            String fullAddress=getStringLocation(l);
             distance = calculationByDistance(l, end.getLatLng());
             TripTable table = new TripTable(binding.tripNameInput.getText().toString(),
                     binding.timeTextView.getText().toString(),
                     binding.dateTextView.getText().toString(),
                     "up Coming",
-                    repetation, way,
-                    "Your loucation",
+                    getRepetation(), getWay(),
+                    fullAddress,
                     binding.endPointSearchView.getText().toString(),
                     "",
                     distance,
@@ -143,8 +146,8 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
         calender = Calendar.getInstance();
         tripViewModel = new ViewModelProvider(AddTripActivity.this, ViewModelProvider.AndroidViewModelFactory.getInstance(AddTripActivity.this.getApplication())).get(TripViewModel.class);
         handelLocation = new HandelLocation(this);
-        repetation = getRepetation();
-        way = getWay();
+//        repetation = getRepetation();
+//        way = getWay();
         calender.setTimeInMillis(System.currentTimeMillis());
         binding.timeTextView.setText(MessageFormat.format("{0}:{1}", calender.getTime().getHours(), calender.getTime().getMinutes()));
         binding.dateTextView.setText(MessageFormat.format("{0}/{1}/{2}", calender.getTime().getDay(), calender.getTime().getMonth() + 1, calender.getTime().getYear() + 1900));
@@ -188,7 +191,7 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
                     if (start == null) {
                         addTripToRoom(binding.tripNameInput.getText().toString(),
                                 binding.timeTextView.getText().toString(), binding.dateTextView.getText().toString(), "up Coming",
-                                repetation, way,
+                                getRepetation(), getWay(),
                                 binding.startPointSearchView.getText().toString(),
                                 binding.endPointSearchView.getText().toString(),
                                 0.0,
@@ -198,7 +201,7 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
                     } else {
                         addTripToRoom(binding.tripNameInput.getText().toString(),
                                 binding.timeTextView.getText().toString(), binding.dateTextView.getText().toString(), "up Coming",
-                                repetation, way,
+                                getRepetation(), getWay(),
                                 binding.startPointSearchView.getText().toString(),
                                 binding.endPointSearchView.getText().toString(),
                                 start.getLatLng().latitude,
@@ -324,7 +327,11 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
                 binding.timeTextView.getText().toString(), binding.dateTextView.getText().toString(), tripTable.getStatus(),
                 repetation, way,
                 binding.startPointSearchView.getText().toString(),
-                binding.endPointSearchView.getText().toString(), start.getLatLng().latitude, start.getLatLng().longitude, end.getLatLng().latitude, end.getLatLng().longitude);
+                binding.endPointSearchView.getText().toString(),
+                start.getLatLng().latitude,
+                start.getLatLng().longitude,
+                end.getLatLng().latitude,
+                end.getLatLng().longitude);
     }
 
     private boolean getWay() {
@@ -378,8 +385,8 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
         if (title.equals("") || time.equals("") || date.equals("") || repetition.equals("") || to.equals("")) {
             Toast.makeText(this, "Their is some data missed", Toast.LENGTH_SHORT).show();
         } else {
-            loadingBar.setTitle("Creating new account");
-            loadingBar.setMessage("Please wait, while we are creating an account for you");
+            loadingBar.setTitle("Create new Trip");
+            loadingBar.setMessage("Please wait some seconds...");
             loadingBar.setCanceledOnTouchOutside(false);
             loadingBar.show();
 
@@ -472,7 +479,21 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
         return table1;
     }
 
-
+    private String getStringLocation(Location mlocation){
+        Geocoder geocoder;
+        List<Address> addresses = null;
+        geocoder = new Geocoder(AddTripActivity.this, Locale.getDefault());
+        try {
+            addresses = geocoder.getFromLocation(mlocation.getLatitude(), mlocation.getLongitude(), 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String address = addresses.get(0).getAddressLine(0);
+        String city = addresses.get(0).getLocality();
+        String state = addresses.get(0).getAdminArea();
+        String country = addresses.get(0).getCountryName();
+        return country+","+state+", "+city+", "+address;
+    }
     private double calculationByDistance(LatLng StartP, LatLng EndP) {
         int Radius = 6371;// radius of earth in Km
         double lat1 = StartP.latitude;
@@ -571,6 +592,8 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
                         message.obj = mlocation;
                         handlerLocation.sendMessage(message);
 
+
+
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -583,6 +606,7 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
             }
             //return currentLocation;
         }
+
 
         public boolean chickPermition() {
             if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
@@ -615,6 +639,7 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
             Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             context.startActivity(intent);
         }
+
     }
 
 
