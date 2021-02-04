@@ -143,8 +143,8 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
         calender = Calendar.getInstance();
         tripViewModel = new ViewModelProvider(AddTripActivity.this, ViewModelProvider.AndroidViewModelFactory.getInstance(AddTripActivity.this.getApplication())).get(TripViewModel.class);
         handelLocation = new HandelLocation(this);
-        repetation = getRepetation();
-        way = getWay();
+//        repetation = getRepetation();
+//        way = getWay();
         calender.setTimeInMillis(System.currentTimeMillis());
         binding.timeTextView.setText(MessageFormat.format("{0}:{1}", calender.getTime().getHours(), calender.getTime().getMinutes()));
         binding.dateTextView.setText(MessageFormat.format("{0}/{1}/{2}", calender.getTime().getDay(), calender.getTime().getMonth() + 1, calender.getTime().getYear() + 1900));
@@ -188,7 +188,7 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
                     if (start == null) {
                         addTripToRoom(binding.tripNameInput.getText().toString(),
                                 binding.timeTextView.getText().toString(), binding.dateTextView.getText().toString(), "up Coming",
-                                repetation, way,
+                                getRepetation(), getWay(),
                                 binding.startPointSearchView.getText().toString(),
                                 binding.endPointSearchView.getText().toString(),
                                 0.0,
@@ -198,7 +198,7 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
                     } else {
                         addTripToRoom(binding.tripNameInput.getText().toString(),
                                 binding.timeTextView.getText().toString(), binding.dateTextView.getText().toString(), "up Coming",
-                                repetation, way,
+                                getRepetation(), getWay(),
                                 binding.startPointSearchView.getText().toString(),
                                 binding.endPointSearchView.getText().toString(),
                                 start.getLatLng().latitude,
@@ -324,7 +324,11 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
                 binding.timeTextView.getText().toString(), binding.dateTextView.getText().toString(), tripTable.getStatus(),
                 repetation, way,
                 binding.startPointSearchView.getText().toString(),
-                binding.endPointSearchView.getText().toString(), start.getLatLng().latitude, start.getLatLng().longitude, end.getLatLng().latitude, end.getLatLng().longitude);
+                binding.endPointSearchView.getText().toString(),
+                start.getLatLng().latitude,
+                start.getLatLng().longitude,
+                end.getLatLng().latitude,
+                end.getLatLng().longitude);
     }
 
     private boolean getWay() {
@@ -378,8 +382,8 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
         if (title.equals("") || time.equals("") || date.equals("") || repetition.equals("") || to.equals("")) {
             Toast.makeText(this, "Their is some data missed", Toast.LENGTH_SHORT).show();
         } else {
-            loadingBar.setTitle("Creating new account");
-            loadingBar.setMessage("Please wait, while we are creating an account for you");
+            loadingBar.setTitle("Create new Trip");
+            loadingBar.setMessage("Please wait some seconds...");
             loadingBar.setCanceledOnTouchOutside(false);
             loadingBar.show();
 

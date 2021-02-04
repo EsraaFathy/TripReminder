@@ -241,10 +241,10 @@ public class TransparentActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 Log.i("startID",""+idT);
+                roundedTrip(idT);
                 notificationManager.cancel((int)idT);
                 UpdateStatusByID(idT,"Done");
                 startTrip();
-
                 finish();
 
             }
@@ -263,6 +263,32 @@ public class TransparentActivity extends AppCompatActivity {
                 statusHandler.sendEmptyMessage(0);
             }
         }).start();
+    }
+
+    private void roundedTrip(long idT) {
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    TripTable tripTable=tripViewModel.getTripRowById(idT);
+                    if (!tripTable.getWays()) {
+                        tripViewModel.insert(new TripTable(tripTable.getTitle(),
+                                tripTable.getTime(),
+                                tripTable.getDate(),
+                                "up Coming",
+                                tripTable.getRepetition(),
+                            true,
+                            tripTable.getTo(),
+                            tripTable.getFrom(),
+                            tripTable.getNotes(),
+                            tripTable.getDistance(),
+                            tripTable.getLatEnd(),
+                            tripTable.getLongEnd(),
+                            tripTable.getLatStart(),
+                            tripTable.getLatStart()));
+                    }
+                }
+            }).start();
     }
 
 }

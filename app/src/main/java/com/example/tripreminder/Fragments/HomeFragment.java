@@ -63,19 +63,18 @@ public class HomeFragment extends Fragment {
     public static final String SNOOZE_SERVICE = "com.example.tripreminder.SnoozeService";
     public static final String CANCEL_SERVICE = "com.example.tripreminder.CancelService";
 
-    private String SOURCE_URL= "http://maps.google.com/maps?saddr=";
-    private String DEST_URL= "http://maps.google.com/maps?daddr=";
+    private String SOURCE_URL = "http://maps.google.com/maps?saddr=";
+    private String DEST_URL = "http://maps.google.com/maps?daddr=";
     private ImageView imageView;
     int idT;
     Intent mapIntent;
-    Handler handler=new Handler(new Handler.Callback() {
+    Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(@NonNull Message message) {
             startFloatingIcon(note);
             return false;
         }
     });
-
 
 
     public HomeFragment() {
@@ -126,8 +125,7 @@ public class HomeFragment extends Fragment {
 
                     notesItemOptions(tripTable);
                 } else if (type.equals(RecyclerHomeAdapter.START)) {
-
-                     startItemOptions(tripTable);
+                    startItemOptions(tripTable);
                 }
 
             }
@@ -137,9 +135,9 @@ public class HomeFragment extends Fragment {
     }
 
     private void startItemOptions(TripTable tripTable) {
-
-        idT= tripTable.getId();
-        UpdateStatusByID(idT,"Done");
+        roundedTrip(tripTable);
+        idT = tripTable.getId();
+        UpdateStatusByID(idT, "Done");
         startTrip(tripTable);
 
     }
@@ -180,38 +178,34 @@ public class HomeFragment extends Fragment {
         intent.putExtra(DISTANCE, tripTable.getDistance());
 
 
-
-
-
-
         startActivity(intent);
     }
 
-    private void startTrip(TripTable tripTable){
+    private void startTrip(TripTable tripTable) {
 
         Toast.makeText(getContext(), "start", Toast.LENGTH_SHORT).show();
-        double sourceLat,sourceLon,destinationLat,destinationLon;
-        String sourceName,destinationName;
+        double sourceLat, sourceLon, destinationLat, destinationLon;
+        String sourceName, destinationName;
 
 
-        destinationLat =tripTable.getLatEnd();
+        destinationLat = tripTable.getLatEnd();
         destinationLon = tripTable.getLongEnd();
-        destinationName =tripTable.getTo();
+        destinationName = tripTable.getTo();
         String my_data;
 
-        if(!tripTable.getFrom().equals("null")){ // source exists
+        if (!tripTable.getFrom().equals("null")) { // source exists
             Log.i("log", "not null notif");
             sourceLat = tripTable.getLatStart();
             sourceLon = tripTable.getLongStart();
             sourceName = tripTable.getFrom();
 
 
-            my_data= String.format(Locale.ENGLISH, SOURCE_URL+sourceLat+","+sourceLon+"("+sourceName+")&daddr="+destinationLat+","+destinationLon+"("+destinationName+")");
+            my_data = String.format(Locale.ENGLISH, SOURCE_URL + sourceLat + "," + sourceLon + "(" + sourceName + ")&daddr=" + destinationLat + "," + destinationLon + "(" + destinationName + ")");
             mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(my_data));
             mapIntent.setPackage("com.google.android.apps.maps");
             mapIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        }else{
-            my_data= String.format(Locale.ENGLISH, DEST_URL+destinationLat+","+destinationLon+"("+destinationName+")");
+        } else {
+            my_data = String.format(Locale.ENGLISH, DEST_URL + destinationLat + "," + destinationLon + "(" + destinationName + ")");
             mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(my_data));
             mapIntent.setPackage("com.google.android.apps.maps");
             mapIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -224,20 +218,22 @@ public class HomeFragment extends Fragment {
         startActivity(mapIntent);
         //Todo: delete this trip
     }
-    private void startFloatingIcon(String notes){
+
+    private void startFloatingIcon(String notes) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            getActivity().startService(new Intent(getActivity(), FloatingViewService.class).putExtra("Notes",notes));
-        }else if (Settings.canDrawOverlays(getContext())) {
-            getActivity().startService(new Intent(getActivity(), FloatingViewService.class).putExtra("Notes",notes));
-        }else {
+            getActivity().startService(new Intent(getActivity(), FloatingViewService.class).putExtra("Notes", notes));
+        } else if (Settings.canDrawOverlays(getContext())) {
+            getActivity().startService(new Intent(getActivity(), FloatingViewService.class).putExtra("Notes", notes));
+        } else {
             Toast.makeText(getActivity(), "You need System Alert Window Permission to do this", Toast.LENGTH_SHORT).show();
         }
     }
-    private void UpdateStatusByID(int idT,String status){
-        new Thread(){
+
+    private void UpdateStatusByID(int idT, String status) {
+        new Thread() {
             @Override
             public void run() {
-                TripTable table1= tripViewModel.getTripRowById(idT);
+                TripTable table1 = tripViewModel.getTripRowById(idT);
                 table1.setStatus(status);
                 table1.setId(idT);
                 tripViewModel.update(table1);
@@ -247,18 +243,47 @@ public class HomeFragment extends Fragment {
     }
 
     String note;
-    private String GetNotes(int id){
+
+    private String GetNotes(int id) {
         tripViewModel.getNotes(id).observe(HomeFragment.this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                note =s;
-                Log.d("TAG of notes",""+note);
+                note = s;
+                Log.d("TAG of notes", "" + note);
                 handler.sendEmptyMessage(0);
             }
         });
 
 
         return note;
+    }
+
+    private void roundedTrip(TripTable tripTable) {
+        Log.d("TAG", "roundedTrip: "+tripTable.getWays());
+        if (!tripTable.getWays()) {
+            Log.d("TAG", "roundedTrip: "+tripTable.getWays());
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    tripViewModel.insert(new TripTable(tripTable.getTitle(),
+                            tripTable.getTime(),
+                            tripTable.getDate(),
+                            "up Coming",
+                            tripTable.getRepetition(),
+                            true,
+                            tripTable.getTo(),
+                            tripTable.getFrom(),
+                            tripTable.getNotes(),
+                            tripTable.getDistance(),
+                            tripTable.getLatEnd(),
+                            tripTable.getLongEnd(),
+                            tripTable.getLatStart(),
+                            tripTable.getLatStart()));
+                }
+            }).start();
+
+        }
+
     }
 
 }
