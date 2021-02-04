@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -70,6 +71,7 @@ public class ProfileFragment extends Fragment {
     TextView logoutBtn;
     Button syncBtn;
     List<TripTable> tables;
+    CardView cardViewReport;
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
     private TripTable tripTable;
@@ -90,6 +92,7 @@ public class ProfileFragment extends Fragment {
         emailTxt = view.findViewById(R.id.email);
         logoutBtn =  view.findViewById(R.id.logout_tve);
         syncBtn = view.findViewById(R.id.sync_btn);
+        cardViewReport=view.findViewById(R.id.Report);
         mAuth = FirebaseAuth.getInstance();
         currentUser=mAuth.getCurrentUser();
         tables=new ArrayList<>();
@@ -128,6 +131,16 @@ public class ProfileFragment extends Fragment {
             public void onClick(View view) {
                 th=new Thread(sync);
                 th.start();
+            }
+        });
+
+        cardViewReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent=new Intent(getActivity(),DistanceReport.class);
+                startActivity(intent);
+
             }
         });
 
@@ -202,16 +215,6 @@ public class ProfileFragment extends Fragment {
             }
         });
         return tables;
-    }
-    private void getDistanceReport(){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                List<String> s=tripViewModel.getTitleDistance();
-                Log.d("TAG", "onItemClick: Data base distanses" +s.get(1));
-
-            }
-        }).start();
     }
 
 }

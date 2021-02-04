@@ -39,26 +39,16 @@
     <string name="save_add_btn">Add Trip</string>
     <string name="sync">Sync</string>
 
-    <string-array name="repeating_options">
-        <item>No Repeated</item>
-        <item>Repeated Daily</item>
-        <item>Repeated weekly</item>
-        <item>Repeated Monthly</item>
-    </string-array>
-
-    <string-array name="trip_options">
-        <item>One Way Trip</item>
-        <item>Rounded Trip</item>
-    </string-array>
     <string name="title_activity_menu_items_for_one_element">MenuItemsForOneElement</string>
-    <!-- Strings used for fragments for navigation -->
+
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
+    <!-- Strings used for fragments for navigation -->
     <string name="next">Next</string>
     <string name="previous">Previous</string>
-
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+
     <string name="profile">Profile</string>
     <string name="notes">Show All notes</string>
     <string name="edit_trip">Edit Trip</string>
@@ -67,4 +57,16 @@
     <string name="delete_note">Delete Note</string>
     <string name="her_you_can_add_your_trip_notes">Her You can add your trip notes</string>
     <string name="test">test</string>
+    <string name="report">Distance Report</string>
+    <string name="distance">Distance</string>
+    <string-array name="repeating_options">
+        <item>No Repeated</item>
+        <item>Repeated Daily</item>
+        <item>Repeated weekly</item>
+        <item>Repeated Monthly</item>
+    </string-array>
+    <string-array name="trip_options">
+        <item>One Way Trip</item>
+        <item>Rounded Trip</item>
+    </string-array>
 </resources>

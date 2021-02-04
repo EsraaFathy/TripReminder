@@ -21,7 +21,7 @@ public class TripViewModel extends AndroidViewModel {
         historyList=tripRepository.getHistory("up Coming");
         getAllAsync=tripRepository.getAllToSync();
     }
-    public List<String> getTitleDistance(){
+    public List<TripTable> getTitleDistance(){
         return tripRepository.getTitleDistance();
     }
     public TripTable getTripRowById(long id){

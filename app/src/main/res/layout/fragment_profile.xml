@@ -60,7 +60,7 @@
             android:layout_width="match_parent"
             android:orientation="horizontal"
             android:id="@+id/bottomGuide"
-            app:layout_constraintGuide_percent=".54"/>
+            app:layout_constraintGuide_percent=".477"/>
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -122,7 +122,7 @@
             app:cardElevation="8dp"
             app:cardBackgroundColor="@color/lightGreen">
             <LinearLayout
-                android:id="@+id/seconRow"
+                android:id="@+id/forth_row"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -131,8 +131,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintStart_toEndOf="parent"
                 android:paddingTop="5dp"
-                android:paddingBottom="5dp"
-                >
+                android:paddingBottom="5dp">
                 <ImageView
                     android:layout_width="0dp"
                     android:layout_height="40dp"
@@ -153,6 +152,50 @@
                     android:layout_marginEnd="10dp"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/Report"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/Email_card"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="8dp"
+            app:cardBackgroundColor="@color/lightGreen">
+            <LinearLayout
+                android:id="@+id/seconRow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="6"
+                app:layout_constraintTop_toBottomOf="@id/firstRow"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="parent"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp">
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_report"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="10dp"
+                    />
+                <TextView
+                    android:id="@+id/Report_tv"
+                    android:text="@string/report"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="5"
+                    android:textSize="20dp"
+                    android:layout_marginEnd="10dp"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/Sync_card"
@@ -160,7 +203,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/Email_card"
+            app:layout_constraintTop_toBottomOf="@+id/Report"
             android:layout_marginTop="20dp"
             android:layout_marginStart="15dp"
             android:layout_marginEnd="15dp"
@@ -219,7 +262,7 @@
             app:layout_constraintTop_toBottomOf="@+id/Sync_card"
             android:padding="12dp"
             android:layout_marginEnd="20dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="10dp"
             android:text="@string/Log_out"
             android:textSize="20dp"
             android:drawableStart="@drawable/ic_power"

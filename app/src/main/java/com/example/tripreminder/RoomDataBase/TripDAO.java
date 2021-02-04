@@ -39,8 +39,8 @@ public interface TripDAO {
     @Query("SELECT * FROM trips WHERE  id = :id LIMIT 1")
     TripTable getTripTableById(long id);
 
-    @Query("SELECT title FROM trips ORDER BY distance")
-    List<String> getAllDistance();
+    @Query("SELECT * FROM trips ORDER BY distance")
+    List<TripTable> getAllDistance();
 
 }
 

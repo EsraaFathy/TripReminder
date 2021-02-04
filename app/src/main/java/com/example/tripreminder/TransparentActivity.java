@@ -46,7 +46,7 @@ public class TransparentActivity extends AppCompatActivity {
     private TripViewModel tripViewModel;
     NotificationUtils notificationUtils;
     NotificationManager notificationManager;
-    int idT;
+    long idT;
     Handler handler=new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(@NonNull Message message) {
@@ -58,7 +58,8 @@ public class TransparentActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         myIntent = getIntent();
-        idT= (int) myIntent.getLongExtra("ID",-1);
+        idT= myIntent.getLongExtra("ID",-1);
+        Log.i("ID",""+idT);
         tripViewModel = new ViewModelProvider(TransparentActivity.this, ViewModelProvider.AndroidViewModelFactory.getInstance(TransparentActivity.this.getApplication())).get(TripViewModel.class);
         Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         notificationUtils=new NotificationUtils(getApplicationContext());
@@ -72,7 +73,7 @@ public class TransparentActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 idT= (int) myIntent.getLongExtra("ID",-1);
-                notificationManager.cancel(idT);
+                notificationManager.cancel((int)idT);
                 UpdateStatusByID(idT,"Canceled");
                 finish();
                 //todo:: cancel trip in database
@@ -82,8 +83,8 @@ public class TransparentActivity extends AppCompatActivity {
         builder.setNegativeButton("Later", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-
-                createNotification(getApplicationContext());
+                // id long
+                createNotification(getApplicationContext(),idT);
                 finish();
 
             }
@@ -91,8 +92,8 @@ public class TransparentActivity extends AppCompatActivity {
         builder.setNeutralButton("Start", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                idT= (int) myIntent.getLongExtra("ID",-1);
-                notificationManager.cancel(idT);
+                Log.i("startID",""+idT);
+                notificationManager.cancel((int)idT);
                 UpdateStatusByID(idT,"Done");
                 startTrip();
 
@@ -106,10 +107,14 @@ public class TransparentActivity extends AppCompatActivity {
         dialog.getButton(dialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(this, R.color.colorPrim));
     }
 
-    private void createNotification(Context context){
+    private void createNotification(Context context,long ID){
         Intent tapNotification = new Intent(getApplicationContext(), com.example.tripreminder.TransparentActivity.class).setAction(START_SERVICE);
+        //long id in intent
+        Log.i("create noti",ID+"");
+        tapNotification.putExtra("ID",ID);
         setTripDate(tapNotification);
-        int id = myIntent.getIntExtra("ID",0);
+        // int id to cancel
+        int id = (int)ID;
         startPendingIntent = PendingIntent.getActivity(getApplicationContext(), id, tapNotification, PendingIntent.FLAG_ONE_SHOT);
 
 
@@ -133,8 +138,8 @@ public class TransparentActivity extends AppCompatActivity {
     }
     String note;
 
-    private String GetNotes(int id){
-        tripViewModel.getNotes(id).observe(TransparentActivity.this, new Observer<String>() {
+    private String GetNotes(long id){
+        tripViewModel.getNotes((int)id).observe(TransparentActivity.this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
                 note =s;
@@ -160,7 +165,7 @@ public class TransparentActivity extends AppCompatActivity {
         pass.putExtra("destinationLat", myIntent.getDoubleExtra("destinationLat",0));
         pass.putExtra("destinationLon",myIntent.getDoubleExtra("destinationLon",0));
         pass.putExtra("destinationName",myIntent.getExtras().getString("destinationName","null"));
-        pass.putExtra("ID", myIntent.getIntExtra("ID", 0));
+        pass.putExtra("ID", myIntent.getLongExtra("ID", 0));
         pass.putExtra("tripName", myIntent.getStringExtra("tripName"));
         pass.putExtra("ways", myIntent.getBooleanExtra("ways",false));
     }
@@ -221,13 +226,13 @@ public class TransparentActivity extends AppCompatActivity {
         }
     }
 
-    private void UpdateStatusByID(int idT,String status){
+    private void UpdateStatusByID(long idT,String status){
         new Thread(){
             @Override
             public void run() {
-                TripTable table1= tripViewModel.getTripRowById((long) idT);
+                TripTable table1= tripViewModel.getTripRowById(idT);
                 table1.setStatus(status);
-                table1.setId(idT);
+                table1.setId((int)idT);
                 tripViewModel.update(table1);
             }
         }.start();

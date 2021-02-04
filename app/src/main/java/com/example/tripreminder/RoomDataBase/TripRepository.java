@@ -26,7 +26,7 @@ public class TripRepository {
         allToSync = tripDAO.getAllToAsync();
     }
 
-    public List<String> getTitleDistance(){
+    public List<TripTable> getTitleDistance(){
         return tripDAO.getAllDistance();
     }
     public TripTable getTripTableById(long l){
