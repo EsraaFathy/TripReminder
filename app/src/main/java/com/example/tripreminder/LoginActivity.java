@@ -345,13 +345,22 @@ public class LoginActivity extends AppCompatActivity {
                     //Todo    we add her
                     String d=dataSnapshot1.child("distance").getValue().toString();
                     double distance=Double.valueOf(d);
+                    String latStart=dataSnapshot1.child("latStart").getValue().toString();
+                    double latStart1=Double.valueOf(latStart);
+                    String longStart=dataSnapshot1.child("longStart").getValue().toString();
+                    double longStart1=Double.valueOf(longStart);
+                    String latEnd=dataSnapshot1.child("latEnd").getValue().toString();
+                    double latEnd1=Double.valueOf(latEnd);
+                    String longEnd=dataSnapshot1.child("longEnd").getValue().toString();
+                    double longEnd1=Double.valueOf(longEnd);
 
                     boolean b=true;
                     if(ways.equals("true"))
                         b=true;
                     else
                         b=false;
-                    TripTable trip=new TripTable(title,time,date,status,repetition,b,from,to,note,distance);
+                    TripTable trip=new TripTable(title,time,date,status,repetition,b,from,to,note,distance,latStart1,longStart1
+                    ,latEnd1,longEnd1);
                     tribsList.add(trip);
                 }
                 saveFromFirebaseToRoom(tribsList);

@@ -21,13 +21,32 @@ public class TripTable {
     private String to;
     private String notes;
     private double distance;
+    private double latStart;
+    private double longStart;
+    private double latEnd;
+    private double longEnd;
 
+    public double getLatStart() {
+        return latStart;
+    }
+
+    public double getLongStart() {
+        return longStart;
+    }
+
+    public double getLatEnd() {
+        return latEnd;
+    }
+
+    public double getLongEnd() {
+        return longEnd;
+    }
 
     public double getDistance() {
         return distance;
     }
 
-    public TripTable(String title, String time, String date, String status, String repetition, boolean ways, String from, String to, String notes, double distance) {
+    public TripTable(String title, String time, String date, String status, String repetition, boolean ways, String from, String to, String notes, double distance, double latStart, double longStart, double latEnd, double longEnd) {
         this.title = title;
         this.time = time;
         this.date = date;
@@ -38,6 +57,10 @@ public class TripTable {
         this.to = to;
         this.notes = notes;
         this.distance = distance;
+        this.latStart = latStart;
+        this.longStart = longStart;
+        this.latEnd = latEnd;
+        this.longEnd = longEnd;
     }
 
     public void setStatus(String status) {

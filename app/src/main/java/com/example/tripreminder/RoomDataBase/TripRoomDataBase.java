@@ -9,7 +9,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = TripTable.class, version = 1)
+@Database(entities = TripTable.class, version = 2)
 public abstract class TripRoomDataBase extends RoomDatabase {
 
     private static TripRoomDataBase instance;

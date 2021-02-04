@@ -127,7 +127,8 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
                             binding.timeTextView.getText().toString(), binding.dateTextView.getText().toString(), "up Coming",
                             repetation, way,
                             binding.startPointSearchView.getText().toString(),
-                            binding.endPointSearchView.getText().toString());
+                            binding.endPointSearchView.getText().toString(),
+                             start.getLatLng().latitude,start.getLatLng().longitude,end.getLatLng().latitude,end.getLatLng().longitude);
                 }
 
 //                if (end == null)
@@ -217,7 +218,8 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
 
     private void prepareAlarm() {
 
-        Alarm alarm = new Alarm(this, calender, start, end, getWay(),binding.tripNameInput.getText().toString());
+        Alarm alarm = new Alarm(this, calender, start, end, getWay()
+                ,binding.tripNameInput.getText().toString(),idT);
         alarm.prepareAlarm();
     }
 
@@ -242,7 +244,7 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
                 binding.timeTextView.getText().toString(), binding.dateTextView.getText().toString(), tripTable.getStatus(),
                 repetation, way,
                 binding.startPointSearchView.getText().toString(),
-                binding.endPointSearchView.getText().toString());
+                binding.endPointSearchView.getText().toString(),start.getLatLng().latitude,start.getLatLng().longitude,end.getLatLng().latitude,end.getLatLng().longitude);
     }
 
     private boolean getWay() {
@@ -278,13 +280,13 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
         return repetation;
     }
 
-    private void editTripInRoom(String title, String time, String date, String status, String repetition, boolean ways, String from, String to) {
+    private void editTripInRoom(String title, String time, String date, String status, String repetition, boolean ways, String from, String to,double latStart,double LongStart,double LatEnd,double longEnd) {
         if (title.equals("") || time.equals("") || date.equals("") || repetition.equals("") || to.equals("")) {
             Toast.makeText(this, "Their is some data missed", Toast.LENGTH_SHORT).show();
 
         } else {
             distance=calculationByDistance(start.getLatLng(),end.getLatLng());
-            TripTable table = new TripTable(title, time, date, status, repetition, ways, from, to, tripTable.getNotes(),distance);
+            TripTable table = new TripTable(title, time, date, status, repetition, ways, from, to, tripTable.getNotes(),distance,latStart,LongStart,LatEnd,longEnd);
             table.setId(id);
             tripViewModel.update(table);
             finish();
@@ -292,7 +294,7 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
         }
     }
 
-    private void addTripToRoom(String title, String time, String date, String status, String repetition, boolean ways, String from, String to) {
+    private void addTripToRoom(String title, String time, String date, String status, String repetition, boolean ways, String from, String to,double latStart,double LongStart,double LatEnd,double longEnd) {
         if (title.equals("") || time.equals("") || date.equals("") || repetition.equals("") || to.equals("")) {
             Toast.makeText(this, "Their is some data missed", Toast.LENGTH_SHORT).show();
         } else {
@@ -306,7 +308,7 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
                 public void run() {
                     distance=calculationByDistance(start.getLatLng(),end.getLatLng());
                     Log.d("TAG", "run distance: "+distance);
-                    TripTable table = new TripTable(title, time, date, status, repetition, ways, from, to, "",distance);
+                    TripTable table = new TripTable(title, time, date, status, repetition, ways, from, to, "",distance,latStart,LongStart,LatEnd,longEnd);
                     idT = tripViewModel.insert(table);
                     handler.sendEmptyMessage(1);
 
@@ -335,7 +337,11 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
                     intent.getStringExtra(HomeFragment.NOTE_INTENT_FROM),
                     intent.getStringExtra(HomeFragment.NOTE_INTENT_to),
                     intent.getStringExtra(HomeFragment.NOTE_INTENT_Note),
-                    intent.getDoubleExtra(HomeFragment.DISTANCE,0.0));
+                    intent.getDoubleExtra(HomeFragment.DISTANCE,0.0),
+                    intent.getDoubleExtra(HomeFragment.LatStart,0.0),
+                    intent.getDoubleExtra(HomeFragment.LongStart,0.0),
+                    intent.getDoubleExtra(HomeFragment.LatEnd,0.0),
+                    intent.getDoubleExtra(HomeFragment.LongEnd,0.0));
             editTrip(tripTable);
         }
     }
@@ -382,13 +388,7 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
         TripTable table1= tripViewModel.getTripRowById(idT);
         return table1;
     }
-    private void UpdateStatusByID(int idT,String status){
-        /// TODO call in thread
-        TripTable table1= tripViewModel.getTripRowById(idT);
-        tripTable.setStatus(status);
-        tripTable.setId(idT);
-        tripViewModel.update(tripTable);
-    }
+
 
     public double calculationByDistance(LatLng StartP, LatLng EndP) {
         int Radius = 6371;// radius of earth in Km

@@ -19,14 +19,16 @@ public class Alarm {
     Context context;
     Place startPlace,endPlace;
     String name;
+    long idT;
     boolean ways;
-    public Alarm(Context context, Calendar calendar, Place start, Place end , boolean way, String name){
+    public Alarm(Context context, Calendar calendar, Place start, Place end , boolean way, String name,long idT){
         this.context = context;
         this.calender = calendar;
         startPlace = start;
         endPlace = end;
         this.ways = way;
         this.name = name;
+        this.idT=idT;
     }
 
     public void prepareAlarm(){
@@ -44,10 +46,11 @@ public class Alarm {
         intent.putExtra("destinationName", endPlace.getName());
         intent.putExtra("tripName", name);
         intent.putExtra("ways", ways);
-        final int random = new Random().nextInt(1000000);
-        intent.putExtra("ID", random);
+        //intent.putExtra("tripId",idT);
+        //final int random = new Random().nextInt(1000000);
+        intent.putExtra("ID", idT);
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, random, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, (int)idT, intent, 0);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         long period = calender.getTimeInMillis() ;

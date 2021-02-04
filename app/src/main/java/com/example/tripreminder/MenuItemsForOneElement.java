@@ -52,7 +52,11 @@ public class MenuItemsForOneElement extends AppCompatActivity {
                 intent.getStringExtra(HomeFragment.NOTE_INTENT_FROM),
                 intent.getStringExtra(HomeFragment.NOTE_INTENT_to),
                 intent.getStringExtra(HomeFragment.NOTE_INTENT_Note),
-                 intent.getDoubleExtra(HomeFragment.DISTANCE,0.0));
+                 intent.getDoubleExtra(HomeFragment.DISTANCE,0.0),
+                 intent.getDoubleExtra(HomeFragment.LatStart,0.0),
+                 intent.getDoubleExtra(HomeFragment.LongStart,0.0),
+                 intent.getDoubleExtra(HomeFragment.LatEnd,0.0),
+                 intent.getDoubleExtra(HomeFragment.LongEnd,0.0));
         setTitle(intent.getStringExtra(HomeFragment.NOTE_INTENT_title) + " trip");
         binding.AllNotes.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,6 +120,10 @@ public class MenuItemsForOneElement extends AppCompatActivity {
         intent.putExtra(HomeFragment.NOTE_INTENT_to, tripTable.getTo());
         intent.putExtra(HomeFragment.NOTE_INTENT_FROM, tripTable.getFrom());
         intent.putExtra(HomeFragment.NOTE_INTENT_Note, tripTable.getNotes());
+        intent.putExtra(HomeFragment.LatStart, tripTable.getLatStart());
+        intent.putExtra(HomeFragment.LongStart, tripTable.getLongStart());
+        intent.putExtra(HomeFragment.LatEnd, tripTable.getLatEnd());
+        intent.putExtra(HomeFragment.LongEnd, tripTable.getLatEnd());
         startActivity(intent);
     }
     // TODO used in float icon

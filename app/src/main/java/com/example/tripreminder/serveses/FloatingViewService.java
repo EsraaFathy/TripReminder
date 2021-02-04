@@ -1,18 +1,29 @@
 package com.example.tripreminder.serveses;
 
 import android.app.Service;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
+
+import com.example.tripreminder.MenuItemsForOneElement;
 import com.example.tripreminder.R;
+import com.example.tripreminder.RoomDataBase.TripViewModel;
 
 public class FloatingViewService extends Service implements View.OnClickListener {
 
@@ -21,9 +32,12 @@ public class FloatingViewService extends Service implements View.OnClickListener
     private View mFloatingView;
     private View collapsedView;
     private View expandedView;
+
     ListView listView;
     TextView textView;
     String[] listItem;
+    String notes;
+    Intent intent2;
 
     public FloatingViewService() {
     }
@@ -36,7 +50,6 @@ public class FloatingViewService extends Service implements View.OnClickListener
     @Override
     public void onCreate() {
         super.onCreate();
-
 
         //getting the widget layout from xml using layout inflater
         mFloatingView = LayoutInflater.from(this).inflate(R.layout.layout_floating_widget, null);
@@ -62,10 +75,7 @@ public class FloatingViewService extends Service implements View.OnClickListener
 
         listView=mFloatingView.findViewById(R.id.listView);
         textView=mFloatingView.findViewById(R.id.textView);
-        listItem = new String[]{"sdfsd", "|sdvgfd", "sfdsfgfd"};
-        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, android.R.id.text1, listItem);
-        listView.setAdapter(adapter);
+
 
 
         //adding click listener to close button and expanded view
@@ -108,6 +118,22 @@ public class FloatingViewService extends Service implements View.OnClickListener
     }
 
     @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        notes=intent.getStringExtra("Notes");
+        if(notes==null|notes.equals("")){
+            listItem=new String[]{"No Notes"};
+        }
+        else {
+            listItem = getAllNoes(notes);
+        }
+        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, android.R.id.text1, listItem);
+        listView.setAdapter(adapter);
+
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         if (mFloatingView != null) mWindowManager.removeView(mFloatingView);
@@ -129,6 +155,10 @@ public class FloatingViewService extends Service implements View.OnClickListener
         }
     }
 
-    //TODO : return notes method
+    private String[]  getAllNoes(String Notes){
+
+                listItem = Notes.split("#");
+        return listItem;
+    }
 }
 

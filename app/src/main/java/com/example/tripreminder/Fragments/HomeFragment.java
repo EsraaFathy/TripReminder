@@ -1,14 +1,21 @@
 package com.example.tripreminder.Fragments;
 
 import android.content.Intent;
+import android.media.Ringtone;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
+import android.os.Message;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,9 +30,12 @@ import com.example.tripreminder.NotesControl;
 import com.example.tripreminder.R;
 import com.example.tripreminder.RoomDataBase.TripTable;
 import com.example.tripreminder.RoomDataBase.TripViewModel;
+import com.example.tripreminder.TransparentActivity;
+import com.example.tripreminder.serveses.FloatingViewService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class HomeFragment extends Fragment {
 
@@ -44,8 +54,27 @@ public class HomeFragment extends Fragment {
     public static final String NOTE_INTENT_Note = "notes";
     public static final String NOTE_INTENT_FROM = "from";
     public static final String DISTANCE = "DISTANCE";
+    public static final String LatStart = "LatStart";
+    public static final String LongStart = "LongStart";
+    public static final String LatEnd = "LatEnd";
+    public static final String LongEnd = "LongEnd";
+    public static Ringtone rigntone;
+    public static final String START_SERVICE = "com.example.tripreminder.StartService";
+    public static final String SNOOZE_SERVICE = "com.example.tripreminder.SnoozeService";
+    public static final String CANCEL_SERVICE = "com.example.tripreminder.CancelService";
+
+    private String SOURCE_URL= "http://maps.google.com/maps?saddr=";
+    private String DEST_URL= "http://maps.google.com/maps?daddr=";
     private ImageView imageView;
-    List<TripTable> tripsRoom;
+    int idT;
+    Intent mapIntent;
+    Handler handler=new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(@NonNull Message message) {
+            startFloatingIcon(note);
+            return false;
+        }
+    });
 
 
 
@@ -105,7 +134,7 @@ public class HomeFragment extends Fragment {
                     notesItemOptions(tripTable);
                 } else if (type.equals(RecyclerHomeAdapter.START)) {
 
-                     startItemOptions();
+                     startItemOptions(tripTable);
                 }
 
             }
@@ -114,7 +143,11 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
-    private void startItemOptions() {
+    private void startItemOptions(TripTable tripTable) {
+
+        idT= tripTable.getId();
+        UpdateStatusByID(idT,"Done");
+        startTrip(tripTable);
 
     }
 
@@ -131,6 +164,10 @@ public class HomeFragment extends Fragment {
         intent.putExtra(NOTE_INTENT_FROM, tripTable.getFrom());
         intent.putExtra(NOTE_INTENT_Note, tripTable.getNotes());
         intent.putExtra(DISTANCE, tripTable.getDistance());
+        intent.putExtra(LatStart, tripTable.getLatStart());
+        intent.putExtra(LongStart, tripTable.getLongStart());
+        intent.putExtra(LatEnd, tripTable.getLatEnd());
+        intent.putExtra(LongEnd, tripTable.getLatEnd());
         startActivity(intent);
     }
 
@@ -155,6 +192,80 @@ public class HomeFragment extends Fragment {
 
 
         startActivity(intent);
+    }
+
+    private void startTrip(TripTable tripTable){
+
+        Toast.makeText(getContext(), "start", Toast.LENGTH_SHORT).show();
+        double sourceLat,sourceLon,destinationLat,destinationLon;
+        String sourceName,destinationName;
+
+
+        destinationLat =tripTable.getLatEnd();
+        destinationLon = tripTable.getLongEnd();
+        destinationName =tripTable.getTo();
+        String my_data;
+
+        if(!tripTable.getFrom().equals("null")){ // source exists
+            Log.i("log", "not null notif");
+            sourceLat = tripTable.getLatStart();
+            sourceLon = tripTable.getLongStart();
+            sourceName = tripTable.getFrom();
+
+
+            my_data= String.format(Locale.ENGLISH, SOURCE_URL+sourceLat+","+sourceLon+"("+sourceName+")&daddr="+destinationLat+","+destinationLon+"("+destinationName+")");
+            mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(my_data));
+            mapIntent.setPackage("com.google.android.apps.maps");
+            mapIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }else{
+            my_data= String.format(Locale.ENGLISH, DEST_URL+destinationLat+","+destinationLon+"("+destinationName+")");
+            mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(my_data));
+            mapIntent.setPackage("com.google.android.apps.maps");
+            mapIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            System.out.println("null source");
+        }
+        GetNotes(idT);
+
+        ////Todo
+        startActivity(mapIntent);
+        //Todo: delete this trip
+    }
+    private void startFloatingIcon(String notes){
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            getActivity().startService(new Intent(getActivity(), FloatingViewService.class).putExtra("Notes",notes));
+        }else if (Settings.canDrawOverlays(getContext())) {
+            getActivity().startService(new Intent(getActivity(), FloatingViewService.class).putExtra("Notes",notes));
+        }else {
+            Toast.makeText(getActivity(), "You need System Alert Window Permission to do this", Toast.LENGTH_SHORT).show();
+        }
+    }
+    private void UpdateStatusByID(int idT,String status){
+        new Thread(){
+            @Override
+            public void run() {
+                TripTable table1= tripViewModel.getTripRowById(idT);
+                table1.setStatus(status);
+                table1.setId(idT);
+                tripViewModel.update(table1);
+            }
+        }.start();
+
+    }
+
+    String note;
+    private String GetNotes(int id){
+        tripViewModel.getNotes(id).observe(HomeFragment.this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                note =s;
+                Log.d("TAG of notes",""+note);
+                handler.sendEmptyMessage(0);
+            }
+        });
+
+
+        return note;
     }
 
 }

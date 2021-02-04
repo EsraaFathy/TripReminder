@@ -125,7 +125,11 @@ public class NotesControl extends AppCompatActivity {
                 intent.getStringExtra(HomeFragment.NOTE_INTENT_FROM),
                 intent.getStringExtra(HomeFragment.NOTE_INTENT_to),
                 intent.getStringExtra(HomeFragment.NOTE_INTENT_Note),
-                intent.getDoubleExtra(HomeFragment.DISTANCE,0.0));
+                intent.getDoubleExtra(HomeFragment.DISTANCE,0.0),
+                intent.getDoubleExtra(HomeFragment.LatStart,0.0),
+                intent.getDoubleExtra(HomeFragment.LongStart,0.0),
+                intent.getDoubleExtra(HomeFragment.LatEnd,0.0),
+                intent.getDoubleExtra(HomeFragment.LongEnd,0.0));
         notes = intent.getStringExtra(HomeFragment.NOTE_INTENT_Note);
     }
 
