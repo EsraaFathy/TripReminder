@@ -46,9 +46,6 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
-
-import com.example.tripreminder.model.Trip;
-
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -65,7 +62,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import static androidx.core.app.ActivityCompat.startActivityForResult;
 
 public class AddTripActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
     ActivityAddTripBinding binding;
