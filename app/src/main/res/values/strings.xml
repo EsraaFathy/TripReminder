@@ -59,6 +59,7 @@
     <string name="test">test</string>
     <string name="report">Distance Report</string>
     <string name="distance">Distance</string>
+    <string name="maps_api_key">AIzaSyBZ_h90ZRkxM6LD1m-Jrq7XCZSA2zm63XQ</string>
     <string-array name="repeating_options">
         <item>No Repeated</item>
         <item>Repeated Daily</item>
@@ -69,4 +70,5 @@
         <item>One Way Trip</item>
         <item>Rounded Trip</item>
     </string-array>
+    <string name="title_activity_maps">Map</string>
 </resources>

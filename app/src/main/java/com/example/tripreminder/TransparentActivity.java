@@ -228,6 +228,7 @@ public class TransparentActivity extends AppCompatActivity {
 
                 if(myIntent.getStringExtra("repetation").equals("no repetation")){
                     Log.i("log", "no repetation in trans");
+                    notificationManager.cancel((int)idT);
                     UpdateStatusByID(idT,"Canceled");
                 }
 

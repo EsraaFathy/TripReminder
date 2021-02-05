@@ -152,7 +152,7 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
         binding.dateTextView.setText(MessageFormat.format("{0}/{1}/{2}", calender.getTime().getDay(), calender.getTime().getMonth() + 1, calender.getTime().getYear() + 1900));
         loadingBar = new ProgressDialog(this);
         getIntentToEditTrip();
-        createNotificationChannel();
+        //createNotificationChannel();
 
         Places.initialize(this, API_KEY);
         binding.startPointSearchView.setFocusable(false);
