@@ -149,7 +149,7 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
 //        way = getWay();
         calender.setTimeInMillis(System.currentTimeMillis());
         binding.timeTextView.setText(MessageFormat.format("{0}:{1}", calender.getTime().getHours(), calender.getTime().getMinutes()));
-        binding.dateTextView.setText(MessageFormat.format("{0}/{1}/{2}", calender.getTime().getDay(), calender.getTime().getMonth() + 1, calender.getTime().getYear() + 1900));
+        binding.dateTextView.setText(MessageFormat.format("{0}/{1}/{2}", calender.getTime().getDate(), calender.getTime().getMonth() + 1, calender.getTime().getYear() + 1900));
         loadingBar = new ProgressDialog(this);
         getIntentToEditTrip();
         createNotificationChannel();

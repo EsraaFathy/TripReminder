@@ -5,9 +5,12 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.os.Build;
 import android.util.Log;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
 
 import com.google.android.libraries.places.api.model.Place;
 
@@ -45,9 +48,11 @@ public class Alarm {
         this.repetation = repetation;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public void prepareAlarm(){
         Intent intent = new Intent(context,TransparentActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//        |Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_TOP
 
         if(startPlace !=null){
             Log.i("log", "not null alarm");
@@ -81,8 +86,8 @@ public class Alarm {
                 break;
             case "Repeated Daily":
                 Log.i("log", "repetation daily");
-//                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,triggerAt,AlarmManager.INTERVAL_DAY,pendingIntent);
-                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, triggerAt, AlarmManager.INTERVAL_DAY, pendingIntent);
+//                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, triggerAt, AlarmManager.INTERVAL_DAY, pendingIntent);
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP,triggerAt,pendingIntent);
                 break;
             case "Repeated weekly":
                 alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,triggerAt,AlarmManager.INTERVAL_DAY*7,pendingIntent);

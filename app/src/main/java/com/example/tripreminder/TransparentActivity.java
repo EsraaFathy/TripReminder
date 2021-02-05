@@ -80,6 +80,7 @@ public class TransparentActivity extends AppCompatActivity {
 
     private void createNotification(Context context,long ID){
         Intent tapNotification = new Intent(getApplicationContext(), com.example.tripreminder.TransparentActivity.class).setAction(START_SERVICE);
+        tapNotification.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
         //long id in intent
         Log.i("create noti",ID+"");
         tapNotification.putExtra("ID",ID);
@@ -95,16 +96,6 @@ public class TransparentActivity extends AppCompatActivity {
             notificationUtils.getManager().notify(id, nb.build());
 
         }
-
-//        try{
-//
-//            Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-//            rigntone = RingtoneManager.getRingtone(context, uri);
-//            if(!rigntone.isPlaying())
-//                rigntone.play();
-//        }
-//        catch(Exception e){}
-
 
     }
 
@@ -138,6 +129,7 @@ public class TransparentActivity extends AppCompatActivity {
         pass.putExtra("ID", myIntent.getLongExtra("ID", 0));
         pass.putExtra("tripName", myIntent.getStringExtra("tripName"));
         pass.putExtra("ways", myIntent.getBooleanExtra("ways",false));
+        pass.putExtra("repetation", myIntent.getStringExtra("repetation"));
     }
 
     private void startTrip(){
@@ -177,12 +169,6 @@ public class TransparentActivity extends AppCompatActivity {
 
         startActivity(mapIntent);
 
-        if(myIntent.hasExtra("notificationID")){
-            Log.i("log", "cancel notification ::::"+myIntent.getIntExtra("notificationID", 0)+"");
-//            notificationManager.cancel(myIntent.getIntExtra("notificationID", 0));
-//            MyReciever.rigntone.stop();
-        }
-
         //Todo: delete this trip
     }
 
@@ -209,11 +195,13 @@ public class TransparentActivity extends AppCompatActivity {
 
     }
     private void afterHanderStatus(){
-        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+        rigntone = RingtoneManager.getRingtone(getApplicationContext(), uri);
+        if(!rigntone.isPlaying())
+            rigntone.play();
+
         notificationUtils=new NotificationUtils(getApplicationContext());
         notificationManager=notificationUtils.getManager();
-        Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
-        r.play();
         final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
         builder.setCancelable(false);
         builder.setTitle(myIntent.getStringExtra("tripName"));
@@ -221,18 +209,18 @@ public class TransparentActivity extends AppCompatActivity {
         builder.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                idT= (int) myIntent.getLongExtra("ID",-1);
+//                idT= (int) myIntent.getLongExtra("ID",-1);
+                rigntone.stop();
 
-                if(!myIntent.getExtras().getString("repetation","null").equals("no repetation"))
-                    notificationManager.cancel((int)idT);
-
-                if(myIntent.getStringExtra("repetation").equals("no repetation")){
-                    Log.i("log", "no repetation in trans");
+                if(!myIntent.getExtras().getString("repetation","null").equals("No Repeated")){
+                    // notification won't be canceld
+                    //todo:: adding this trip in history as canceled but not to be deleted
+                    Log.i("log", "onClick: Cancel");
+                }else{
                     UpdateStatusByID(idT,"Canceled");
                 }
-
-                finish();
-                //todo:: cancel trip in database
+                notificationManager.cancel((int)idT);
+                finishAndRemoveTask();
 
             }
         });
@@ -240,9 +228,9 @@ public class TransparentActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 // id long
+                finishAndRemoveTask();
                 createNotification(getApplicationContext(),idT);
-                finish();
-
+                rigntone.stop();
             }
         });
         builder.setNeutralButton("Start", new DialogInterface.OnClickListener() {
@@ -250,13 +238,18 @@ public class TransparentActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 Log.i("startID",""+idT);
                 roundedTrip(idT);
+                rigntone.stop();
 
-                if(!myIntent.getExtras().getString("repetation","null").equals("no repetation"))
-                    notificationManager.cancel((int)idT);
+                if(!myIntent.getExtras().getString("repetation","null").equals("No Repeated")){
+                    // notification won't be canceld
+                    //todo:: adding this trip in history but not to be deleted
 
-                UpdateStatusByID(idT,"Done");
+                }else{
+                    UpdateStatusByID(idT,"Done");
+                }
+                notificationManager.cancel((int)idT);
                 startTrip();
-                finish();
+                finishAndRemoveTask();
 
             }
         });
