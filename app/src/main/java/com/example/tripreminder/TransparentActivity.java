@@ -222,7 +222,9 @@ public class TransparentActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 idT= (int) myIntent.getLongExtra("ID",-1);
-                notificationManager.cancel((int)idT);
+
+                if(!myIntent.getExtras().getString("repetation","null").equals("no repetation"))
+                    notificationManager.cancel((int)idT);
 
                 if(myIntent.getStringExtra("repetation").equals("no repetation")){
                     Log.i("log", "no repetation in trans");
@@ -248,7 +250,10 @@ public class TransparentActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 Log.i("startID",""+idT);
                 roundedTrip(idT);
-                notificationManager.cancel((int)idT);
+
+                if(!myIntent.getExtras().getString("repetation","null").equals("no repetation"))
+                    notificationManager.cancel((int)idT);
+
                 UpdateStatusByID(idT,"Done");
                 startTrip();
                 finish();

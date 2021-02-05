@@ -82,8 +82,7 @@ public class Alarm {
             case "Repeated Daily":
                 Log.i("log", "repetation daily");
 //                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,triggerAt,AlarmManager.INTERVAL_DAY,pendingIntent);
-//                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, triggerAt, AlarmManager.INTERVAL_DAY, pendingIntent);
-                  alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,triggerAt,AlarmManager.INTERVAL_HOUR/60,pendingIntent);
+                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, triggerAt, AlarmManager.INTERVAL_DAY, pendingIntent);
                 break;
             case "Repeated weekly":
                 alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,triggerAt,AlarmManager.INTERVAL_DAY*7,pendingIntent);
