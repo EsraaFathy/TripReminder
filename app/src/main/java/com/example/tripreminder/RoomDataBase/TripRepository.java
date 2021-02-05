@@ -15,6 +15,7 @@ public class TripRepository {
     private static TripDAO tripDAO;
     private LiveData<List<TripTable>> getAllData;
     private LiveData<List<TripTable>> history;
+    private LiveData<List<TripTable>> historydone;
     private static LiveData<List<TripTable>> allToSync;
 
 
@@ -24,6 +25,7 @@ public class TripRepository {
         getAllData = tripDAO.getAllHomeTrips("up Coming");
         history = tripDAO.getHistory("up Coming");
         allToSync = tripDAO.getAllToAsync();
+        historydone=tripDAO.getHistoryDone("Done");
     }
 
     public String getStatTusById(long id){
@@ -60,6 +62,10 @@ public class TripRepository {
 
     public LiveData<List<TripTable>> getHistory(String upComing) {
         return history;
+    }
+
+    public LiveData<List<TripTable>> getHistoryDone(String upComing) {
+        return historydone;
     }
 
     public void delete(TripTable tripTable) {

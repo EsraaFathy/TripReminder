@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import com.example.tripreminder.RoomDataBase.TripTable;
 import com.example.tripreminder.RoomDataBase.TripViewModel;
@@ -82,10 +83,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void getHistory(){
-            tripViewModel.getHistory("up Coming").observe(MapsActivity.this, new Observer<List<TripTable>>() {
+            tripViewModel.getHistoryDone("Done").observe(MapsActivity.this, new Observer<List<TripTable>>() {
                 @Override
                 public void onChanged(List<TripTable> tripTables) {
                     trips=tripTables;
+                    Log.d("TAG", "onChanged: ");
                     handler.sendEmptyMessage(0);
                 }
             });

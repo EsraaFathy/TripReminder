@@ -30,6 +30,9 @@ public interface TripDAO {
     @Query("SELECT * FROM trips WHERE status not LIKE '%' || :UpComming || '%'")
     LiveData<List<TripTable>> getHistory(String UpComming);
 
+    @Query("SELECT * FROM trips WHERE status LIKE '%' || :done || '%'")
+    LiveData<List<TripTable>> getHistoryDone(String done);
+
     @Query("SELECT * FROM trips")
     LiveData<List<TripTable>> getAllToAsync();
 
