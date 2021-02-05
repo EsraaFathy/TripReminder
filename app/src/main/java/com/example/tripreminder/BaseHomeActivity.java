@@ -47,31 +47,14 @@ public class BaseHomeActivity extends AppCompatActivity {
         mAuth=FirebaseAuth.getInstance();
         currentUser=mAuth.getCurrentUser();
         activityBaseHomeBinding.toolbar.setSubtitle("Upcoming");
-        activityBaseHomeBinding.toolbar.setOnClickListener(new View.OnClickListener() {
+        activityBaseHomeBinding.mapIcon.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Intent intent= new Intent(BaseHomeActivity.this,TransparentActivity.class);
-                startActivity(intent);
+            public void onClick(View v) {
+                if (activityBaseHomeBinding.mapIcon.getVisibility()==View.VISIBLE){
+                    startActivity(new Intent(BaseHomeActivity.this,MapsActivity.class));
+                }
             }
         });
-//            @Override
-//            public void onClick(View view) {
-//                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-//                    startService(new Intent(BaseHomeActivity.this, FloatingViewService.class));
-//                    finish();
-//                } else if (Settings.canDrawOverlays(BaseHomeActivity.this)) {
-//                    startService(new Intent(BaseHomeActivity.this, FloatingViewService.class));
-//                    finish();
-//                } else {
-//                    askPermission();
-//                    Toast.makeText(BaseHomeActivity.this, "You need System Alert Window Permission to do this", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//
-//        });
-
-
-
 
         activityBaseHomeBinding.bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
     }
@@ -85,18 +68,21 @@ public class BaseHomeActivity extends AppCompatActivity {
             switch (menuItem.getItemId()) {
                 case R.id.homeItem_menu:
                     baseFragment = new HomeFragment();
+                    activityBaseHomeBinding.mapIcon.setVisibility(View.INVISIBLE);
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragmentBasic, baseFragment).commit();
                     activityBaseHomeBinding.toolbar.setSubtitle("Upcoming");
                     break;
 
                 case R.id.profileItem_menu:
                     baseFragment = new ProfileFragment();
+                    activityBaseHomeBinding.mapIcon.setVisibility(View.INVISIBLE);
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragmentBasic, baseFragment).commit();
                     activityBaseHomeBinding.toolbar.setSubtitle("Profile");
                     break;
 
                 case R.id.historyItem_menu:
                     baseFragment = new HistoryFragment();
+                    activityBaseHomeBinding.mapIcon.setVisibility(View.VISIBLE);
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragmentBasic, baseFragment).commit();
                     activityBaseHomeBinding.toolbar.setSubtitle("History");
                     break;
