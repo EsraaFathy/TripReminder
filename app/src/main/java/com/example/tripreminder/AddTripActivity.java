@@ -82,7 +82,6 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
     private HandelLocation handelLocation;
     private double distance = 0.0;
     private Location mlocation;
-    String repetation;
     boolean way;
 
     Calendar calender;
@@ -298,9 +297,9 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
     private void prepareAlarm() {
         Alarm alarm;
         if (start == null)
-            alarm = new Alarm(this, calender, mlocation, end, getWay(), binding.tripNameInput.getText().toString(), idT,repetation);
+            alarm = new Alarm(this, calender, mlocation, end, getWay(), binding.tripNameInput.getText().toString(), idT,getRepetation());
         else {
-            alarm = new Alarm(this, calender, start, end, getWay(), binding.tripNameInput.getText().toString(), idT,repetation);
+            alarm = new Alarm(this, calender, start, end, getWay(), binding.tripNameInput.getText().toString(), idT,getRepetation());
         }
         alarm.prepareAlarm();
 
