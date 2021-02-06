@@ -246,6 +246,16 @@ public class TransparentActivity extends AppCompatActivity {
 
                 }else{
                     UpdateStatusByID(idT,"Done");
+//                    if (!mangeReputation(tripTable)) {
+//                        roundedTrip(tripTable);
+//                        idT = tripTable.getId();
+//                        UpdateStatusByID(idT, "Done");
+//                        startTrip(tripTable);
+//                    }else {
+//                        roundedTrip(tripTable);
+//                        idT = tripTable.getId();
+//                        startTrip(tripTable);
+//                    }
                 }
                 notificationManager.cancel((int)idT);
                 startTrip();
@@ -293,6 +303,28 @@ public class TransparentActivity extends AppCompatActivity {
                     }
                 }
             }).start();
+    }
+
+    private boolean mangeReputation(TripTable tripTable){
+        if (!tripTable.getRepetition().equals("No Repeated")){
+            new Thread(() -> tripViewModel.insert(new TripTable(tripTable.getTitle(),
+                    tripTable.getTime(),
+                    tripTable.getDate(),
+                    "Done",
+                    tripTable.getRepetition(),
+                    true,
+                    tripTable.getTo(),
+                    tripTable.getFrom(),
+                    tripTable.getNotes(),
+                    tripTable.getDistance(),
+                    tripTable.getLatEnd(),
+                    tripTable.getLongEnd(),
+                    tripTable.getLatStart(),
+                    tripTable.getLatStart()))).start();
+            return true;
+        }
+        //return false if it not Reputation
+        return false;
     }
 
 }
