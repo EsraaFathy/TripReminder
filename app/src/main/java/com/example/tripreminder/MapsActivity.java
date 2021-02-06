@@ -64,7 +64,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //                        new LatLng(30.595617233328316,32.27627095541596),
 //                        new LatLng(30.594859945801424,32.27509078352651)));
         preparePolyLines();
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 14));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 10));
 
 
         //TODO
@@ -108,10 +108,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         for (TripTable table : trips){
             Random rand = new Random(); //instance of random class
             int int_random = rand.nextInt(9);
+
+            //marker to the start of the trip
+            mMap.addMarker(new MarkerOptions().position(new LatLng(table.getLatStart(),table.getLongStart())).title("Start trip"+table.getTitle()));
             mMap.addPolyline(new PolylineOptions()
                     .clickable(true)
                     .add(new LatLng(table.getLatStart(),table.getLongStart()),
                             new LatLng(table.getLatEnd(),table.getLongEnd())).color(colors[int_random]));
+
+            // marker to the end of the trip
+            mMap.addMarker(new MarkerOptions().position(new LatLng(table.getLatEnd(),table.getLongEnd())).title("End trip"+table.getTitle()));
         }
     }
 }
