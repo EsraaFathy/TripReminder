@@ -173,7 +173,7 @@ public class MenuItemsForOneElement extends AppCompatActivity {
                 for (String value : stringList) {
                     n.append("   " + value + "\n");
                 }
-                alertDialog.setTitle("Your Notes");
+                alertDialog.setTitle(R.string.YourNotes);
                 alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {

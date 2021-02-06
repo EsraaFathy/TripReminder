@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TripReminder</string>
+    <string name="app_name">Rafeeq</string>
     <string name="create">Register</string>
     <string name="hasAccount">Already has an account</string>
     <string name="account_created_successfully">Account Created Successfully...</string>
@@ -55,11 +55,28 @@
     <string name="delete_trip">Delete Trip</string>
     <string name="cancel_trip">Cancel Trip</string>
     <string name="delete_note">Delete Note</string>
-    <string name="her_you_can_add_your_trip_notes">Her You can add your trip notes</string>
+    <string name="her_you_can_add_your_trip_notes">here You can add your trip notes</string>
     <string name="test">test</string>
     <string name="report">Distance Report</string>
     <string name="distance">Distance</string>
     <string name="maps_api_key">AIzaSyBZ_h90ZRkxM6LD1m-Jrq7XCZSA2zm63XQ</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="Email">" Email"</string>
+    <string name="Password">" Password"</string>
+    <string name="othermethod">_____________ use other method _____________</string>
+    <string name="fullName">someone full name</string>
+    <string name="failedtogetyourdata">Failed to get your data</string>
+    <string name="pleaseenteryourEmail">Please enter email</string>
+    <string name="pleaseenteryourPassword">Please enter password</string>
+    <string name="signedinsucc">Signed In Successfully</string>
+    <string name="SignInFailed">Sign In Failed</string>
+    <string name="accountfailed">account failed</string>
+    <string name="norRegistered">You are not registered please register</string>
+    <string name="YourNotes">Your Notes</string>
+    <string name="notedeleted">Note Deleted</string>
+    <string name="Yourdataisbackedup">Your data is backed up</string>
+    <string name="start">Start</string>
+    <string name="floatPermission">You need System Alert Window Permission to do this</string>
     <string-array name="repeating_options">
         <item>No Repeated</item>
         <item>Repeated Daily</item>
@@ -70,5 +87,4 @@
         <item>One Way Trip</item>
         <item>Rounded Trip</item>
     </string-array>
-    <string name="title_activity_maps">Map</string>
 </resources>

@@ -143,7 +143,7 @@ public class NotesControl extends AppCompatActivity {
                 // TODO switch to definnd the view
                 //deleteNote
                 if (viewType.equals("delete")) {
-                    Toast.makeText(NotesControl.this, "deledte", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(NotesControl.this, R.string.notedeleted, Toast.LENGTH_SHORT).show();
                     deleteNote(position);
                     updateNotesInRoom(tripTable, notes);
                 }
