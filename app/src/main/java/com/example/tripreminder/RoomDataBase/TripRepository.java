@@ -13,9 +13,9 @@ import java.util.List;
 
 public class TripRepository {
     private static TripDAO tripDAO;
-    private LiveData<List<TripTable>> getAllData;
-    private LiveData<List<TripTable>> history;
-    private LiveData<List<TripTable>> historydone;
+    private final LiveData<List<TripTable>> getAllData;
+    private final LiveData<List<TripTable>> history;
+    private final LiveData<List<TripTable>> historydone;
     private static LiveData<List<TripTable>> allToSync;
 
 

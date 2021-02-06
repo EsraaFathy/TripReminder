@@ -2,6 +2,7 @@ package com.example.tripreminder;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
@@ -14,6 +15,7 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -73,6 +75,7 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
     private double distance = 0.0;
     private Location mlocation;
     private Calendar calender;
+    private AlertDialog alertDialog;
      Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(@NonNull Message msg) {
@@ -128,6 +131,8 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_add_trip);
         calender = Calendar.getInstance();
+        alertDialog = new AlertDialog.Builder(AddTripActivity.this).create();
+
         tripViewModel = new ViewModelProvider(AddTripActivity.this, ViewModelProvider.AndroidViewModelFactory.getInstance(AddTripActivity.this.getApplication())).get(TripViewModel.class);
         handelLocation = new HandelLocation(this);
 //        repetation = getRepetation();
@@ -547,20 +552,25 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
 
         @SuppressLint("MissingPermission")
         public void getLocation() {
-            Task<Location> task;
-            if (chickPermition()) {
-                //verifyLocationEnabled();
-                task = fusedLocationProviderClient.getLastLocation();
-                task.addOnSuccessListener(location -> {
-                    mlocation = location;
-                    Message message = new Message();
-                    message.obj = mlocation;
-                    handlerLocation.sendMessage(message);
+           if (verifyLocationEnabled()) {
+               Task<Location> task;
+               if (chickPermition()) {
+                   task = fusedLocationProviderClient.getLastLocation();
+                   task.addOnSuccessListener(location -> {
+                       mlocation = location;
+                       Message message = new Message();
+                       message.obj = mlocation;
+                       handlerLocation.sendMessage(message);
 
-                }).addOnFailureListener(e -> Log.d("TAG", "Failed"));
-            } else {
-                requestPremition();
-            }
+                   }).addOnFailureListener(e -> Log.d("TAG", "Failed"));
+               } else {
+                   requestPremition();
+               }
+           }else {
+               loadingBar.dismiss();
+               enableLocationSitting();
+               binding.endPointSearchView.setText("");
+           }
         }
 
 
@@ -576,18 +586,29 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
 
 
         //TODO
-        public void verifyLocationEnabled() {
+        public boolean verifyLocationEnabled() {
             LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-            final boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-            if (!gpsEnabled) {
-                enableLocationSitting();
-            }
-
+            return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         }
 
         public void enableLocationSitting() {
-            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            context.startActivity(intent);
+            alertDialog.setTitle("You must enable location or add your start trip location manually");
+            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Enable location",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            context.startActivity(intent);
+                            alertDialog.dismiss();
+                        }});
+            alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            alertDialog.dismiss();
+                        }
+                    });
+            alertDialog.show();
+
         }
 
     }
