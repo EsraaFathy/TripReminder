@@ -134,7 +134,7 @@ public class TransparentActivity extends AppCompatActivity {
 
     private void startTrip(){
 
-        Toast.makeText(getApplicationContext(), "start", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), R.string.start, Toast.LENGTH_SHORT).show();
         double sourceLat,sourceLon,destinationLat,destinationLon;
         String sourceName,destinationName;
 
@@ -178,7 +178,7 @@ public class TransparentActivity extends AppCompatActivity {
         }else if (Settings.canDrawOverlays(this)) {
             startService(new Intent(getApplicationContext(), FloatingViewService.class).putExtra("Notes",notes));
         }else {
-            Toast.makeText(this, "You need System Alert Window Permission to do this", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.floatPermission, Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -183,7 +183,7 @@ public class HomeFragment extends Fragment {
 
     private void startTrip(TripTable tripTable) {
 
-        Toast.makeText(getContext(), "start", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), R.string.start, Toast.LENGTH_SHORT).show();
         double sourceLat, sourceLon, destinationLat, destinationLon;
         String sourceName, destinationName;
 
@@ -225,7 +225,7 @@ public class HomeFragment extends Fragment {
         } else if (Settings.canDrawOverlays(getContext())) {
             getActivity().startService(new Intent(getActivity(), FloatingViewService.class).putExtra("Notes", notes));
         } else {
-            Toast.makeText(getActivity(), "You need System Alert Window Permission to do this", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), R.string.floatPermission, Toast.LENGTH_SHORT).show();
         }
     }
 

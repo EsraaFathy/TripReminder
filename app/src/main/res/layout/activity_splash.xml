@@ -4,21 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".SplashActivity"
+    android:background="@color/colorPrim">
 
-    <Button
-        android:textSize="25dp"
-        android:layout_margin="10dp"
-        android:id="@+id/logout_btn"
-        android:layout_width="330dp"
-        android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:text="@string/Log_out"
-        app:layout_constraintTop_toTopOf="parent"
+    <ImageView
+        android:layout_width="300dp"
+        android:layout_height="250dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:background="@drawable/button_bg"
-        />
+        android:src="@drawable/rafiq2"
+        app:layout_constraintVertical_bias=".4"
+        app:layout_constraintHorizontal_bias=".65"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
