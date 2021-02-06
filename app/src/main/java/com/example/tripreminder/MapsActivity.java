@@ -105,14 +105,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             int int_random = rand.nextInt(9);
 
             //marker to the start of the trip
-            mMap.addMarker(new MarkerOptions().position(new LatLng(table.getLatStart(),table.getLongStart())).title("Start trip"+table.getTitle()));
+            mMap.addMarker(new MarkerOptions().position(new LatLng(table.getLatStart(),table.getLongStart())).title("Start trip "+table.getTitle()));
             mMap.addPolyline(new PolylineOptions()
                     .clickable(true)
                     .add(new LatLng(table.getLatStart(),table.getLongStart()),
                             new LatLng(table.getLatEnd(),table.getLongEnd())).color(colors[int_random]));
 
             // marker to the end of the trip
-            mMap.addMarker(new MarkerOptions().position(new LatLng(table.getLatEnd(),table.getLongEnd())).title("End trip"+table.getTitle()));
+            mMap.addMarker(new MarkerOptions().position(new LatLng(table.getLatEnd(),table.getLongEnd())).title("End trip "+table.getTitle()));
         }
     }
 }
