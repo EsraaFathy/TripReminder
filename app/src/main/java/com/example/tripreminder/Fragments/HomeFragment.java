@@ -254,7 +254,7 @@ public class HomeFragment extends Fragment {
                     tripTable.getTime(),
                     tripTable.getDate(),
                     "Second Way",
-                    tripTable.getRepetition(),
+                    "No Repeated",
                     true,
                     tripTable.getTo(),
                     tripTable.getFrom(),
