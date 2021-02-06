@@ -133,7 +133,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 }else {
 //if we have any error
                                     String message = task.getException().getLocalizedMessage();
-                                    Toast.makeText(RegisterActivity.this, ""+R.string.error + message, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(RegisterActivity.this, ""+R.string.error +" There is No Internet\n"+ message, Toast.LENGTH_SHORT).show();
                                     loadingBar.dismiss();
                                     RegisterActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                                 }

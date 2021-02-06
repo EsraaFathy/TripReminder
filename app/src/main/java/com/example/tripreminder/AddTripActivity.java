@@ -17,6 +17,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -79,6 +80,7 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
         public boolean handleMessage(@NonNull Message msg) {
             loadingBar.dismiss();
             ofterGetID();
+            AddTripActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
             finish();
             return false;
         }
@@ -171,6 +173,7 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
         binding.addTripBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                AddTripActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
                 if (binding.addTripBtn.getText().equals("Edit")) {
                     Toast.makeText(AddTripActivity.this, "bla bla", Toast.LENGTH_SHORT).show();
                     editTripFromUI();

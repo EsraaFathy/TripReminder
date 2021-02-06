@@ -163,7 +163,7 @@ public class LoginActivity extends AppCompatActivity {
                             @Override
                             public void onCancelled(@NonNull DatabaseError databaseError) {
                                 String message = databaseError.toException().getLocalizedMessage();
-                                Toast.makeText(LoginActivity.this, ""+R.string.error + message, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginActivity.this, ""+R.string.error +" There is No Internet\n"+ message, Toast.LENGTH_SHORT).show();
                                 loadingBar.dismiss();
                                 LoginActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                             }

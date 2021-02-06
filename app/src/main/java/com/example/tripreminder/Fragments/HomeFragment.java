@@ -1,6 +1,7 @@
 package com.example.tripreminder.Fragments;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -65,6 +66,7 @@ public class HomeFragment extends Fragment {
         @Override
         public boolean handleMessage(@NonNull Message message) {
             startFloatingIcon(note);
+            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
             return false;
         }
     });
@@ -111,6 +113,7 @@ public class HomeFragment extends Fragment {
                     notesItemOptions(tripTable);
                     break;
                 case RecyclerHomeAdapter.START:
+                    getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
                     startItemOptions(tripTable);
                     break;
             }

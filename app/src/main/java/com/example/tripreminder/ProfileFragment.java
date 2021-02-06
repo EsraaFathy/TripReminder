@@ -129,6 +129,7 @@ public class ProfileFragment extends Fragment {
         syncBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
                 th=new Thread(sync);
                 th.start();
             }
@@ -187,7 +188,7 @@ public class ProfileFragment extends Fragment {
 
                 }else {
                     String message = task.getException().getLocalizedMessage();
-                    Toast.makeText(getActivity(), ""+R.string.error + message, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), ""+R.string.error +" There is No Internet\n"+ message, Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -198,7 +199,6 @@ public class ProfileFragment extends Fragment {
 
         @Override
         public void run() {
-            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
             sync(tables);
             handler.sendEmptyMessage(0);
         }
