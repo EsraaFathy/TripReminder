@@ -29,18 +29,21 @@ import com.example.tripreminder.RoomDataBase.TripTable;
 import com.example.tripreminder.RoomDataBase.TripViewModel;
 import com.example.tripreminder.serveses.FloatingViewService;
 
+
+import java.util.Calendar;
 import java.util.Locale;
+import java.util.Random;
 
 public class TransparentActivity extends AppCompatActivity {
 
     public static Ringtone rigntone;
     public static final String START_SERVICE = "com.example.tripreminder.StartService";
-    public static final String SNOOZE_SERVICE = "com.example.tripreminder.SnoozeService";
-    public static final String CANCEL_SERVICE = "com.example.tripreminder.CancelService";
 
     private String SOURCE_URL= "http://maps.google.com/maps?saddr=";
     private String DEST_URL= "http://maps.google.com/maps?daddr=";
     private String note;
+
+//    private AlarmTripModel alarmTripModel;
 
     Intent myIntent;
     PendingIntent startPendingIntent;
@@ -73,27 +76,25 @@ public class TransparentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         myIntent = getIntent();
         idT= myIntent.getLongExtra("ID",-1);
-        Log.i("ID",""+idT);
+        Log.i("log", "onCreate: "+myIntent.getIntExtra("notificationID", -1));
         tripViewModel = new ViewModelProvider(TransparentActivity.this, ViewModelProvider.AndroidViewModelFactory.getInstance(TransparentActivity.this.getApplication())).get(TripViewModel.class);
         getStatusById(idT);
     }
 
     private void createNotification(Context context,long ID){
-        Intent tapNotification = new Intent(getApplicationContext(), com.example.tripreminder.TransparentActivity.class).setAction(START_SERVICE);
+        Intent tapNotification = new Intent(getApplicationContext(), TransparentActivity.class);
         tapNotification.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        //long id in intent
-        Log.i("create noti",ID+"");
-        tapNotification.putExtra("ID",ID);
+
         setTripDate(tapNotification);
-        // int id to cancel
-        int id = (int)ID;
-        startPendingIntent = PendingIntent.getActivity(getApplicationContext(), id, tapNotification, PendingIntent.FLAG_ONE_SHOT);
+        int notificationID = (int) (myIntent.getIntExtra("notificationID",0)+ idT);
+        tapNotification.putExtra("notificationID",notificationID);
+        startPendingIntent = PendingIntent.getActivity(this, (int)(idT+myIntent.getLongExtra("calendar", 0) ), tapNotification,PendingIntent.FLAG_ONE_SHOT);
 
 
          notificationUtils = new NotificationUtils(context);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             NotificationCompat.Builder nb = notificationUtils.getAndroidChannelNotification(myIntent.getStringExtra("tripName"),startPendingIntent);
-            notificationUtils.getManager().notify(id, nb.build());
+            notificationUtils.getManager().notify(notificationID, nb.build());
 
         }
 
@@ -130,6 +131,9 @@ public class TransparentActivity extends AppCompatActivity {
         pass.putExtra("tripName", myIntent.getStringExtra("tripName"));
         pass.putExtra("ways", myIntent.getBooleanExtra("ways",false));
         pass.putExtra("repetation", myIntent.getStringExtra("repetation"));
+        pass.putExtra("calendar",myIntent.getLongExtra("calendar",-1));
+//        pass.putExtra("notificationID",myIntent.getIntExtra("notificationID",0));
+
     }
 
     private void startTrip(){
@@ -213,13 +217,14 @@ public class TransparentActivity extends AppCompatActivity {
                 rigntone.stop();
 
                 if(!myIntent.getExtras().getString("repetation","null").equals("No Repeated")){
-                    // notification won't be canceld
-                    //todo:: adding this trip in history as canceled but not to be deleted
+                        repeateAlarm();
                     Log.i("log", "onClick: Cancel");
+//                    Log.i("log","NotificationID"+myIntent.getIntExtra("notificationID", -1));
+
                 }else{
                     UpdateStatusByID(idT,"Canceled");
                 }
-                notificationManager.cancel((int)idT);
+                notificationManager.cancel(myIntent.getIntExtra("notificationID", 0));
                 finishAndRemoveTask();
 
             }
@@ -229,7 +234,9 @@ public class TransparentActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 // id long
                 finishAndRemoveTask();
-                createNotification(getApplicationContext(),idT);
+
+                notificationManager.cancel(myIntent.getIntExtra("notificationID",0));
+                createNotification(getApplicationContext(),myIntent.getIntExtra("notificationID",0));
                 rigntone.stop();
             }
         });
@@ -242,6 +249,7 @@ public class TransparentActivity extends AppCompatActivity {
 
                 if(!myIntent.getExtras().getString("repetation","null").equals("No Repeated")){
                     // notification won't be canceld
+                    repeateAlarm();
                     //todo:: adding this trip in history but not to be deleted
 
                 }else{
@@ -258,6 +266,59 @@ public class TransparentActivity extends AppCompatActivity {
         dialog.getButton(dialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(this, R.color.colorPrim));
         dialog.getButton(dialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(this, R.color.colorPrim));
 
+    }
+
+    private long checkNot24HoursPassed(){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+
+        if(calendar.getTimeInMillis() >= myIntent.getLongExtra("calendar",-1) + 60*60*1000){
+            return System.currentTimeMillis() + myIntent.getLongExtra("calendar", -1)-(System.currentTimeMillis() - myIntent.getLongExtra("calendar", -1));
+        }else
+            return 0;
+
+    }
+    private void repeateAlarm(){
+//        86399999
+        Alarm alarm;
+        alarm = new Alarm();
+        long time = 0;
+//        long diff = checkNot24HoursPassed();
+        switch (myIntent.getStringExtra("repetation")){
+            case "Repeated Daily":
+//                if(diff != 0)
+                Log.i("log", "repeateAlarm: "+myIntent.getLongExtra("calendar", -1));
+                    time = myIntent.getLongExtra("calendar", -1) + 24*60*60*1000;
+//                else
+//                   time = diff + 24*60*60*1000;
+
+                Log.i("tag", "repeateAlarm:"+time);
+                break;
+            case "Repeated weekly":
+                time = myIntent.getLongExtra("calendar", -1) + 7*24*60*60*1000;
+                break;
+            case "Repeated Monthly":
+                time = myIntent.getLongExtra("calendar", -1) + 30*24*60*60*1000;
+                break;
+            default:
+                Log.i("tag", "warning default switch repeateAlarm ");
+        }
+//        1612794849936
+        alarm.prepareAlarm(getApplicationContext(),
+                time,
+                myIntent.getDoubleExtra("sourceLat", 0),
+                myIntent.getDoubleExtra("sourceLon", 0),
+                myIntent.getStringExtra("sourceName"),
+
+                myIntent.getDoubleExtra("destinationLat", 0),
+                myIntent.getDoubleExtra("destinationLon",0),
+                myIntent.getStringExtra("destinationName"),
+
+                myIntent.getBooleanExtra("way",false),
+
+                myIntent.getStringExtra("tripName"),
+                idT,
+                myIntent.getStringExtra("repetation"));
     }
     private void getStatusById(long id){
         new Thread(new Runnable() {
