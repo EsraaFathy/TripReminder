@@ -22,8 +22,8 @@ public class TripRepository {
     public TripRepository(Application application) {
         TripRoomDataBase tripRoomDataBase = TripRoomDataBase.getInstance(application);
         tripDAO = tripRoomDataBase.tripDao();
-        getAllData = tripDAO.getAllHomeTrips("up Coming");
-        history = tripDAO.getHistory("up Coming");
+        getAllData = tripDAO.getAllHomeTrips("up Coming","Second Way");
+        history = tripDAO.getHistory("Canceled","Done");
         allToSync = tripDAO.getAllToAsync();
         historydone=tripDAO.getHistoryDone("Done");
     }

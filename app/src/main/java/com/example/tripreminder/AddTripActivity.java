@@ -523,6 +523,7 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
     }
 
 
+
     public class HandelLocation {
         private final Context context;
         public final static int LOCATION_PERMISSION_REQUEST_CODE = 1234;

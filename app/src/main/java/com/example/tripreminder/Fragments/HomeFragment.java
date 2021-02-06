@@ -121,10 +121,16 @@ public class HomeFragment extends Fragment {
     }
 
     private void startItemOptions(TripTable tripTable) {
-        roundedTrip(tripTable);
-        idT = tripTable.getId();
-        UpdateStatusByID(idT, "Done");
-        startTrip(tripTable);
+        if (!mangeReputation(tripTable)) {
+            roundedTrip(tripTable);
+            idT = tripTable.getId();
+            UpdateStatusByID(idT, "Done");
+            startTrip(tripTable);
+        }else {
+            roundedTrip(tripTable);
+            idT = tripTable.getId();
+            startTrip(tripTable);
+        }
 
     }
 
@@ -247,7 +253,7 @@ public class HomeFragment extends Fragment {
             new Thread(() -> tripViewModel.insert(new TripTable(tripTable.getTitle(),
                     tripTable.getTime(),
                     tripTable.getDate(),
-                    "up Coming",
+                    "Second Way",
                     tripTable.getRepetition(),
                     true,
                     tripTable.getTo(),
@@ -261,6 +267,27 @@ public class HomeFragment extends Fragment {
 
         }
 
+    }
+    private boolean mangeReputation(TripTable tripTable){
+        if (!tripTable.getRepetition().equals("No Repeated")){
+            new Thread(() -> tripViewModel.insert(new TripTable(tripTable.getTitle(),
+                    tripTable.getTime(),
+                    tripTable.getDate(),
+                    "Done",
+                    tripTable.getRepetition(),
+                    true,
+                    tripTable.getTo(),
+                    tripTable.getFrom(),
+                    tripTable.getNotes(),
+                    tripTable.getDistance(),
+                    tripTable.getLatEnd(),
+                    tripTable.getLongEnd(),
+                    tripTable.getLatStart(),
+                    tripTable.getLatStart()))).start();
+            return true;
+        }
+        //return false if it not Reputation
+        return false;
     }
 
 }
