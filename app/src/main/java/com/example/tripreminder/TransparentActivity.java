@@ -138,7 +138,7 @@ public class TransparentActivity extends AppCompatActivity {
 
     private void startTrip(){
 
-        Toast.makeText(getApplicationContext(), "start", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), R.string.start, Toast.LENGTH_SHORT).show();
         double sourceLat,sourceLon,destinationLat,destinationLon;
         String sourceName,destinationName;
 
@@ -182,7 +182,7 @@ public class TransparentActivity extends AppCompatActivity {
         }else if (Settings.canDrawOverlays(this)) {
             startService(new Intent(getApplicationContext(), FloatingViewService.class).putExtra("Notes",notes));
         }else {
-            Toast.makeText(this, "You need System Alert Window Permission to do this", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.floatPermission, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -254,6 +254,16 @@ public class TransparentActivity extends AppCompatActivity {
 
                 }else{
                     UpdateStatusByID(idT,"Done");
+//                    if (!mangeReputation(tripTable)) {
+//                        roundedTrip(tripTable);
+//                        idT = tripTable.getId();
+//                        UpdateStatusByID(idT, "Done");
+//                        startTrip(tripTable);
+//                    }else {
+//                        roundedTrip(tripTable);
+//                        idT = tripTable.getId();
+//                        startTrip(tripTable);
+//                    }
                 }
                 notificationManager.cancel((int)idT);
                 startTrip();
@@ -354,6 +364,28 @@ public class TransparentActivity extends AppCompatActivity {
                     }
                 }
             }).start();
+    }
+
+    private boolean mangeReputation(TripTable tripTable){
+        if (!tripTable.getRepetition().equals("No Repeated")){
+            new Thread(() -> tripViewModel.insert(new TripTable(tripTable.getTitle(),
+                    tripTable.getTime(),
+                    tripTable.getDate(),
+                    "Done",
+                    tripTable.getRepetition(),
+                    true,
+                    tripTable.getTo(),
+                    tripTable.getFrom(),
+                    tripTable.getNotes(),
+                    tripTable.getDistance(),
+                    tripTable.getLatEnd(),
+                    tripTable.getLongEnd(),
+                    tripTable.getLatStart(),
+                    tripTable.getLatStart()))).start();
+            return true;
+        }
+        //return false if it not Reputation
+        return false;
     }
 
 }

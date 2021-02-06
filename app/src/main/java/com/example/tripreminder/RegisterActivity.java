@@ -97,10 +97,10 @@ public class RegisterActivity extends AppCompatActivity {
         String password= userPassword.getText().toString();
 
         if(TextUtils.isEmpty(email)){
-            Toast.makeText(this, "Please enter email", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,R.string.pleaseenteryourEmail , Toast.LENGTH_SHORT).show();
         }
         else if(TextUtils.isEmpty(password)){
-            Toast.makeText(this, "Please enter password", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.pleaseenteryourPassword, Toast.LENGTH_SHORT).show();
         }
         else {
             loadingBar.setTitle("Creating new account");
@@ -143,7 +143,7 @@ public class RegisterActivity extends AppCompatActivity {
                     }
                     else {
                         String message = task.getException().toString();
-                        Toast.makeText(RegisterActivity.this, "Error: "+ message, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterActivity.this,R.string.error+ message, Toast.LENGTH_SHORT).show();
                         loadingBar.dismiss();
                         RegisterActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                     }
@@ -193,13 +193,13 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask){
         try{
-            Toast.makeText(RegisterActivity.this,"In Successfully",Toast.LENGTH_SHORT).show();
+            //Toast.makeText(RegisterActivity.this,"In Successfully",Toast.LENGTH_SHORT).show();
             GoogleSignInAccount acc = completedTask.getResult(ApiException.class);
-            Toast.makeText(RegisterActivity.this,"Signed In Successfully",Toast.LENGTH_SHORT).show();
+            Toast.makeText(RegisterActivity.this,R.string.signedinsucc,Toast.LENGTH_SHORT).show();
             FirebaseGoogleAuth(acc);
         }
         catch (ApiException e){
-            Toast.makeText(RegisterActivity.this,"Sign In Failed"+e.getMessage(),Toast.LENGTH_SHORT).show();
+            Toast.makeText(RegisterActivity.this,R.string.SignInFailed+e.getMessage(),Toast.LENGTH_SHORT).show();
             FirebaseGoogleAuth(null);
         }
     }
@@ -212,20 +212,20 @@ public class RegisterActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
-                        Toast.makeText(RegisterActivity.this, "Successful", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterActivity.this, R.string.signedinsucc, Toast.LENGTH_SHORT).show();
                         FirebaseUser user = mAuth.getCurrentUser();
                         updateUI(user);
                         GoogleAccuntIntoFirebase();
                         saveDataInSharedPerefrence(getApplicationContext());
                     } else {
-                        Toast.makeText(RegisterActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterActivity.this, R.string.SignInFailed, Toast.LENGTH_SHORT).show();
                         updateUI(null);
                     }
                 }
             });
         }
         else{
-            Toast.makeText(RegisterActivity.this, "acc failed", Toast.LENGTH_SHORT).show();
+            Toast.makeText(RegisterActivity.this, R.string.accountfailed, Toast.LENGTH_SHORT).show();
         }
     }
 

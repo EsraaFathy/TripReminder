@@ -13,17 +13,17 @@ import java.util.List;
 
 public class TripRepository {
     private static TripDAO tripDAO;
-    private LiveData<List<TripTable>> getAllData;
-    private LiveData<List<TripTable>> history;
-    private LiveData<List<TripTable>> historydone;
+    private final LiveData<List<TripTable>> getAllData;
+    private final LiveData<List<TripTable>> history;
+    private final LiveData<List<TripTable>> historydone;
     private static LiveData<List<TripTable>> allToSync;
 
 
     public TripRepository(Application application) {
         TripRoomDataBase tripRoomDataBase = TripRoomDataBase.getInstance(application);
         tripDAO = tripRoomDataBase.tripDao();
-        getAllData = tripDAO.getAllHomeTrips("up Coming");
-        history = tripDAO.getHistory("up Coming");
+        getAllData = tripDAO.getAllHomeTrips("up Coming","Second Way");
+        history = tripDAO.getHistory("Canceled","Done");
         allToSync = tripDAO.getAllToAsync();
         historydone=tripDAO.getHistoryDone("Done");
     }

@@ -123,10 +123,10 @@ public class LoginActivity extends AppCompatActivity {
         String password= userPassword.getText().toString();
 
         if(TextUtils.isEmpty(email)){
-            Toast.makeText(this, "Please enter email", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.pleaseenteryourEmail, Toast.LENGTH_SHORT).show();
         }
         else if(TextUtils.isEmpty(password)){
-            Toast.makeText(this, "Please enter password", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.pleaseenteryourPassword, Toast.LENGTH_SHORT).show();
         }
         else {
             loadingBar.setTitle("Signing in");
@@ -172,7 +172,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
                     else {
                         String message = task.getException().toString();
-                        Toast.makeText(LoginActivity.this, "Error: "+ message, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, R.string.error+ message, Toast.LENGTH_SHORT).show();
                         loadingBar.dismiss();
                         LoginActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                     }
@@ -219,13 +219,12 @@ public class LoginActivity extends AppCompatActivity {
 
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask){
         try{
-            Toast.makeText(LoginActivity.this,"In Successfully",Toast.LENGTH_SHORT).show();
             GoogleSignInAccount acc = completedTask.getResult(ApiException.class);
-            Toast.makeText(LoginActivity.this,"Signed In Successfully",Toast.LENGTH_SHORT).show();
+            Toast.makeText(LoginActivity.this,R.string.signedinsucc,Toast.LENGTH_SHORT).show();
             FirebaseGoogleAuth(acc);
         }
         catch (ApiException e){
-            Toast.makeText(LoginActivity.this,"Sign In Failed"+e.getMessage(),Toast.LENGTH_SHORT).show();
+            Toast.makeText(LoginActivity.this,R.string.SignInFailed+e.getMessage(),Toast.LENGTH_SHORT).show();
             FirebaseGoogleAuth(null);
         }
     }
@@ -238,19 +237,19 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
-                        Toast.makeText(LoginActivity.this, "Successful", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, R.string.signedinsucc, Toast.LENGTH_SHORT).show();
                         FirebaseUser user = mAuth.getCurrentUser();
                         updateUI(user);
                         AllowGoogleAccountToLogen();
                     } else {
-                        Toast.makeText(LoginActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, R.string.SignInFailed, Toast.LENGTH_SHORT).show();
                         updateUI(null);
                     }
                 }
             });
         }
         else{
-            Toast.makeText(LoginActivity.this, "acc failed", Toast.LENGTH_SHORT).show();
+            Toast.makeText(LoginActivity.this, R.string.accountfailed, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -279,11 +278,11 @@ public class LoginActivity extends AppCompatActivity {
         UsersDao.getUser(currentUserId, new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Toast.makeText(LoginActivity.this,"In onDataChange ", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(LoginActivity.this,"In onDataChange ", Toast.LENGTH_SHORT).show();
                 final User databaseUser=(User) dataSnapshot.getValue(User.class);
                 Toast.makeText(LoginActivity.this, ""+databaseUser, Toast.LENGTH_SHORT).show();
                 if (databaseUser==null){
-                    Toast.makeText(LoginActivity.this, "You are not registered please register", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, R.string.norRegistered, Toast.LENGTH_SHORT).show();
                 }else {
                     Email = databaseUser.getEmail();
                     Name = databaseUser.getName();
@@ -291,7 +290,7 @@ public class LoginActivity extends AppCompatActivity {
                     Log.i("log", "after snapShot: " + Name + Email);
                     DataHolder.dataBaseUser = databaseUser;
                     DataHolder.authUser = mAuth.getCurrentUser();
-                    Toast.makeText(LoginActivity.this, "" + databaseUser.toString(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(LoginActivity.this, "" + databaseUser.toString(), Toast.LENGTH_SHORT).show();
                     loadingBar.dismiss();
                     saveDataInSharedPerefrence(getApplicationContext());
                     th=new Thread(sync);
@@ -369,7 +368,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
-                Toast.makeText(LoginActivity.this, "Failed to get your data", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, R.string.failedtogetyourdata, Toast.LENGTH_SHORT).show();
 
             }
         });

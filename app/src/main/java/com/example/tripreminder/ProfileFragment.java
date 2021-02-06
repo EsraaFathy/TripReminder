@@ -182,7 +182,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()){
-                    Toast.makeText(getActivity(), "Your data is backed up", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), R.string.Yourdataisbackedup, Toast.LENGTH_LONG).show();
 
 
                 }else {
