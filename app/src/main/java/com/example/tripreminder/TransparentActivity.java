@@ -267,7 +267,7 @@ public class TransparentActivity extends AppCompatActivity {
 //                        startTrip(tripTable);
 //                    }
                 }
-                notificationManager.cancel((int)idT);
+                notificationManager.cancel(myIntent.getIntExtra("notificationID",0));
                 startTrip();
                 finishAndRemoveTask();
 
@@ -353,7 +353,7 @@ public class TransparentActivity extends AppCompatActivity {
                                 tripTable.getTime(),
                                 tripTable.getDate(),
                                 "up Coming",
-                                tripTable.getRepetition(),
+                                "No Repeated",
                             true,
                             tripTable.getTo(),
                             tripTable.getFrom(),
