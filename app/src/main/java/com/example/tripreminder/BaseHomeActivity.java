@@ -64,7 +64,9 @@ public class BaseHomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (activityBaseHomeBinding.mapIcon.getVisibility()==View.VISIBLE){
-                    startActivity(new Intent(BaseHomeActivity.this,MapsActivity.class));
+//                    startActivity(new Intent(BaseHomeActivity.this,MapsActivity.class));
+                                        startActivity(new Intent(BaseHomeActivity.this,Map.class));
+
                 }
             }
         });

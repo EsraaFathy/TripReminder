@@ -86,6 +86,10 @@ dependencies {
     implementation "androidx.fragment:fragment:1.2.5"
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
+    implementation 'com.google.maps:google-maps-services:0.16.1'
+    implementation 'org.slf4j:slf4j-simple:1.7.25'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.0'
+
 }
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'

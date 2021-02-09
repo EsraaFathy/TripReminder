@@ -32,6 +32,10 @@
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps"></activity>
 
+        <activity
+            android:name=".Map"
+            android:label="@string/title_activity_maps"></activity>
+
         <activity android:name=".DistanceReport" />
         <activity
             android:name=".TransparentActivity"
