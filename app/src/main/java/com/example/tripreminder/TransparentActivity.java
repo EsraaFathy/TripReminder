@@ -38,8 +38,8 @@ public class TransparentActivity extends AppCompatActivity {
     public static final String SNOOZE_SERVICE = "com.example.tripreminder.SnoozeService";
     public static final String CANCEL_SERVICE = "com.example.tripreminder.CancelService";
 
-    private String SOURCE_URL= "http://maps.google.com/maps?saddr=";
-    private String DEST_URL= "http://maps.google.com/maps?daddr=";
+    private String SOURCE_URL = "http://maps.google.com/maps?saddr=";
+    private String DEST_URL = "http://maps.google.com/maps?daddr=";
     private String note;
 
     Intent myIntent;
@@ -49,61 +49,62 @@ public class TransparentActivity extends AppCompatActivity {
     NotificationManager notificationManager;
     long idT;
     private String status;
-    Handler handler=new Handler(new Handler.Callback() {
+    Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(@NonNull Message message) {
             startFloatingIcon(note);
             return false;
         }
     });
-    Handler statusHandler=new Handler(new Handler.Callback() {
+    Handler statusHandler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(@NonNull Message msg) {
-            if (!status.equals("up Coming")){
+            if (!status.equals("up Coming")) {
                 Log.d("TAG", "handleMessage: ");
                 finish();
-            }else {
+            } else {
                 afterHanderStatus();
             }
             return false;
         }
     });
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         myIntent = getIntent();
-        idT= myIntent.getLongExtra("ID",-1);
-        Log.i("ID",""+idT);
+        idT = myIntent.getLongExtra("ID", -1);
+        Log.i("ID", "" + idT);
         tripViewModel = new ViewModelProvider(TransparentActivity.this, ViewModelProvider.AndroidViewModelFactory.getInstance(TransparentActivity.this.getApplication())).get(TripViewModel.class);
         getStatusById(idT);
     }
 
-    private void createNotification(Context context,long ID){
+    private void createNotification(Context context, long ID) {
         Intent tapNotification = new Intent(getApplicationContext(), com.example.tripreminder.TransparentActivity.class).setAction(START_SERVICE);
-        tapNotification.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        tapNotification.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         //long id in intent
-        Log.i("create noti",ID+"");
-        tapNotification.putExtra("ID",ID);
+        Log.i("create noti", ID + "");
+        tapNotification.putExtra("ID", ID);
         setTripDate(tapNotification);
         // int id to cancel
-        int id = (int)ID;
+        int id = (int) ID;
         startPendingIntent = PendingIntent.getActivity(getApplicationContext(), id, tapNotification, PendingIntent.FLAG_ONE_SHOT);
 
 
-         notificationUtils = new NotificationUtils(context);
+        notificationUtils = new NotificationUtils(context);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            NotificationCompat.Builder nb = notificationUtils.getAndroidChannelNotification(myIntent.getStringExtra("tripName"),startPendingIntent);
+            NotificationCompat.Builder nb = notificationUtils.getAndroidChannelNotification(myIntent.getStringExtra("tripName"), startPendingIntent);
             notificationUtils.getManager().notify(id, nb.build());
 
         }
 
     }
 
-    private String GetNotes(long id){
-        tripViewModel.getNotes((int)id).observe(TransparentActivity.this, new Observer<String>() {
+    private String GetNotes(long id) {
+        tripViewModel.getNotes((int) id).observe(TransparentActivity.this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                note =s;
+                note = s;
                 handler.sendEmptyMessage(0);
             }
         });
@@ -113,52 +114,52 @@ public class TransparentActivity extends AppCompatActivity {
     }
 
 
-    private void setTripDate(Intent pass){
+    private void setTripDate(Intent pass) {
 
 
-        if((myIntent.hasExtra("sourceName"))){ // source exists
+        if ((myIntent.hasExtra("sourceName"))) { // source exists
             Log.i("log", "not null myrec");
-            pass.putExtra("sourceLat",myIntent.getDoubleExtra("sourceLat",0));
-            pass.putExtra("sourceLon",myIntent.getDoubleExtra("sourceLon",0));
-            pass.putExtra("sourceName",myIntent.getExtras().getString("sourceName","null"));
+            pass.putExtra("sourceLat", myIntent.getDoubleExtra("sourceLat", 0));
+            pass.putExtra("sourceLon", myIntent.getDoubleExtra("sourceLon", 0));
+            pass.putExtra("sourceName", myIntent.getExtras().getString("sourceName", "null"));
         }
 
-        pass.putExtra("destinationLat", myIntent.getDoubleExtra("destinationLat",0));
-        pass.putExtra("destinationLon",myIntent.getDoubleExtra("destinationLon",0));
-        pass.putExtra("destinationName",myIntent.getExtras().getString("destinationName","null"));
+        pass.putExtra("destinationLat", myIntent.getDoubleExtra("destinationLat", 0));
+        pass.putExtra("destinationLon", myIntent.getDoubleExtra("destinationLon", 0));
+        pass.putExtra("destinationName", myIntent.getExtras().getString("destinationName", "null"));
         pass.putExtra("ID", myIntent.getLongExtra("ID", 0));
         pass.putExtra("tripName", myIntent.getStringExtra("tripName"));
-        pass.putExtra("ways", myIntent.getBooleanExtra("ways",false));
+        pass.putExtra("ways", myIntent.getBooleanExtra("ways", false));
         pass.putExtra("repetation", myIntent.getStringExtra("repetation"));
     }
 
-    private void startTrip(){
+    private void startTrip() {
 
         Toast.makeText(getApplicationContext(), R.string.start, Toast.LENGTH_SHORT).show();
-        double sourceLat,sourceLon,destinationLat,destinationLon;
-        String sourceName,destinationName;
+        double sourceLat, sourceLon, destinationLat, destinationLon;
+        String sourceName, destinationName;
 
 
         destinationLat = myIntent.getDoubleExtra("destinationLat", 0);
         destinationLon = myIntent.getDoubleExtra("destinationLon", 0);
         destinationName = myIntent.getStringExtra("destinationName");
-        idT= (int) myIntent.getLongExtra("ID",-1);
+        idT = (int) myIntent.getLongExtra("ID", -1);
         Intent mapIntent;
         String my_data;
 
-        if(!myIntent.getExtras().getString("sourceName", "null").equals("null")){ // source exists
+        if (!myIntent.getExtras().getString("sourceName", "null").equals("null")) { // source exists
             Log.i("log", "not null notif");
-            sourceLat = myIntent.getDoubleExtra("sourceLat",0);
-            sourceLon = myIntent.getDoubleExtra("sourceLon",0);
+            sourceLat = myIntent.getDoubleExtra("sourceLat", 0);
+            sourceLon = myIntent.getDoubleExtra("sourceLon", 0);
             sourceName = myIntent.getStringExtra("sourceName");
 
 
-            my_data= String.format(Locale.ENGLISH, SOURCE_URL+sourceLat+","+sourceLon+"("+sourceName+")&daddr="+destinationLat+","+destinationLon+"("+destinationName+")");
+            my_data = String.format(Locale.ENGLISH, SOURCE_URL + sourceLat + "," + sourceLon + "(" + sourceName + ")&daddr=" + destinationLat + "," + destinationLon + "(" + destinationName + ")");
             mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(my_data));
             mapIntent.setPackage("com.google.android.apps.maps");
             mapIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        }else{
-            my_data= String.format(Locale.ENGLISH, DEST_URL+destinationLat+","+destinationLon+"("+destinationName+")");
+        } else {
+            my_data = String.format(Locale.ENGLISH, DEST_URL + destinationLat + "," + destinationLon + "(" + destinationName + ")");
             mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(my_data));
             mapIntent.setPackage("com.google.android.apps.maps");
             mapIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -172,36 +173,37 @@ public class TransparentActivity extends AppCompatActivity {
         //Todo: delete this trip
     }
 
-    private void startFloatingIcon(String notes){
+    private void startFloatingIcon(String notes) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            startService(new Intent(getApplicationContext(), FloatingViewService.class).putExtra("Notes",notes));
-        }else if (Settings.canDrawOverlays(this)) {
-            startService(new Intent(getApplicationContext(), FloatingViewService.class).putExtra("Notes",notes));
-        }else {
+            startService(new Intent(getApplicationContext(), FloatingViewService.class).putExtra("Notes", notes));
+        } else if (Settings.canDrawOverlays(this)) {
+            startService(new Intent(getApplicationContext(), FloatingViewService.class).putExtra("Notes", notes));
+        } else {
             Toast.makeText(this, R.string.floatPermission, Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void UpdateStatusByID(long idT,String status){
-        new Thread(){
+    private void UpdateStatusByID(long idT, String status) {
+        new Thread() {
             @Override
             public void run() {
-                TripTable table1= tripViewModel.getTripRowById(idT);
+                TripTable table1 = tripViewModel.getTripRowById(idT);
                 table1.setStatus(status);
-                table1.setId((int)idT);
+                table1.setId((int) idT);
                 tripViewModel.update(table1);
             }
         }.start();
 
     }
-    private void afterHanderStatus(){
+
+    private void afterHanderStatus() {
         Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         rigntone = RingtoneManager.getRingtone(getApplicationContext(), uri);
-        if(!rigntone.isPlaying())
+        if (!rigntone.isPlaying())
             rigntone.play();
 
-        notificationUtils=new NotificationUtils(getApplicationContext());
-        notificationManager=notificationUtils.getManager();
+        notificationUtils = new NotificationUtils(getApplicationContext());
+        notificationManager = notificationUtils.getManager();
         final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
         builder.setCancelable(false);
         builder.setTitle(myIntent.getStringExtra("tripName"));
@@ -212,14 +214,14 @@ public class TransparentActivity extends AppCompatActivity {
 //                idT= (int) myIntent.getLongExtra("ID",-1);
                 rigntone.stop();
 
-                if(!myIntent.getExtras().getString("repetation","null").equals("No Repeated")){
+                if (!myIntent.getExtras().getString("repetation", "null").equals("No Repeated")) {
                     // notification won't be canceld
                     //todo:: adding this trip in history as canceled but not to be deleted
                     Log.i("log", "onClick: Cancel");
-                }else{
-                    UpdateStatusByID(idT,"Canceled");
+                } else {
+                    UpdateStatusByID(idT, "Canceled");
                 }
-                notificationManager.cancel((int)idT);
+                notificationManager.cancel((int) idT);
                 finishAndRemoveTask();
 
             }
@@ -229,25 +231,25 @@ public class TransparentActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 // id long
                 finishAndRemoveTask();
-                createNotification(getApplicationContext(),idT);
+                createNotification(getApplicationContext(), idT);
                 rigntone.stop();
             }
         });
         builder.setNeutralButton("Start", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Log.i("startID",""+idT);
+                Log.i("startID", "" + idT);
                 roundedTrip(idT);
                 rigntone.stop();
 
-                if(!myIntent.getExtras().getString("repetation","null").equals("No Repeated")){
+                if (!myIntent.getExtras().getString("repetation", "null").equals("No Repeated")) {
                     // notification won't be canceld
                     //todo:: adding this trip in history but not to be deleted
 
-                }else{
-                    UpdateStatusByID(idT,"Done");
+                } else {
+                    UpdateStatusByID(idT, "Done");
                 }
-                notificationManager.cancel((int)idT);
+                notificationManager.cancel((int) idT);
                 startTrip();
                 finishAndRemoveTask();
 
@@ -259,11 +261,12 @@ public class TransparentActivity extends AppCompatActivity {
         dialog.getButton(dialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(this, R.color.colorPrim));
 
     }
-    private void getStatusById(long id){
+
+    private void getStatusById(long id) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                status=tripViewModel.getStatusById(id);
+                status = tripViewModel.getStatusById(id);
                 statusHandler.sendEmptyMessage(0);
             }
         }).start();
@@ -271,16 +274,17 @@ public class TransparentActivity extends AppCompatActivity {
 
     private void roundedTrip(long idT) {
 
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    TripTable tripTable=tripViewModel.getTripRowById(idT);
-                    if (!tripTable.getWays()) {
-                        tripViewModel.insert(new TripTable(tripTable.getTitle(),
-                                tripTable.getTime(),
-                                tripTable.getDate(),
-                                "up Coming",
-                                tripTable.getRepetition(),
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                TripTable tripTable = tripViewModel.getTripRowById(idT);
+                mangeReputation(tripTable);
+                if (!tripTable.getWays()) {
+                    tripViewModel.insert(new TripTable(tripTable.getTitle(),
+                            tripTable.getTime(),
+                            tripTable.getDate(),
+                            "Second Way",
+                            "No Repeated",
                             true,
                             tripTable.getTo(),
                             tripTable.getFrom(),
@@ -290,9 +294,31 @@ public class TransparentActivity extends AppCompatActivity {
                             tripTable.getLongEnd(),
                             tripTable.getLatStart(),
                             tripTable.getLatStart()));
-                    }
                 }
-            }).start();
+            }
+        }).start();
+    }
+
+    private boolean mangeReputation(TripTable tripTable) {
+        if (!tripTable.getRepetition().equals("No Repeated")) {
+            new Thread(() -> tripViewModel.insert(new TripTable(tripTable.getTitle(),
+                    tripTable.getTime(),
+                    tripTable.getDate(),
+                    "Done",
+                    tripTable.getRepetition(),
+                    true,
+                    tripTable.getTo(),
+                    tripTable.getFrom(),
+                    tripTable.getNotes(),
+                    tripTable.getDistance(),
+                    tripTable.getLatEnd(),
+                    tripTable.getLongEnd(),
+                    tripTable.getLatStart(),
+                    tripTable.getLatStart()))).start();
+            return true;
+        }
+        //return false if it not Reputation
+        return false;
     }
 
 }
