@@ -51,8 +51,9 @@ public class TransparentActivity extends AppCompatActivity {
     private TripViewModel tripViewModel;
     NotificationUtils notificationUtils;
     NotificationManager notificationManager;
-    long idT;
+    long idT,roundID;
     private String status;
+    TripTable roundedTrip;
     Handler handler=new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(@NonNull Message message) {
@@ -60,6 +61,14 @@ public class TransparentActivity extends AppCompatActivity {
             return false;
         }
     });
+    Handler roundHandler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(@NonNull Message msg) {
+            roundNotification(getApplicationContext(), roundID);
+            return false;
+        }
+    });
+
     Handler statusHandler=new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(@NonNull Message msg) {
@@ -83,6 +92,26 @@ public class TransparentActivity extends AppCompatActivity {
         getStatusById(idT);
     }
 
+    private void roundNotification(Context context,long ID){
+        Intent tapNotification = new Intent(getApplicationContext(), BaseHomeActivity.class);
+        tapNotification.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+//        setTripDate(tapNotification);
+        int notificationID = (int) (roundID);
+        tapNotification.putExtra("roundedId",notificationID);
+        tapNotification.putExtra("type","rounded");
+        startPendingIntent = PendingIntent.getActivity(this, notificationID, tapNotification,PendingIntent.FLAG_ONE_SHOT);
+
+
+        notificationUtils = new NotificationUtils(context);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationCompat.Builder nb = notificationUtils.getAndroidChannelNotification(myIntent.getStringExtra("tripName"),"it is time to return from your current trip..",startPendingIntent);
+            notificationUtils.getManager().notify(notificationID, nb.build());
+
+        }
+
+    }
+
     private void createNotification(Context context,long ID){
         Intent tapNotification = new Intent(getApplicationContext(), TransparentActivity.class);
         tapNotification.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -95,7 +124,7 @@ public class TransparentActivity extends AppCompatActivity {
 
          notificationUtils = new NotificationUtils(context);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            NotificationCompat.Builder nb = notificationUtils.getAndroidChannelNotification(myIntent.getStringExtra("tripName"),startPendingIntent);
+            NotificationCompat.Builder nb = notificationUtils.getAndroidChannelNotification(myIntent.getStringExtra("tripName"),"Now it is time for your tip ...",startPendingIntent);
             notificationUtils.getManager().notify(notificationID, nb.build());
 
         }
@@ -117,8 +146,6 @@ public class TransparentActivity extends AppCompatActivity {
 
 
     private void setTripDate(Intent pass){
-
-
         if((myIntent.hasExtra("sourceName"))){ // source exists
             Log.i("log", "not null myrec");
             pass.putExtra("sourceLat",myIntent.getDoubleExtra("sourceLat",0));
@@ -246,6 +273,7 @@ public class TransparentActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 Log.i("startID",""+idT);
+                notificationManager.cancel(myIntent.getIntExtra("notificationID", 0));
                 roundedTrip(idT);
                 rigntone.stop();
 
@@ -256,18 +284,8 @@ public class TransparentActivity extends AppCompatActivity {
 
                 }else{
                     UpdateStatusByID(idT,"Done");
-//                    if (!mangeReputation(tripTable)) {
-//                        roundedTrip(tripTable);
-//                        idT = tripTable.getId();
-//                        UpdateStatusByID(idT, "Done");
-//                        startTrip(tripTable);
-//                    }else {
-//                        roundedTrip(tripTable);
-//                        idT = tripTable.getId();
-//                        startTrip(tripTable);
-//                    }
                 }
-                notificationManager.cancel((int)idT);
+
                 startTrip();
                 finishAndRemoveTask();
 
@@ -349,7 +367,7 @@ public class TransparentActivity extends AppCompatActivity {
                 public void run() {
                     TripTable tripTable=tripViewModel.getTripRowById(idT);
                     if (!tripTable.getWays()) {
-                        tripViewModel.insert(new TripTable(tripTable.getTitle(),
+                        roundID = tripViewModel.insert(new TripTable(tripTable.getTitle(),
                                 tripTable.getTime(),
                                 tripTable.getDate(),
                                 "up Coming",
@@ -364,6 +382,8 @@ public class TransparentActivity extends AppCompatActivity {
                             tripTable.getLatStart(),
                             tripTable.getLatStart()));
                     }
+                    roundedTrip=tripViewModel.getTripRowById(roundID);
+                    roundHandler.sendEmptyMessage(0);
                 }
             }).start();
     }

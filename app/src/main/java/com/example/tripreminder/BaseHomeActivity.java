@@ -6,11 +6,13 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -37,12 +39,23 @@ public class BaseHomeActivity extends AppCompatActivity {
     private FirebaseUser currentUser;
     private FirebaseAuth mAuth;
     private static final int SYSTEM_ALERT_WINDOW_PERMISSION = 2084;
-
+    private Intent myIntent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_base_home);
             activityBaseHomeBinding = DataBindingUtil.setContentView(this, R.layout.activity_base_home);
+
+            myIntent = getIntent();
+            if(myIntent.hasExtra("type")){
+                NotificationUtils notificationUtils=new NotificationUtils(getApplicationContext());
+                NotificationManager notificationManager=notificationUtils.getManager();
+
+                Log.i("log", "rounded: "+myIntent.getIntExtra("roundedId", 0));
+                notificationManager.cancel(myIntent.getIntExtra("roundedId", 0));
+            }else{
+                Log.i("log", "onCreate: rounded");
+            }
 
         mAuth=FirebaseAuth.getInstance();
         currentUser=mAuth.getCurrentUser();
@@ -128,6 +141,5 @@ public class BaseHomeActivity extends AppCompatActivity {
                 Uri.parse("package:" + getPackageName()));
         startActivityForResult(intent, SYSTEM_ALERT_WINDOW_PERMISSION);
     }
-
 
 }

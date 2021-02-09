@@ -52,7 +52,7 @@ public class NotificationUtils extends ContextWrapper {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public NotificationCompat.Builder getAndroidChannelNotification(String body, PendingIntent start) {
+    public NotificationCompat.Builder getAndroidChannelNotification(String title,String body, PendingIntent start) {
         return new NotificationCompat.Builder(getApplicationContext(), ANDROID_CHANNEL_ID)
 //                .setContentTitle(title)
 //                .setContentText(body)
@@ -62,8 +62,8 @@ public class NotificationUtils extends ContextWrapper {
 //                .setAutoCancel(true);
 
                 .setSmallIcon(R.drawable.ic_baseline_add_alert_24)
-                .setContentTitle(body)
-                .setContentText("Now it's time for your trip to begin, go ahead ..")
+                .setContentTitle(title)
+                .setContentText(body)
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setNotificationSilent()
                 .setContentIntent(start) // what works on tap notification
