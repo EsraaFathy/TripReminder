@@ -30,7 +30,6 @@ import com.example.tripreminder.RoomDataBase.TripTable;
 import com.example.tripreminder.RoomDataBase.TripViewModel;
 import com.example.tripreminder.serveses.FloatingViewService;
 
-
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.Random;
@@ -43,8 +42,6 @@ public class TransparentActivity extends AppCompatActivity {
     private String SOURCE_URL= "http://maps.google.com/maps?saddr=";
     private String DEST_URL= "http://maps.google.com/maps?daddr=";
     private String note;
-
-//    private AlarmTripModel alarmTripModel;
 
     Intent myIntent;
     PendingIntent startPendingIntent;
@@ -78,10 +75,11 @@ public class TransparentActivity extends AppCompatActivity {
         TransparentActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
         myIntent = getIntent();
         idT= myIntent.getLongExtra("ID",-1);
-        Log.i("log", "onCreate: "+myIntent.getIntExtra("notificationID", -1));
+        Log.i("ID",""+idT);
         tripViewModel = new ViewModelProvider(TransparentActivity.this, ViewModelProvider.AndroidViewModelFactory.getInstance(TransparentActivity.this.getApplication())).get(TripViewModel.class);
         getStatusById(idT);
     }
+
 
     private void createNotification(Context context,long ID){
         Intent tapNotification = new Intent(getApplicationContext(), TransparentActivity.class);
@@ -93,7 +91,7 @@ public class TransparentActivity extends AppCompatActivity {
         startPendingIntent = PendingIntent.getActivity(this, (int)(idT+myIntent.getLongExtra("calendar", 0) ), tapNotification,PendingIntent.FLAG_ONE_SHOT);
 
 
-         notificationUtils = new NotificationUtils(context);
+        notificationUtils = new NotificationUtils(context);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             NotificationCompat.Builder nb = notificationUtils.getAndroidChannelNotification(myIntent.getStringExtra("tripName"),startPendingIntent);
             notificationUtils.getManager().notify(notificationID, nb.build());
@@ -134,7 +132,6 @@ public class TransparentActivity extends AppCompatActivity {
         pass.putExtra("ways", myIntent.getBooleanExtra("ways",false));
         pass.putExtra("repetation", myIntent.getStringExtra("repetation"));
         pass.putExtra("calendar",myIntent.getLongExtra("calendar",-1));
-//        pass.putExtra("notificationID",myIntent.getIntExtra("notificationID",0));
 
     }
 
@@ -219,10 +216,10 @@ public class TransparentActivity extends AppCompatActivity {
                 rigntone.stop();
 
                 if(!myIntent.getExtras().getString("repetation","null").equals("No Repeated")){
-                        repeateAlarm();
+                    repeateAlarm();
+                    // notification won't be canceld
+                    //todo:: adding this trip in history as canceled but not to be deleted
                     Log.i("log", "onClick: Cancel");
-//                    Log.i("log","NotificationID"+myIntent.getIntExtra("notificationID", -1));
-
                 }else{
                     UpdateStatusByID(idT,"Canceled");
                 }
@@ -236,7 +233,6 @@ public class TransparentActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 // id long
                 finishAndRemoveTask();
-
                 notificationManager.cancel(myIntent.getIntExtra("notificationID",0));
                 createNotification(getApplicationContext(),myIntent.getIntExtra("notificationID",0));
                 rigntone.stop();
@@ -256,16 +252,6 @@ public class TransparentActivity extends AppCompatActivity {
 
                 }else{
                     UpdateStatusByID(idT,"Done");
-//                    if (!mangeReputation(tripTable)) {
-//                        roundedTrip(tripTable);
-//                        idT = tripTable.getId();
-//                        UpdateStatusByID(idT, "Done");
-//                        startTrip(tripTable);
-//                    }else {
-//                        roundedTrip(tripTable);
-//                        idT = tripTable.getId();
-//                        startTrip(tripTable);
-//                    }
                 }
                 notificationManager.cancel(myIntent.getIntExtra("notificationID",0));
                 startTrip();
@@ -277,7 +263,6 @@ public class TransparentActivity extends AppCompatActivity {
         dialog.show();
         dialog.getButton(dialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(this, R.color.colorPrim));
         dialog.getButton(dialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(this, R.color.colorPrim));
-
     }
 
     private long checkNot24HoursPassed(){
@@ -300,7 +285,7 @@ public class TransparentActivity extends AppCompatActivity {
             case "Repeated Daily":
 //                if(diff != 0)
                 Log.i("log", "repeateAlarm: "+myIntent.getLongExtra("calendar", -1));
-                    time = myIntent.getLongExtra("calendar", -1) + 24*60*60*1000;
+                time = myIntent.getLongExtra("calendar", -1) + 24*60*60*1000;
 //                else
 //                   time = diff + 24*60*60*1000;
 
@@ -331,6 +316,7 @@ public class TransparentActivity extends AppCompatActivity {
                 myIntent.getStringExtra("tripName"),
                 idT,
                 myIntent.getStringExtra("repetation"));
+
     }
     private void getStatusById(long id){
         new Thread(new Runnable() {
@@ -348,13 +334,13 @@ public class TransparentActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     TripTable tripTable=tripViewModel.getTripRowById(idT);
+                    mangeReputation(tripTable);
                     if (!tripTable.getWays()) {
                         tripViewModel.insert(new TripTable(tripTable.getTitle(),
                                 tripTable.getTime(),
                                 tripTable.getDate(),
-                                "up Coming",
-                                "No Repeated",
-                            true,
+                                "Second Way",
+                                "No Repeated",                           true,
                             tripTable.getTo(),
                             tripTable.getFrom(),
                             tripTable.getNotes(),
