@@ -72,4 +72,15 @@
     <string name="bla">blsa</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="maps_api_key">AIzaSyBZ_h90ZRkxM6LD1m-Jrq7XCZSA2zm63XQ</string>
+    <string-array name="repeating_options">
+        <item>عدم تكرار</item>
+        <item>تكرار يومي</item>
+        <item>تكرار اسبوعي</item>
+        <item>تكرار شهري</item>
+    </string-array>
+    <string-array name="trip_options">
+        <item>ذهاب فقط</item>
+        <item>ذهاب وعودة</item>
+    </string-array>
+
 </resources>
