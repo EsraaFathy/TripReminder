@@ -25,6 +25,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -122,7 +123,7 @@ public class ProfileFragment extends Fragment {
         logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                logOut();
+                dialogLogOut();
             }
         });
 
@@ -178,7 +179,7 @@ public class ProfileFragment extends Fragment {
 
         Log.i("sync",""+trips);
         String currentUserId=currentUser.getUid();
-        //DataBase.getUsers().child(currentUserId).child(DataBase.USER_Trip_REF).setValue("");
+        DataBase.getUsers().child(currentUserId).child(DataBase.USER_Trip_REF).setValue("");
         UsersDao.addUserTrips(trips, currentUserId, new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -215,6 +216,30 @@ public class ProfileFragment extends Fragment {
             }
         });
         return tables;
+    }
+
+    public void dialogLogOut(){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+               builder.setCancelable(false);
+               builder.setMessage("are you sure?\nyou will lose all your alarms if you loged out");
+               builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                   @Override
+                   public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                        logOut();
+                   }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                   public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+               });
+                final AlertDialog dialog = builder.create();
+                dialog.show();
+                dialog.getButton(dialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrim));
+                dialog.getButton(dialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrim));
+
     }
 
 }
