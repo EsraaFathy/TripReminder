@@ -123,17 +123,6 @@
 
 
         <TextView
-            android:id="@+id/toTripItem1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:text="@string/to"
-            app:layout_constraintBottom_toTopOf="@+id/imageView2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fromTripItem1"
-            app:layout_constraintVertical_bias="0.378" />
-
-        <TextView
             android:id="@+id/fromHistoryItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -146,19 +135,31 @@
             app:layout_constraintStart_toEndOf="@+id/fromTripItem1"
             app:layout_constraintTop_toTopOf="@+id/fromTripItem1"
             app:layout_constraintVertical_bias="1.0" />
+        <TextView
+            android:id="@+id/toTripItem1"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_marginStart="32dp"
+            android:text="@string/to"
+            app:layout_constraintBottom_toTopOf="@+id/imageView2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fromTripItem1"
+            />
+
 
         <TextView
             android:id="@+id/toHistoryItem"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="20dp"
             android:layout_marginStart="36dp"
-            android:layout_marginTop="8dp"
             android:text="@string/to"
             android:textColor="@color/black"
+            app:layout_constraintBottom_toTopOf="@+id/startButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.018"
             app:layout_constraintStart_toEndOf="@+id/toTripItem1"
-            app:layout_constraintTop_toTopOf="@+id/toTripItem1" />
+            app:layout_constraintTop_toTopOf="@+id/toTripItem1"
+            app:layout_constraintVertical_bias="0.0" />
 
         <ImageView
             android:id="@+id/notesHistoryItem"
