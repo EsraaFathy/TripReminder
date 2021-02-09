@@ -88,7 +88,7 @@ public class TransparentActivity extends AppCompatActivity {
         tripViewModel = new ViewModelProvider(TransparentActivity.this, ViewModelProvider.AndroidViewModelFactory.getInstance(TransparentActivity.this.getApplication())).get(TripViewModel.class);
         getStatusById(idT);
     }
-
+    
     private void roundNotification(Context context,long ID){
         Intent tapNotification = new Intent(getApplicationContext(), BaseHomeActivity.class);
         tapNotification.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -280,8 +280,8 @@ public class TransparentActivity extends AppCompatActivity {
                 }else{
                     UpdateStatusByID(idT,"Done");
                 }
+
                 notificationManager.cancel(myIntent.getIntExtra("notificationID",0));
-                startTrip();
                 finishAndRemoveTask();
 
             }
