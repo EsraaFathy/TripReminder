@@ -11,7 +11,9 @@ import androidx.lifecycle.ViewModelProvider;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -177,6 +179,7 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
                 if (binding.addTripBtn.getText().equals("Edit")) {
                     Toast.makeText(AddTripActivity.this, "bla bla", Toast.LENGTH_SHORT).show();
                     editTripFromUI();
+
                 } else {
                     if (start == null) {
                         addTripToRoom(binding.tripNameInput.getText().toString(),
@@ -296,6 +299,17 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
 
     }
 
+    private void prepareAlarm(int id) {
+        Alarm alarm;
+        if (start == null)
+            alarm = new Alarm(this, calender.getTimeInMillis(), mlocation, end, getWay(), binding.tripNameInput.getText().toString(), id,getRepetation());
+        else {
+            alarm = new Alarm(this, calender.getTimeInMillis(), start, end, getWay(), binding.tripNameInput.getText().toString(), id,getRepetation());
+        }
+        alarm.prepareAlarm();
+
+    }
+
 //    private void createNotificationChannel() {
 //
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -366,6 +380,43 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
             TripTable table = new TripTable(title, time, date, status, repetition, ways, from, to, tripTable.getNotes(), distance, latStart, LongStart, LatEnd, longEnd);
             table.setId(id);
             tripViewModel.update(table);
+
+            Intent intent = new Intent(getApplicationContext(),TransparentActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), id, intent, 0);
+            AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+            alarmManager.cancel(pendingIntent);
+//            prepareAlarm(id);
+
+            intent = new Intent(getApplicationContext(),TransparentActivity.class);
+
+//            if(start !=null){
+                intent.putExtra("sourceLat", latStart);
+                intent.putExtra("sourceLon", LongStart);
+                intent.putExtra("sourceName", from);
+//            }else {
+//                intent.putExtra("sourceLat", mlocation.getLatitude());
+//                intent.putExtra("sourceLon", mlocation.getLongitude());
+//                intent.putExtra("sourceName", "Your Location");
+//            }
+            intent.putExtra("destinationLat", LatEnd);
+            intent.putExtra("destinationLon", longEnd);
+            intent.putExtra("destinationName", to);
+            intent.putExtra("tripName", title);
+            intent.putExtra("ways", ways);
+
+            intent.putExtra("ID", id);
+//            int notificationID = (int) id;
+            intent.putExtra("notificationID",id);
+            intent.putExtra("repetation", repetition);
+            intent.putExtra("calendar",calender);
+
+            pendingIntent = PendingIntent.getActivity(getApplicationContext(), id, intent, 0);
+
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP,calender.getTimeInMillis(),pendingIntent);
+
+//                    alarm = new Alarm(this, calender.getTimeInMillis(), mlocation, end, getWay(), binding.tripNameInput.getText().toString(), idT,getRepetation());
+
+
             finish();
 
         }
