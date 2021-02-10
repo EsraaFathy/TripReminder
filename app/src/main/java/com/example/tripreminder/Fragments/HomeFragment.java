@@ -1,5 +1,6 @@
 package com.example.tripreminder.Fragments;
 
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
@@ -24,6 +25,7 @@ import com.example.tripreminder.Adapters.RecyclerHomeAdapter;
 import com.example.tripreminder.AddTripActivity;
 import com.example.tripreminder.MenuItemsForOneElement;
 import com.example.tripreminder.NotesControl;
+import com.example.tripreminder.NotificationUtils;
 import com.example.tripreminder.R;
 import com.example.tripreminder.RoomDataBase.TripTable;
 import com.example.tripreminder.RoomDataBase.TripViewModel;
@@ -62,6 +64,7 @@ public class HomeFragment extends Fragment {
     private final String DEST_URL = "http://maps.google.com/maps?daddr=";
     private int idT;
     Intent mapIntent;
+    NotificationManager notificationManager;
     Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(@NonNull Message message) {
@@ -90,6 +93,8 @@ public class HomeFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerviewHome);
         ImageView imageView = view.findViewById(R.id.addTrip);
         recyclerHomeAdapter = new RecyclerHomeAdapter(getActivity());
+        NotificationUtils notificationUtils=new NotificationUtils(getContext());
+       notificationManager=notificationUtils.getManager();
 
 
         imageView.setOnClickListener(v -> startActivity(new Intent(getActivity(), AddTripActivity.class)));
@@ -124,6 +129,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void startItemOptions(TripTable tripTable) {
+        notificationManager.cancel((int)tripTable.getId()*2);
         if (!mangeReputation(tripTable)) {
             roundedTrip(tripTable);
             idT = tripTable.getId();
