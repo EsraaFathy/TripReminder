@@ -3,6 +3,14 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        Rafeeq {
+            storeFile file('C:\\Users\\Lenovo\\Desktop\\keyRafeeq.jks')
+            storePassword '123456789'
+            keyAlias 'test'
+            keyPassword '123456789'
+        }
+    }
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
 
