@@ -268,7 +268,6 @@ public class TransparentActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 Log.i("startID",""+idT);
-                notificationManager.cancel(myIntent.getIntExtra("notificationID", 0));
                 roundedTrip(idT);
                 rigntone.stop();
 
@@ -282,6 +281,7 @@ public class TransparentActivity extends AppCompatActivity {
                 }
 
                 notificationManager.cancel(myIntent.getIntExtra("notificationID",0));
+                startTrip();
                 finishAndRemoveTask();
 
             }
@@ -376,9 +376,10 @@ public class TransparentActivity extends AppCompatActivity {
                             tripTable.getLongEnd(),
                             tripTable.getLatStart(),
                             tripTable.getLatStart()));
+                        roundedTrip=tripViewModel.getTripRowById(roundID);
+                        roundHandler.sendEmptyMessage(0);
                     }
-                    roundedTrip=tripViewModel.getTripRowById(roundID);
-                    roundHandler.sendEmptyMessage(0);
+
                 }
             }).start();
     }
