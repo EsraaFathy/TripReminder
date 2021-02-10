@@ -8,43 +8,6 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:493194378070:android:cc11e731b3d3450e3ef4f7",
-        "android_client_info": {
-          "package_name": "com.example.myapplication"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "493194378070-h28u8h6qa6dghbiclr22jqigpejodh38.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.myapplication",
-            "certificate_hash": "0e779bae923a0f4710b624a1864c1a6c85181a24"
-          }
-        },
-        {
-          "client_id": "493194378070-qqlv5837rll6ug213sutheon67aa0f92.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDVrXl0D38-HNnNYkLP3bvbx6vrUMtiDPk"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "493194378070-qqlv5837rll6ug213sutheon67aa0f92.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:493194378070:android:178c67280e4115793ef4f7",
         "android_client_info": {
           "package_name": "com.example.tripreminder"
@@ -73,6 +36,14 @@
           "android_info": {
             "package_name": "com.example.tripreminder",
             "certificate_hash": "545ec72c13e3dd5dfb8d5b4951c1c251d1d24c80"
+          }
+        },
+        {
+          "client_id": "493194378070-pp3udcivmfg6d6imesojtim3f1h5pqc2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tripreminder",
+            "certificate_hash": "a9bced94c4ca54396c0d8c955b27bb4d383b8514"
           }
         },
         {
