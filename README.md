@@ -10,4 +10,4 @@
   _________________________________________________________________________________________________________________________________________________
 ###### **What is Rafek- رَفْيقْ?**
 
-Rafeeq isa a mobile app (Android) usead as atrip remider
+Rafeeq is a mobile app (Android) used as a trip reminder to arrange trip tables and times,
