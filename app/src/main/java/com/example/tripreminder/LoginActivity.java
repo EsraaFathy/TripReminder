@@ -65,7 +65,14 @@ public class LoginActivity extends AppCompatActivity {
     List<TripTable> tribsList;
     Sync sync;
     String Name,Email;
-    Handler handler;
+    Handler handler=new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(@NonNull Message message) {
+            LoginActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+            sendToMainActivity();
+            return true;
+        }
+    });
     Thread th;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +82,7 @@ public class LoginActivity extends AppCompatActivity {
         //startActivity(new Intent(LoginActivity.this,BaseHomeActivity.class));
         mAuth = FirebaseAuth.getInstance();
         tripViewModel = new ViewModelProvider(LoginActivity.this, ViewModelProvider.AndroidViewModelFactory.getInstance(LoginActivity.this.getApplication())).get(TripViewModel.class);
-        sync=new Sync();
+        //sync=new Sync();
         InitiatizeFields();
         GoogleSignInOptions gso = new GoogleSignInOptions
                 .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -85,14 +92,7 @@ public class LoginActivity extends AppCompatActivity {
 
         googleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        handler=new Handler(){
 
-            @Override
-            public void handleMessage(@NonNull Message msg) {
-                super.handleMessage(msg);
-                LoginActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-            }
-        };
 
         newUser.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -153,10 +153,9 @@ public class LoginActivity extends AppCompatActivity {
                                 Toast.makeText(LoginActivity.this,""+ R.string.logged_is_successful, Toast.LENGTH_SHORT).show();
                                 loadingBar.dismiss();
                                 saveDataInSharedPerefrence(getApplicationContext());
-                                LoginActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-                                th=new Thread(sync);
-                                th.start();
-                                sendToMainActivity();
+                                //LoginActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+                                sync();
+                                //sendToMainActivity();
 
                             }
 
@@ -293,10 +292,9 @@ public class LoginActivity extends AppCompatActivity {
                     //Toast.makeText(LoginActivity.this, "" + databaseUser.toString(), Toast.LENGTH_SHORT).show();
                     loadingBar.dismiss();
                     saveDataInSharedPerefrence(getApplicationContext());
-                    th=new Thread(sync);
-                    th.start();
-                    LoginActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-                    sendToMainActivity();
+                    sync();
+                    //LoginActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+                    //sendToMainActivity();
                 }
 
             }
@@ -388,14 +386,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private void saveFromFirebaseToRoom(List<TripTable> trips) {
         tripViewModel.deleteAllTrips();
-        for (TripTable table : trips) {
-          new Thread(new Runnable() {
-              @Override
-              public void run() {
-                  tripViewModel.insert(table);
-              }
-          }).start();
-        }
+                  tripViewModel.inserAll(trips);
+                  handler.sendEmptyMessage(0);
+
     }
 
 }

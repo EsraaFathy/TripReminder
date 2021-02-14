@@ -431,7 +431,7 @@ public class AddTripActivity extends AppCompatActivity implements TimePickerDial
             loadingBar.setCanceledOnTouchOutside(false);
             loadingBar.show();
 
-            if (from.equals("")) {
+            if (from.equals("")||start==null) {
                 handelLocation.getLocation();
             } else {
                 distance = calculationByDistance(start.getLatLng(), end.getLatLng());

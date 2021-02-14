@@ -2,11 +2,7 @@ package com.example.tripreminder.RoomDataBase;
 
 import android.app.Application;
 import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
 import java.util.List;
@@ -41,6 +37,10 @@ public class TripRepository {
 
     public long insert(TripTable tripTable) {
         return tripDAO.Insert(tripTable);
+    }
+    public void insertAll(List<TripTable> tripTable) {
+//         tripDAO.insertAll(tripTable);
+        new InsertAllAsyncTask(tripDAO).execute(tripTable);
     }
 
     public void update(TripTable tripTable) {
@@ -120,5 +120,24 @@ public class TripRepository {
             tripDAO.deleteAllRecords();
             return null;
         }
+    }
+
+    private static class InsertAllAsyncTask extends AsyncTask<List<TripTable>, Void, Void> {
+        private TripDAO tripDAO;
+
+        public InsertAllAsyncTask(TripDAO tripDAO) {
+            this.tripDAO = tripDAO;
+        }
+
+        @Override
+        protected Void doInBackground(List<TripTable>... lists) {
+            tripDAO.insertAll(lists[0]);
+            return null;
+        }
+
+//        @Override
+//        protected Void doInBackground(List<TripTable>... lists) {
+//            tripDAO.insertAll(lists[0]);
+//        }
     }
 }

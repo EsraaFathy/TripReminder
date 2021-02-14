@@ -48,5 +48,8 @@ public interface TripDAO {
     @Query("SELECT status FROM trips WHERE  id = :id LIMIT 1")
     String getStatusById(long id);
 
+    @Insert
+    void insertAll(List<TripTable> list);
+
 }
 

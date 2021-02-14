@@ -37,6 +37,9 @@ public class TripViewModel extends AndroidViewModel {
     public long insert(TripTable tripTable){
         return tripRepository.insert(tripTable);
     }
+    public void inserAll(List<TripTable> list){
+        tripRepository.insertAll(list);
+    }
     public void delete(TripTable tripTable){
         tripRepository.delete(tripTable);
     }
